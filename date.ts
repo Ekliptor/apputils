@@ -1,4 +1,4 @@
-const utils = require('./utils')
+import * as utils from "./utils";
 import * as childProcess from "child_process";
 const exec = childProcess.exec
 import * as os from "os";
@@ -88,12 +88,23 @@ export function getDateInTimezone(date: Date, timezoneOffset: number) {
     return new Date(msDate);
 }
 
-export function toDateTimeStr(date: Date) {
-    //return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + "-" + date.getHours() + " " +  date.getMinutes() + "." + date.getSeconds()
-    // see also getUnixTimeStr()
-    let dateStr = date.getFullYear() + '-' + utils.padNumber(date.getMonth()+1, 2) + '-' + utils.padNumber(date.getDate(), 2)
-    dateStr += ' ' + utils.padNumber(date.getHours(), 2) + '.' + utils.padNumber(date.getMinutes(), 2) + '.' + utils.padNumber(date.getSeconds(), 2)
-    return dateStr
+/**
+ * Return a readable unix time string, for example: 2018-09-16 07:04:30
+ * @param now
+ * @param withSeconds
+ * @param utc
+ */
+export function toDateTimeStr(now: Date, withSeconds = true, utc = true) {
+    if (utc === true) {
+        let date = now.getUTCFullYear() + '-' + utils.padNumber(now.getUTCMonth()+1, 2) + '-' + utils.padNumber(now.getUTCDate(), 2)
+        if (withSeconds)
+            date += ' ' + utils.padNumber(now.getUTCHours(), 2) + ':' + utils.padNumber(now.getUTCMinutes(), 2) + ':' + utils.padNumber(now.getUTCSeconds(), 2)
+        return date
+    }
+    let date = now.getFullYear() + '-' + utils.padNumber(now.getMonth()+1, 2) + '-' + utils.padNumber(now.getDate(), 2)
+    if (withSeconds)
+        date += ' ' + utils.padNumber(now.getHours(), 2) + ':' + utils.padNumber(now.getMinutes(), 2) + ':' + utils.padNumber(now.getSeconds(), 2)
+    return date
 }
 
 export function formatDate(dateFormat: string, date: Date) {

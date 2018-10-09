@@ -147,7 +147,11 @@ export function isImageLink(urlStr: string) {
     return urlStr.match(utils.conf.IMAGE_EXT_REGEX) !== null
 }
 
-export function isVideoLink(urlStr: string) {
+export function isVideoLink(urlStr: string, allowHtmlEnding = false) {
+    if (allowHtmlEnding === true) {
+        // http://foo.com/name.mp4.html
+        return urlStr.match('\.(' + utils.conf.VIDEO_EXTENSIONS + ')($|\.htm|\.html)') !== null;
+    }
     return urlStr.match(utils.conf.VIDEO_EXT_REGEX) !== null
 }
 

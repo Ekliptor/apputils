@@ -316,6 +316,12 @@ export function ensureMultiPlatformLineBreaks(str: string) {
     return str.replace(/\r/g, "").replace(/\n/g, "\r\n");
 }
 
+/**
+ * Adds <br> tags to all line breaks in the string.
+ * @param {string} str
+ * @param {boolean} escape Whether to escape existing HTML code to make them safe for printing. Default true.
+ * @returns {string}
+ */
 export function addHtmlLineBreaks(str: string, escape = true) {
     if (escape)
         str = utils.escapeHtml(str);
@@ -370,7 +376,9 @@ export function unpackGzip(input: Buffer | string) {
  * @returns {boolean}
  */
 export function isPossibleJson(str: string) {
-    let strTemp = str.trim();
+    let strTemp = (str || "").trim();
+    if (strTemp.length === 0)
+        return false;
     return strTemp[0] === "{" || strTemp[0] === "[";
 }
 

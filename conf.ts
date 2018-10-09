@@ -1,7 +1,7 @@
 
 // from http://sphinxsearch.com/docs/current/conf-phrase-boundary.html plus some more chars
 // see https://www.cs.tut.fi/~jkorpela/dashes.html for hypthens and minus signs
-export const WORD_SEPARATOR_CHARS = '\\.,\\?! \u2026:;\\-+_‐‑‒–—―−﹘﹣－\\[\\]='
+export const WORD_SEPARATOR_CHARS = '\\.,\\?! \u2026:;\\-+_‐‑‒–—―−﹘﹣－\\[\\]=/\\(\\)\\{\\}'
 export const WORD_SEPARATOR_REGEX = '[' + WORD_SEPARATOR_CHARS + ']' // don't add chars like ' because they usually mean it's the same word
 export const WORD_SEPARATOR_BEGIN = '(^|[' + WORD_SEPARATOR_CHARS + '])'
 export const WORD_SEPARATOR_END = '([' + WORD_SEPARATOR_CHARS + ']|$)'

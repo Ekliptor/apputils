@@ -122,7 +122,13 @@ function performRequest(options, callback) {
             return callback({ errorType: 0, error: error }, body, response);
         }
 
-        stringBody = body.toString('utf8');
+        try {
+            stringBody = body.toString('utf8');
+        }
+        catch (err) { // Error: Cannot create a string longer than 0x3fffffe7 characters
+            callback({ errorType: 4, error: err }, null, null);
+            return
+        }
 
         // wait page has http code 503
         if (validationError = checkForErrors(error, stringBody)) {
@@ -297,7 +303,8 @@ function requestMethod(method) {
 }
 
 function giveResults(options, error, response, body, callback) {
-    removeWaitingHost(response.request.uri.host, /*!error*/true) // do it before callback to let new requets in callback immediately go through
+    if (response != null)
+        removeWaitingHost(response.request.uri.host, /*!error*/true) // do it before callback to let new requets in callback immediately go through
     if(typeof options.realEncoding === 'string') {
         callback(error, response, body.toString(options.realEncoding));
     } else {

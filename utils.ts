@@ -19,6 +19,7 @@ import * as vm from "vm";
 import * as FileCookieStore from "tough-cookie-filestore";
 import {sprintf, vsprintf} from "sprintf-js";
 import * as EJSON from "ejson";
+import * as entities from"entities";
 
 let useWinston = true
 let isExpress = false
@@ -90,6 +91,7 @@ import * as urlModule from "url";
 import * as conf from "./conf";
 import * as text from "./text";
 import tail from "./tail";
+import * as date from "./date";
 export {conf, text, tail, sprintf, vsprintf, EJSON};
 
 export const startDir = appDir; // require() calls go into this dir, requests for resources into appDir
@@ -234,11 +236,14 @@ export function padNumber(number: number | string, size: number): string {
     return str
 }
 
-export function getUnixTimeStr(withSeconds = false, now = new Date()): string {
-    let date = now.getFullYear() + '-' + padNumber(now.getMonth()+1, 2) + '-' + padNumber(now.getDate(), 2)
-    if (withSeconds)
-        date += ' ' + padNumber(now.getHours(), 2) + ':' + padNumber(now.getMinutes(), 2) + ':' + padNumber(now.getSeconds(), 2)
-    return date
+/**
+ * Return a readable unix time string, for example: 2018-09-16 07:04:30
+ * @param withSeconds
+ * @param now
+ * @param utc
+ */
+export function getUnixTimeStr(withSeconds = false, now = new Date(), utc = false): string {
+    return date.toDateTimeStr(now, withSeconds, utc);
 }
 
 export function format(string: string) {
@@ -782,8 +787,7 @@ export function matchTag(result: string[], tags: string[]) {
     return false;
 }
 
-export function matchExcludeWord(result: string[], excludeWords: string) {
-    const options = "i";
+export function matchExcludeWord(result: string[], excludeWords: string, options = "i") {
     //let wordArr = excludeWords.split(" "); // or split by separator regex?
     let wordArr = excludeWords.split(new RegExp(conf.WORD_SEPARATORS_SEARCH));
     for (let excludeWord of wordArr)
@@ -857,6 +861,16 @@ export function escapeHtml(str: string) {
 }
 
 /**
+ * Replaces HTML chars such as &amp; with their Unicode representation.
+ * @param str
+ * @param trim default true
+ */
+export function decodeHtml(str: string, trim = true) {
+    str = entities.decodeHTML(str);
+    return trim === true ? str.trim() : str;
+}
+
+/**
  * promiseDelay returns a promise that gets resolved after the specifyed time
  */
 
@@ -906,7 +920,6 @@ export function restoreLogLines(dbLogDocs: any[]): string[] {
 }
 
 import * as file from "./file";
-import * as date from "./date";
 import * as test from "./test";
 import * as constants from "./const"
 import * as db from "./db";

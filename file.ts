@@ -168,6 +168,13 @@ export function getDirFromPath(path: string) {
     return path.substr(0, pos)
 }
 
+/**
+ * Copy a file from source to target.
+ * @deprecated use the official fs.copyFile() instead
+ * @param {string} source
+ * @param {string} target
+ * @returns {Promise<void>}
+ */
 export function copy(source: string, target: string) {
     return new Promise<void>((resolve, reject) => {
         let rd = fs.createReadStream(source);
@@ -182,6 +189,35 @@ export function copy(source: string, target: string) {
             resolve();
         });
         rd.pipe(wr);
+    })
+}
+
+/**
+ * Copy a file from source to destination. This function will create the folders to the destination if they don't
+ * exist.
+ * @param {string} source
+ * @param {string} dest
+ * @param {boolean} overwrite
+ * @returns {Promise<boolean>} true if the file was copied. false if it already existed (and overwrite === false)
+ */
+export function copyFile(source: string, dest: string, overwrite = true) {
+    return new Promise<boolean>((resolve, reject) => {
+        let destDirBase = path.dirname(dest);
+        ensureDirPath(destDirBase).then(() => {
+            let flags = undefined;
+            if (overwrite !== true)
+                flags = fs.constants.COPYFILE_EXCL;
+            fs.copyFile(source, dest, flags, (err) => {
+                if (err) {
+                    if (err.code === "EEXIST" && overwrite === false)
+                        return resolve(false)
+                    return reject({txt: "Error copying single file", err: err})
+                }
+                resolve(true)
+            })
+        }).catch((err) => {
+            reject(err)
+        })
     })
 }
 
@@ -325,7 +361,14 @@ export function getInstallDate() {
     })
 }
 
-export function readFile(file: string, options?: { encoding?: "utf8"; flag?: string; }) {
+/**
+ * Read a faile and return a promise.
+ * @param {string} file
+ * @param {{encoding?: "utf8" | "base64"; flag?: string}} options default utf8
+ * @returns {Promise<string>}
+ */
+export function readFile(file: string, options?: { encoding?: "utf8" | "base64"; flag?: string; }) {
+    // encodings: https://stackoverflow.com/questions/14551608/list-of-encodings-that-node-js-supports
     return new Promise<string>((resolve, reject) => {
         if (!options)
             options = {};
@@ -337,4 +380,51 @@ export function readFile(file: string, options?: { encoding?: "utf8"; flag?: str
             resolve(data as string); // already a string
         })
     })
+}
+
+/**
+ * Creates the given directory if it doesn't already exist.
+ * @param {string} dirPath
+ * @returns {Promise<boolean>} true if the directory was created. false if it already existed
+ */
+export function ensureDir(dirPath: string) {
+    return new Promise<boolean>((resolve, reject) => {
+        fs.stat(dirPath, (err, stats) => { // follow symlinks
+            if (err) {
+                if (err.code !== "ENOENT")
+                    return reject({txt: "Error getting file stats for dir", err: err});
+            }
+            else if (stats.isDirectory() === true)
+                return resolve(false);
+            fs.mkdir(dirPath, (err) => {
+                if (err) {
+                    if (err.code === "EEXIST")
+                        return resolve(false);
+                    return reject({txt: 'Error creating dir to ensure', err: err});
+                }
+                resolve(true);
+            })
+        })
+    })
+}
+
+/**
+ * Creates a directory and subdirs recursively
+ * @param {string} dirPath
+ * @param {string} baseDir the base dir to start the creation from. Defaults to the applications working dir.
+ * @returns {Promise<void>}
+ */
+export async function ensureDirPath(dirPath: string, baseDir = ""): Promise<void> {
+    let dirParts = dirPath.split(path.sep);
+    let curPath = baseDir ? baseDir : path.parse(dirPath).root; // usually C:\\ or /
+    for (let i = 0; i < dirParts.length; i++)
+    {
+        if (!dirParts[i])
+            continue;
+        if (curPath.length === 0)
+            curPath = dirParts[i];
+        else
+            curPath = path.join(curPath, dirParts[i]);
+        await ensureDir(curPath);
+    }
 }

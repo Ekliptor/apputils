@@ -401,6 +401,35 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
     });
 }
 
+/**
+ * Creates an array with length elements which all contain value.
+ * @param value
+ * @param length
+ */
+export function fillCreateArray<T>(value: T, length: number): T[] {
+    let arr: T[] = [];
+    for (let i = 0; i < length; i++)
+        arr.push(value);
+    return arr;
+}
+
+/**
+ * Returns a plain object (not nested object) from an array of objects.
+ * Plain object keys will be named: keyPrefix + index in original array + original key
+ * @param arr the array to unpack
+ * @param keyPrefix
+ */
+export function getPlainArrayData(arr: any[], keyPrefix = "arr_") {
+    let plain: any = {}
+    for (let i = 0; i < arr.length; i++)
+    {
+        let cur = arr[i];
+        for (let key in cur)
+            plain[keyPrefix + i + "_" + key] = cur[key];
+    }
+    return plain;
+}
+
 /* // promises will always get executed. only results will be in the order supplied here. only possible with an array of functions (see async library)
 export function promiseAllSequence<T>(promises: Promise<T>[]) {
     return new Promise<T[]> ((resolve, reject) => {
