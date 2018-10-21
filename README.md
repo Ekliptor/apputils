@@ -21,7 +21,7 @@ const logger = utils.logger
 
 with JavaScript:
 ```
-const utils = require("@ekliptor/apputils);
+const utils = require("@ekliptor/apputils");
 const logger = utils.logger
     , nconf = utils.nconf;
 ```

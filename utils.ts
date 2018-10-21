@@ -177,8 +177,12 @@ export function stringifyBeautiful(obj: any) {
     return JSON.stringify(obj, null, 4);
 }
 
+/**
+ * Restores json while re-creating date objects. An alternative is to use EJSON.
+ * @param obj
+ * @param dateFields
+ */
 export function restoreJson(obj: any, dateFields: string[] = []) {
-    // json doesn't have a Date type. so we have to specify fields and restore it here
     for (let prop of dateFields)
     {
         if (obj[prop])
