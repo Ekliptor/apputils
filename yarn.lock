@@ -49,6 +49,10 @@
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.3.0.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
 
+"@types/node@^10.3.4":
+  version "10.12.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.0.tgz#ea6dcbddbc5b584c83f06c60e82736d8fbb0c235"
+
 "@types/phantom@^3.2.0":
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/@types/phantom/-/phantom-3.2.4.tgz#2b7fa21388a803127730db8a8a320aa5dca99ffa"
@@ -70,6 +74,10 @@
 "@types/sprintf-js@0.0.27":
   version "0.0.27"
   resolved "https://registry.yarnpkg.com/@types/sprintf-js/-/sprintf-js-0.0.27.tgz#aa82c1ed9a068d367ca128918561b348bd30fa1a"
+
+"@types/strip-bom@^3.0.0":
+  version "3.0.0"
+  resolved "http://registry.npmjs.org/@types/strip-bom/-/strip-bom-3.0.0.tgz#14a8ec3956c2e81edb7520790aecf21c290aebd2"
 
 "@types/tough-cookie@*":
   version "2.3.2"
@@ -782,6 +790,10 @@ strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
   dependencies:
     ansi-regex "^2.0.0"
+
+strip-bom@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
 
 supports-color@3.1.2:
   version "3.1.2"

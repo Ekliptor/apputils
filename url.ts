@@ -181,3 +181,10 @@ export function getLangReqHeader(langOrLocale: string): string {
         return langParts[0].toLowerCase() + "-" + langParts[0].toUpperCase() + "," + langParts[0].toLowerCase() + ";q=0.5";
     return langParts[0].toLowerCase() + "-" + langParts[1].toUpperCase() + "," + langParts[0].toLowerCase() + ";q=0.5";
 }
+
+export function getFileNameFromUrl(url: string) {
+    let pos = url.lastIndexOf("/");
+    if (pos === -1)
+        return url;
+    return url.substr(pos+1);
+}

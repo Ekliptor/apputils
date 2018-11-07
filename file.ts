@@ -43,6 +43,23 @@ export function getFolderSize(folderPath: string, callback) {
     })
 }
 
+/**
+ * Get the size in bytes of a file (symbolic links followed).
+ * If the file doesn't exist this function returns 0.
+ * @param filePath
+ */
+export async function getFileSize(filePath: string): Promise<number> {
+    try {
+        let stats = await fs.promises.stat(filePath);
+        return stats.size;
+    }
+    catch (err) {
+        if (err && err.code === 'ENOENT')
+            return 0;
+        throw err;
+    }
+}
+
 export function removeFolder(folderPath: string, callback) {
     fs.lstat(folderPath, (err, stat) => {
         if (err) {
