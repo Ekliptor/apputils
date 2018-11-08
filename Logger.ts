@@ -77,6 +77,7 @@ else if (cluster.isMaster) {
             },
             handleExceptions: nconf.get('debug') === false
         }))
+        // TODO add 2nd optional json log and fork a child process to monitor this log for errors containing certain words, send push notifiations
     }
     winstonLogger = new winston.Logger({
         transports: logTransports

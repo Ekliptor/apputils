@@ -10,6 +10,7 @@ import * as nconf from "nconf";
 import * as winstonGlobal from "winston";
 //let appRoot = require('app-root-path')
 import * as path from "path";
+import * as fs from "fs";
 import * as base64url from "base64-url";
 import * as base32  from "hi-base32";
 import * as iconv from "iconv-lite";
@@ -20,8 +21,7 @@ import {sprintf, vsprintf} from "sprintf-js";
 import * as EJSON from "ejson";
 //import {strip_bom} from "strip-bom"; // doesn't work
 import stripBom = require("strip-bom");
-import * as entities from "entities";
-
+import * as entities from"entities";
 
 let useWinston = true
 let isExpress = false
@@ -41,12 +41,30 @@ else if (appDir.match(sepStr + 'bin$')) { // fix for express apps
 
 // load config
 let configFile = require(appDir + path.sep + 'config') // .js or .ts
+const saveConfigFile = "config.json";
+if (fs.existsSync(saveConfigFile) === false) {
+    fs.writeFileSync(saveConfigFile, "{}",{encoding: "utf8"}); // crash if we can't write to our working dir
+}
 nconf.argv()
     .env()
     //.file('app', appRoot.path + '/config.json')
     //.file('utils', appRoot.path + '/node_modules/apputils/config.json') // moved to utils.js
-    .file('app', appDir + path.sep + 'config.json') // needs at least 1 store to be able to save (temp) config
-    .defaults(configFile.config)
+    //.file('app', appDir + path.sep + 'config.json') // needs at least 1 store to be able to save (temp) config // store in working dir
+    .file({
+        file: saveConfigFile,
+        format: {
+            // TODO allow hjson as an alternative to place comments in config? http://hjson.org/
+            stringify: JSON.stringify,
+            parse: JSON.parse
+        }
+    })
+    .defaults(configFile.config) // defaults must be set last or else we can't override values we set in app (such as port)
+    /*
+    .load((err) => {
+        console.log("LOADED")
+        if (err)
+            throw err;
+    })*/
 
 if (process.env.PORT)
     nconf.set('port', process.env.PORT)
@@ -75,6 +93,7 @@ import * as urlModule from "url";
 import * as conf from "./conf";
 import * as text from "./text";
 import tail from "./tail";
+import * as date from "./date";
 export {conf, text, tail, sprintf, vsprintf, EJSON};
 
 export const startDir = appDir; // require() calls go into this dir, requests for resources into appDir
@@ -92,7 +111,6 @@ if (appDir.substr(-1) !== path.sep)
 export {appDir};
 export {logger, nconf}
 
-import * as fs from "fs";
 import * as mime from "mime";
 import * as objects from "./objects"; // include this after requiring the above objects because we modify them too
 import * as cloudscraper from "./src/cloudscraper/cloudscraper";
@@ -161,8 +179,12 @@ export function stringifyBeautiful(obj: any) {
     return JSON.stringify(obj, null, 4);
 }
 
+/**
+ * Restores json while re-creating date objects. An alternative is to use EJSON.
+ * @param obj
+ * @param dateFields
+ */
 export function restoreJson(obj: any, dateFields: string[] = []) {
-    // json doesn't have a Date type. so we have to specify fields and restore it here
     for (let prop of dateFields)
     {
         if (obj[prop])
@@ -220,11 +242,14 @@ export function padNumber(number: number | string, size: number): string {
     return str
 }
 
-export function getUnixTimeStr(withSeconds = false, now = new Date()): string {
-    let date = now.getFullYear() + '-' + padNumber(now.getMonth()+1, 2) + '-' + padNumber(now.getDate(), 2)
-    if (withSeconds)
-        date += ' ' + padNumber(now.getHours(), 2) + ':' + padNumber(now.getMinutes(), 2) + ':' + padNumber(now.getSeconds(), 2)
-    return date
+/**
+ * Return a readable unix time string, for example: 2018-09-16 07:04:30
+ * @param withSeconds
+ * @param now
+ * @param utc
+ */
+export function getUnixTimeStr(withSeconds = false, now = new Date(), utc = false): string {
+    return date.toDateTimeStr(now, withSeconds, utc);
 }
 
 export function format(string: string) {
@@ -771,8 +796,7 @@ export function matchTag(result: string[], tags: string[]) {
     return false;
 }
 
-export function matchExcludeWord(result: string[], excludeWords: string) {
-    const options = "i";
+export function matchExcludeWord(result: string[], excludeWords: string, options = "i") {
     //let wordArr = excludeWords.split(" "); // or split by separator regex?
     let wordArr = excludeWords.split(new RegExp(conf.WORD_SEPARATORS_SEARCH));
     for (let excludeWord of wordArr)
@@ -852,9 +876,7 @@ export function escapeHtml(str: string) {
  */
 export function decodeHtml(str: string, trim = true) {
     str = entities.decodeHTML(str);
-    if (trim === true)
-        str = str.trim();
-    return str;
+    return trim === true ? str.trim() : str;
 }
 
 /**
@@ -918,7 +940,6 @@ export function str2ab(str: string, togo: number = -1): ArrayBuffer {
 }
 
 import * as file from "./file";
-import * as date from "./date";
 import * as test from "./test";
 import * as constants from "./const"
 import * as db from "./db";
@@ -934,6 +955,7 @@ import * as winstonChildProc from "./src/winston-childproc";
 //import * as winstonMongodb from "winston-mongodb";
 import * as winstonMongodb from "./src/winston-mongodb/winston-mongodb";
 import {RequestResponse} from "request";
+import "./src/cache/FileHttpCache";
 
 export {file, date, test, constants, db, http, SessionBrowser, dispatcher, linkExtractor, crypto, proc, calc, winstonGlobal, winstonChildProc, winstonMongodb,
     stripBom}
