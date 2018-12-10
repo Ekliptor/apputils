@@ -1,6 +1,7 @@
 
 import * as tough from "tough-cookie"; // dependency of request
-import utils = require('./utils')
+import * as os from "os";
+import utils = require('./utils');
 
 export function createCookie(key, value, url, expiresMin = 365*24*60) {
     let urlObj = utils.parseUrl(url);
@@ -21,4 +22,23 @@ export function createCookie(key, value, url, expiresMin = 365*24*60) {
         pathIsDefault: true
     }
     return cookie
+}
+
+export function listAvailableIPs(): string[] {
+    let ifaces = os.networkInterfaces();
+    let ips = [];
+    for (let name in ifaces)
+    {
+        let dataArr = ifaces[name];
+        dataArr.forEach((data) => {
+            if (data.address)
+                ips.push(data.address);
+        });
+    }
+    return ips;
+}
+
+export function isAvailbleIP(ip: string): boolean {
+    let ips = listAvailableIPs();
+    return ips.indexOf(ip) !== -1;
 }

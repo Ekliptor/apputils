@@ -96,7 +96,6 @@ else {
                 level: nconf.get('debug') === true ? 'debug' : 'info'
             }),
         ]})
-
     //winstonLogger.info("Test Message!")
 }
 

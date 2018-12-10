@@ -42,7 +42,7 @@ else if (appDir.match(sepStr + 'bin$')) { // fix for express apps
 // load config
 let configFile = require(appDir + path.sep + 'config') // .js or .ts
 const saveConfigFile = "config.json";
-if (fs.existsSync(saveConfigFile) === false) {
+if (fs.existsSync(saveConfigFile) === false || parseJson(fs.readFileSync(saveConfigFile, {encoding: "utf8"})) === null) {
     fs.writeFileSync(saveConfigFile, "{}",{encoding: "utf8"}); // crash if we can't write to our working dir
 }
 nconf.argv()

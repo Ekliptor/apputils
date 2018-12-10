@@ -1,7 +1,9 @@
 "use strict";
 
 import * as url from "url";
+import * as querystring from "querystring";
 
+let decodeHtmlLinks = false;
 //const knownDomain = require(global.__legacyModules ? '../_db/_mongodb/models/knownDomain' : '../../models/knownDomain')
 //const knownDomain = require('staydown-models').knownDomain
 let knownDomain = null;
@@ -23,7 +25,9 @@ let derefLink = (urlObject: url.Url, link) => {
     for (let deref of knownDomain.DEREFERER) {
         if (urlObject.hostname !== deref || urlObject.query.length === 0)
             continue
-        return utils.urlDecode(urlObject.query)
+        if (typeof urlObject.query === "string") // should always be string?
+            return utils.urlDecode(urlObject.query)
+        return utils.urlDecode(querystring.stringify(urlObject.query))
     }
     let linkLower = link.toLowerCase()
     if (linkLower.indexOf('%2f') !== -1 || linkLower.indexOf('%3f') !== -1 || linkLower.indexOf('%20') !== -1) // / or ? or space
@@ -101,6 +105,8 @@ let getLinkForMarker = (html, htmlLower, domain, startTxt, filterSpamLinks = tru
 
 let getExternalLinks = (html, domain) => {
     let links = []
+    if (decodeHtmlLinks === true)
+        html = utils.decodeHtml(html, false);
     let htmlLower = html.toLocaleLowerCase()
     if (htmlLower.length !== html.length)
         html = htmlLower // should never happen
@@ -110,6 +116,14 @@ let getExternalLinks = (html, domain) => {
     links = links.concat(getLinkForMarker(html, htmlLower, domain, 'https:\\/\\/'))
     links = links.concat(getLinkForMarker(html, htmlLower, domain, 'www.'))
     return links
+}
+
+/**
+ * Enables decoding of HTML strings for LinkExtractor to find links such as href='&#x68;&#x74;...'
+ * @param decode
+ */
+export function setDecodeHtml(decode: boolean) {
+    decodeHtmlLinks = decode;
 }
 
 export function setKnownDomains(knownDomainModule) {

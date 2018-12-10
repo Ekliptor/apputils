@@ -1,29 +1,29 @@
-"use strict";
 // from https://github.com/codemanki/cloudscraper
 
-var vm = require('vm');
-var requestModule = require('request');
-var jar = requestModule.jar();
-const url = require('url')
+import * as vm from "vm";
+const requestModule = require('request');
+const jar = requestModule.jar();
+import * as url from "url";
 
 //Ekliptor> more useragents
-var userAgents = ['Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.0; rv:46.0) Gecko/20100101 Firefox/46.0',
-    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:46.0) Gecko/20100101 Firefox/46.0',
-    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/601.4.4 (KHTML, like Gecko) Version/9.0.3 Safari/601.4.4',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'];
+let userAgents = ['Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:63.0) Gecko/20100101 Firefox/63.0',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'];
 
-var requestM      = requestModule.defaults({jar: jar}), // Cookies should be enabled // we can still override this by passing our own cookie jar
+let requestM      = requestModule.defaults({jar: jar}), // Cookies should be enabled // we can still override this by passing our own cookie jar
     UserAgent    = userAgents[Math.floor(Math.random() * userAgents.length)],
-    Timeout      = 5200, // Cloudflare requires a delay of 5 seconds, so wait for at least 5.2
+    Timeout      = 6000, // Cloudflare requires a delay of 5 seconds, so wait for at least 6.0
     // part of options.solveCloudflareCaptcha on request function so that every solver instance is bound to a specific request
     //solveCaptcha = null, // a custom function(options) to solve CF captcha. use phantomjs to reload url, solve it and give back the cookies
     waitingHosts = new Map<string, any>(),
     waitingHostTimeoutSec = 300; // 5min, remote captcha solving might take some time
+let MaxChallengesToSolve = 3; // Support only this max challenges in row. If CF returns more, throw an error
 
 
 /**
@@ -62,6 +62,8 @@ export function post(url, body, callback, headers) {
     headers = headers || {};
     headers['Content-Type'] = headers['Content-Type'] || 'application/x-www-form-urlencoded; charset=UTF-8';
     headers['Content-Length'] = headers['Content-Length'] || data.length;
+    headers['Cache-Control'] = headers['Cache-Control'] || 'private';
+    headers['Accept'] = headers['Accept'] || 'application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5';
 
     return performRequest({ //Ekliptor> returning request object
         method: 'POST',
@@ -113,58 +115,76 @@ function performRequest(options, callback) {
     }
 
     options.headers['User-Agent'] = options.headers['User-Agent'] || UserAgent;
+    options.challengesToSolve = options.challengesToSolve || MaxChallengesToSolve; // Might not be the best way how to pass this variable
+    options.followAllRedirects = options.followAllRedirects === undefined ? true : options.followAllRedirects;
 
     return makeRequest(options, function(error, response, body) { //Ekliptor> returning request object
-        var validationError;
-        var stringBody;
+        processRequestResponse(options, {error: error, response: response, body: body}, callback);
+    });
+}
 
-        if (error || !body || !body.toString) {
-            return callback({ errorType: 0, error: error }, body, response);
-        }
+function processRequestResponse(options, requestResult, callback) {
+    var error = requestResult.error;
+    var response = requestResult.response;
+    var body = requestResult.body;
+    var validationError;
+    var stringBody;
+    var isChallengePresent;
+    var isRedirectChallengePresent;
+    var isTargetPage; // Meaning we have finally reached the target page
 
-        try {
-            stringBody = body.toString('utf8');
-        }
-        catch (err) { // Error: Cannot create a string longer than 0x3fffffe7 characters
-            callback({ errorType: 4, error: err }, null, null);
+    if (error || !body || !body.toString) {
+        return callback({ errorType: 0, error: error }, body, response);
+    }
+
+    try {
+        stringBody = body.toString('utf8');
+    }
+    catch (err) { // Error: Cannot create a string longer than 0x3fffffe7 characters
+        callback({ errorType: 4, error: err }, null, null);
+        return
+    }
+
+    // wait page has http code 503
+    if (validationError = checkForErrors(error, stringBody)) {
+        if (validationError.errorType === 1 && typeof options.solveCloudflareCaptcha === "function") { // CF captcha with http code 403
+            addWaitingHost(response.request.uri.host)
+            options.cloudflareHtml = stringBody
+            options.solveCloudflareCaptcha(options, (err, html) => {
+                // TODO we currently pass back the wrong response object. but the phantomjs response is very different, so not compatible too?
+                if (err) {
+                    //console.log('Error solving cloudflare captcha with phantomjs')
+                    //console.log(err)
+                    return callback({ errorType: 4, error: err }, html, response)
+                }
+                if (response.statusCode === 403)
+                    response.statusCode = 200
+                processResponseBody(options, error, response, html, callback) // we got past it!
+            })
             return
         }
+        return callback(validationError, body, response);
+    }
 
-        // wait page has http code 503
-        if (validationError = checkForErrors(error, stringBody)) {
-            if (validationError.errorType === 1 && typeof options.solveCloudflareCaptcha === "function") { // CF captcha with http code 403
-                addWaitingHost(response.request.uri.host)
-                options.cloudflareHtml = stringBody
-                options.solveCloudflareCaptcha(options, (err, html) => {
-                    // TODO we currently pass back the wrong response object. but the phantomjs response is very different, so not compatible too?
-                    if (err) {
-                        //console.log('Error solving cloudflare captcha with phantomjs')
-                        //console.log(err)
-                        return callback({ errorType: 4, error: err }, html, response)
-                    }
-                    if (response.statusCode === 403)
-                        response.statusCode = 200
-                    giveResults(options, error, response, html, callback) // we got past it!
-                })
-                return
-            }
-            return callback(validationError, body, response);
-        }
+    isChallengePresent = stringBody.indexOf('a = document.getElementById(\'jschl-answer\');') !== -1;
+    isRedirectChallengePresent = stringBody.indexOf('You are being redirected') !== -1 || stringBody.indexOf('sucuri_cloudproxy_js') !== -1;
+    isTargetPage = !isChallengePresent && !isRedirectChallengePresent;
 
-        // If body contains specified string, solve challenge
-        if (stringBody.indexOf('a = document.getElementById(\'jschl-answer\');') !== -1) {
-            addWaitingHost(response.request.uri.host)
-            setTimeout(function() {
-                return solveChallenge(response, stringBody, options, callback);
-            }, Timeout);
-        } else if (stringBody.indexOf('You are being redirected') !== -1 ||
-            stringBody.indexOf('sucuri_cloudproxy_js') !== -1) {
-            setCookieAndReload(response, stringBody, options, callback);
-        } else {
-            // All is good
-            giveResults(options, error, response, body, callback);
-        }
-    });
+    if(isChallengePresent && options.challengesToSolve == 0) {
+        return callback({ errorType: 4 }, response, body);
+    }
+
+    // If body contains specified string, solve challenge
+    if (isChallengePresent) {
+        setTimeout(function() {
+            solveChallenge(response, stringBody, options, callback);
+        }, Timeout);
+    } else if (isRedirectChallengePresent) {
+        setCookieAndReload(response, stringBody, options, callback);
+    } else {
+        // All is good
+        processResponseBody(options, error, response, body, callback);
+    }
 }
 
 function checkForErrors(error, body) {
@@ -200,7 +220,7 @@ function solveChallenge(response, body, options, callback) {
         answerUrl;
 
     if (!challenge) {
-        return callback({errorType: 3, error: 'I cant extract challengeId (jschl_vc) from page'}, body, response);
+        return callback({errorType: 3, error: 'I cant extract challengeId (jschl_vc) from page'}, response, body);
     }
 
     jsChlVc = challenge[1];
@@ -208,7 +228,7 @@ function solveChallenge(response, body, options, callback) {
     challenge = body.match(/getElementById\('cf-content'\)[\s\S]+?setTimeout.+?\r?\n([\s\S]+?a\.value =.+?)\r?\n/i);
 
     if (!challenge) {
-        return callback({errorType: 3, error: 'I cant extract method from setTimeOut wrapper'}, body, response);
+        return callback({errorType: 3, error: 'I cant extract method from setTimeOut wrapper'}, response, body);
     }
 
     var challenge_pass = body.match(/name="pass" value="(.+?)"/)[1];
@@ -227,7 +247,7 @@ function solveChallenge(response, body, options, callback) {
             'jschl_answer': (eval(challenge) + response.request.host.length)
         };
     } catch (err) {
-        return callback({errorType: 3, error: 'Error occurred during evaluation: ' +  err.message}, body, response);
+        return callback({errorType: 3, error: 'Error occurred during evaluation: ' +  err.message}, response, body);
     }
 
     if (options.url) { // if we post through an http proxy, the response url is from the proxy
@@ -242,23 +262,21 @@ function solveChallenge(response, body, options, callback) {
     options.headers['Referer'] = response.request.uri.href; // Original url should be placed as referer
     options.url = answerUrl;
     options.qs = answerResponse;
+    options.challengesToSolve = options.challengesToSolve - 1;
 
     // Make request with answer
     makeRequest(options, function(error, response, body) {
-        if(error) {
-            return callback({ errorType: 0, error: error }, response, body);
-        }
-
-        if(response.statusCode === 302) { //occurrs when posting. request is supposed to auto-follow these
+        if (response.statusCode === 302) { //occurrs when posting. request is supposed to auto-follow these
             //by default, but for some reason it's not // can be enabled for all post requests or also completely disabled
             options.url = response.headers.location;
             delete options.qs;
             makeRequest(options, function(error, response, body) {
-                giveResults(options, error, response, body, callback);
+                //giveResults(options, error, response, body, callback);
+                processRequestResponse(options, {error: error, response: response, body: body}, callback);
             });
-        } else {
-            giveResults(options, error, response, body, callback);
+            return;
         }
+        processRequestResponse(options, {error: error, response: response, body: body}, callback);
     });
 }
 
@@ -267,7 +285,7 @@ function setCookieAndReload(response, body, options, callback) {
     var makeRequest = requestMethod(options.method);
 
     if (!challenge) {
-        return callback({errorType: 3, error: 'I cant extract cookie generation code from page'}, body, response);
+        return callback({errorType: 3, error: 'I cant extract cookie generation code from page'}, response, body);
     }
 
     var base64EncodedCode = challenge[1];
@@ -283,14 +301,11 @@ function setCookieAndReload(response, body, options, callback) {
     try {
         jar.setCookie(sandbox.document.cookie, response.request.uri.href, {ignoreError: true});
     } catch (err) {
-        return callback({errorType: 3, error: 'Error occurred during evaluation: ' +  err.message}, body, response);
+        return callback({errorType: 3, error: 'Error occurred during evaluation: ' +  err.message}, response, body);
     }
 
     makeRequest(options, function(error, response, body) {
-        if(error) {
-            return callback({ errorType: 0, error: error }, response, body);
-        }
-        giveResults(options, error, response, body, callback);
+        processRequestResponse(options, {error: error, response: response, body: body}, callback);
     });
 }
 
@@ -302,14 +317,28 @@ function requestMethod(method) {
     return method === 'POST' ? requestM.post : requestM.get;
 }
 
-function giveResults(options, error, response, body, callback) {
+function processResponseBody(options, error, response, body, callback) {
     if (response != null)
         removeWaitingHost(response.request.uri.host, /*!error*/true) // do it before callback to let new requets in callback immediately go through
     if(typeof options.realEncoding === 'string') {
-        callback(error, response, body.toString(options.realEncoding));
-    } else {
-        callback(error, response, body);
+        try {
+            body = body.toString(options.realEncoding);
+        }
+        catch (err) { // Error: Cannot create a string longer than 0x3fffffe7 characters
+            callback({ errorType: 4, error: err }, null, null);
+            return
+        }
+        // In case of real encoding, try to validate the response
+        // and find potential errors there.
+        // If encoding is not provided, return response as it is
+        let validationError;
+        if (validationError = checkForErrors(error, body)) {
+            return callback(validationError, response, body);
+        }
     }
+
+    callback(error, response, body);
+    //giveResults(options, error, response, body, callback);
 }
 
 function isWaitingHost(host) {
