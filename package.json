@@ -1,6 +1,6 @@
 {
   "name": "@ekliptor/apputils",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Basic helper functions for HTTP requests, file system, logging, JSON parsing and other basics of a web app.",
   "main": "build/utils",
   "typings": "build/utils.d.ts",
