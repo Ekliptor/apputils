@@ -22,3 +22,18 @@ export function ensureIncreasing(nrs: number[]): number[] {
     }
     return ascending;
 }
+
+/**
+ * Returns the number of decimals of a.
+ * For example: 0.01 -> 2
+ * @param a
+ */
+export function getNumberPrecision(a: number): number {
+    if (!isFinite(a))
+        return 0;
+    let e = 1, p = 0;
+    while (Math.round(a * e) / e !== a) {
+        e *= 10; p++;
+    }
+    return p;
+}

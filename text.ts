@@ -201,7 +201,14 @@ export function fixUrl(url: string, hostBase: urlModule.Url | string) {
     */
 
     let fromHref = typeof hostBase === "object" ? hostBase.href : hostBase;
-    return urlModule.resolve(fromHref, url);
+    let urlStr = urlModule.resolve(fromHref, url);
+    if (urlStr.indexOf("//") === 0) { // relative urls
+        if (typeof hostBase === "object" && hostBase.protocol)
+            urlStr = hostBase.protocol + urlStr;
+        else
+            urlStr = "http:" + urlStr;
+    }
+    return urlStr;
 }
 
 /**

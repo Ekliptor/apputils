@@ -25,7 +25,8 @@ import * as entities from"entities";
 
 let useWinston = true
 let isExpress = false
-let appDir = path.dirname(require.main.filename)
+let appDir = path.dirname(require.main.filename);
+let logger: winstonGlobal.LoggerInstance = null; // ensure we have defined this before functions using it
 
 
 const sepStr = '\\' + path.sep;
@@ -81,7 +82,7 @@ if (configFile.reload) {
             nconf.set(prop, updatedProps[prop])
     })
 }
-let logger: winstonGlobal.LoggerInstance = require(useWinston ? './Logger.js' : './LoggerStub.js')
+logger = require(useWinston ? './Logger.js' : './LoggerStub.js')
 if (typeof process.getuid === 'function' && process.getuid() === 0 && !process.env.ALLOW_ROOT) {
     console.error('Refusing to run NodeJS app as root') // logger has a dependency on this file (which can't be loaded because of this line)
     process.exit(1)
@@ -138,8 +139,10 @@ export function parseJson(json: any, tryEvalJs = false) {
         return JSON.parse(json) // TODO should be safe to always use EJSON. just a bit slower
     } catch (error) {
         if (tryEvalJs !== true) {
-            logger.error('Error parsing JSON: ' + error)
-            logger.error("JSON string: " + json)
+            if (logger) { // undefined while loading config files
+                logger.error('Error parsing JSON: ' + error)
+                logger.error("JSON string: " + json)
+            }
             return null
         }
     }
@@ -675,7 +678,7 @@ export function uniqueArrayValues<T>(arr: T[]): T[] {
     return Array.from<T>(new Set<T>(arr))
 }
 
-export function getUniqueUrls(arr: any[]) {
+export function getUniqueUrls(arr: string[]): string[] {
     let protocolFilter = (url) => { // filter duplicates with http and https
         return url.replace(/^https?:\/\//i, '')
     }

@@ -164,6 +164,8 @@ export function sortByValue(map, ascending = true): AggregateCountItem[] {
 export function sortByKey(unordered, compareFn?) {
     // note that object order when enumerating properties is not sable in JS: https://stackoverflow.com/questions/9658690/is-there-a-way-to-sort-order-keys-in-javascript-objects
     // but stable for nodeJS
+    if (unordered instanceof Map)
+        unordered = unordered.toObject();
     const ordered: any = {};
     Object.keys(unordered).sort(compareFn).forEach(function(key) {
         ordered[key] = unordered[key];
@@ -428,6 +430,22 @@ export function getPlainArrayData(arr: any[], keyPrefix = "arr_") {
             plain[keyPrefix + i + "_" + key] = cur[key];
     }
     return plain;
+}
+
+/**
+ * Checks if the arrays contain the same elements in the same order (by reference), so they are identical.
+ * @param arr1
+ * @param arr2
+ */
+export function isSameElementArray(arr1: any[], arr2: any[]) {
+    if (arr1.length !== arr2.length)
+        return false;
+    for (let i = 0; i < arr1.length && i < arr2.length; i++)
+    {
+        if (arr1[i] !== arr2[i])
+            return false;
+    }
+    return true;
 }
 
 /* // promises will always get executed. only results will be in the order supplied here. only possible with an array of functions (see async library)

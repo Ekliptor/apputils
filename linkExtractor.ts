@@ -25,13 +25,18 @@ let derefLink = (urlObject: url.Url, link) => {
     for (let deref of knownDomain.DEREFERER) {
         if (urlObject.hostname !== deref || urlObject.query.length === 0)
             continue
-        if (typeof urlObject.query === "string") // should always be string?
-            return utils.urlDecode(urlObject.query)
-        return utils.urlDecode(querystring.stringify(urlObject.query))
+        if (typeof urlObject.query === "string") { // should always be string?
+            link = utils.urlDecode(urlObject.query)
+            break;
+        }
+        link = utils.urlDecode(querystring.stringify(urlObject.query))
+        break;
     }
     let linkLower = link.toLowerCase()
     if (linkLower.indexOf('%2f') !== -1 || linkLower.indexOf('%3f') !== -1 || linkLower.indexOf('%20') !== -1) // / or ? or space
-        return utils.urlDecode(link)
+        link = utils.urlDecode(link)
+    if (link.indexOf("?") === 0)
+        link = link.substr(1);
     return link
 }
 
@@ -90,7 +95,7 @@ let getLinkForMarker = (html, htmlLower, domain, startTxt, filterSpamLinks = tru
         let urlObj = utils.parseUrl(link)
         if (!urlObj || !urlObj.host)
             continue
-        else if (SKIP_EMPTY_URL_PATH && (!urlObj.path || urlObj.path === "/"))
+        else if (SKIP_EMPTY_URL_PATH && (!urlObj.pathname || urlObj.pathname === "/") && !urlObj.query)
             continue
         // deref is often not called because the url dereferer is not part of our known domains, i.e. startPos is in the query string already
         link = derefLink(urlObj, link)
@@ -164,6 +169,9 @@ export function extractHosterLinks(html, decrypt = false, cb = null) {
         if (knownDomain.isHoster(domain))
             links = links.concat(getExternalLinks(html, domain))
     })
+    knownDomain.DEREFERER.forEach((domain) => {
+        links = links.concat(getExternalLinks(html, domain).filter(l => knownDomain.isHoster(utils.getRootHostname(l))))
+    })
     //links = utils.uniqueArrayValues(links)
     links = utils.getUniqueUrls(links)
     cb && cb(null, links)
@@ -175,6 +183,9 @@ export function extractCrypterLinks(html, decrypt = false, cb = null) {
     let links = []
     knownDomain.CRYPTERS.forEach((domain) => {
         links = links.concat(getExternalLinks(html, domain))
+    })
+    knownDomain.DEREFERER.forEach((domain) => {
+        links = links.concat(getExternalLinks(html, domain).filter(l => knownDomain.isCrypter(utils.getRootHostname(l))))
     })
     links = utils.getUniqueUrls(links)
     // TODO decrypt async in here with new function extractor.decryptLinks()
