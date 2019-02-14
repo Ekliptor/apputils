@@ -1,6 +1,6 @@
 {
   "name": "@ekliptor/apputils",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Basic helper functions for HTTP requests, file system, logging, JSON parsing and other basics of a web app.",
   "main": "build/utils",
   "typings": "build/utils.d.ts",
@@ -14,6 +14,8 @@
     "mongodb",
     "logger"
   ],
+  "homepage": "https://github.com/Ekliptor/apputils",
+  "repository": "https://github.com/Ekliptor/apputils.git",
   "dependencies": {
     "@ekliptor/multihttpdispatcher": "^1.0.1",
     "app-root-path": "^1.0.0",
