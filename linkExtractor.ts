@@ -99,6 +99,8 @@ let getLinkForMarker = (html, htmlLower, domain, startTxt, filterSpamLinks = tru
             continue
         // deref is often not called because the url dereferer is not part of our known domains, i.e. startPos is in the query string already
         link = derefLink(urlObj, link)
+        if (!link) // check again
+            continue;
         if (filterSpamLinks === true && isFilteredLink(link))
             continue
         else if (isIgnoredLink(urlObj))

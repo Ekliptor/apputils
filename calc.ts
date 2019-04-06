@@ -4,6 +4,11 @@ export function round(nr: number, numDecimals: number) {
     return Math.round(nr * factor) / factor;
 }
 
+export function roundTo(value: number, stepSize: number = 1.0) {
+    let inverse = 1.0 / stepSize;
+    return Math.round(value * inverse) / inverse;
+}
+
 /**
  * Returns an array of ascending or equal numbers. It replaces a number by the last number if the number decreased.
  * @param nrs

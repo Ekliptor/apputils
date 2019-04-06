@@ -120,7 +120,11 @@ export function formatDateTime(dateFormat: string, date: Date) {
     return formatTime(result, date)
 }
 
-export function parseElapsedUnixProcessDate(elapsedStr: string) {
+/**
+ * Parse a process date string from "etime" shell command and return it as a Date object.
+ * @param elapsedStr
+ */
+export function parseElapsedUnixProcessDate(elapsedStr: string): Date {
     let elapsed = new Date();
     if (!elapsedStr)
         return elapsed;
@@ -151,9 +155,9 @@ export function getElapsedUnixProcessTime(PID: string | number) {
 
         let options = null
         // http://linuxcommando.blogspot.de/2008/09/how-to-get-process-start-date-and-time.html
-        const child = exec("ps axo pid,etime | grep " + PID + " | awk '{print $2}'", options, (err, stdout, stderr) => {
+        const child = exec("ps axo pid,etime | grep " + PID + " | awk '{print $2}'", options, (err: any, stdout: string, stderr: string) => {
             if (err)
-                return reject(err)
+                return reject(err);
             stdout = stdout.trim();
             if (!stdout)
                 return resolve(null)
