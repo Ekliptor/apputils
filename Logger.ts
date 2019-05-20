@@ -6,6 +6,7 @@ import "./src/winston-childproc";
 import {MongoDB as MongoDbTransport} from "./src/winston-mongodb/winston-mongodb";
 import * as cluster from "cluster";
 import * as fs from "fs";
+import {logger} from "./utils";
 
 // levels: { error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
 // debug & silly will also log prototypes of objects (if prettyPrint is not overwritten)
@@ -33,6 +34,7 @@ if (process.env.IS_CHILD) {
     // spawned child process
     // forward log messages via IPC to the master process
     winstonLogger = new (winston.Logger)({transports: [
+            // @ts-ignore // TODO wait for typings
             new (winston.transports.ChildProc)({
                 level: nconf.get('debug') === true ? 'debug' : 'info'
             }),
@@ -57,6 +59,19 @@ else if (cluster.isMaster) {
     ]
     const logfile = nconf.get('logfile') // don't pass this in as an ncof call to winston
     if (logfile !== undefined && logfile != '' && !process.env.IS_CHILD) {
+        if (nconf.get('backupLastLog') === true) {
+            const lastLogBackupPath = logfile + ".bak";
+            try {
+                fs.copyFileSync(logfile, lastLogBackupPath);
+            }
+            catch (err) {
+                if (err && err.code !== "ENOENT") {
+                    setTimeout(() => { // log after logger setup is done
+                        logger.error("Error backing up last log file from %s", logfile, err);
+                    }, 10);
+                }
+            }
+        }
         if (nconf.get('deleteOldLog') === true) {
             // for logrotate and compression: https://www.npmjs.com/package/winston-logrotate
             fs.unlink(logfile, (err) => {
@@ -92,6 +107,7 @@ else {
     // Cluster child/worker
     // forward log messages via IPC to the master process
     winstonLogger = new (winston.Logger)({transports: [
+            // @ts-ignore // TODO wait for typings
             new (winston.transports.Cluster)({
                 level: nconf.get('debug') === true ? 'debug' : 'info'
             }),

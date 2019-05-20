@@ -42,3 +42,13 @@ export function getNumberPrecision(a: number): number {
     }
     return p;
 }
+
+/**
+ * Returns the number of decimals of nr.
+ * @param nr
+ */
+export function getDecimalCount(nr: number): number {
+    if (Math.floor(nr) === nr)
+        return 0;
+    return (nr + "").split(".")[1].length || 0;
+}
