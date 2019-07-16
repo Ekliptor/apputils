@@ -4,6 +4,8 @@
 // for calling parent http://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
 // but we can't overwrite node module functions
 
+export const OBJECT_OVERWRITES = ["mathMax", "mathMin", "arrayDiff", "shuffle"];
+
 export type AggregateCountItem = [string, number];
 export interface MergedOrderedObject {
     [key: string]: AggregateCountItem[];
@@ -22,25 +24,41 @@ String.prototype.replaceAll = function(search, replace) {
     return this.split(search).join(replace)
 }
 
+/**
+ * Serialize the Map to a plain JavaScript object preserving key-value pairs (and order in NodejS/v8).
+ * This function can be used to serialize nested maps recursively.
+ * @returns {Object}
+ */
 Map.prototype.toObject = function() {
     let obj = Object.create(null)
     //for (let [k,v] of this) // ES6 feature not yet in node 6
         //obj[k] = v // We don’t escape the key '__proto__' which can cause problems on older engines
     let keys = this.keys()
     for (let k of keys)
-        obj[k] = this.get(k)
+    {
+        let value = this.get(k);
+        if (value instanceof Map)
+            value = value.toObject();
+        obj[k] = value;
+    }
     return obj
 }
 
 /**
- * Returns all values of the map as a 1 dimensional array
+ * Returns all values of the map as a 1 dimensional array.
+ * For nested maps this function will insert a single array with all the values of the nested map into the parent array.
  * @returns {Array}
  */
 Map.prototype.toArray = function() {
     let array = []
     let keys = this.keys()
     for (let k of keys)
-        array.push(this.get(k))
+    {
+        let value = this.get(k);
+        if (value instanceof Map)
+            value = value.toArray();
+        array.push(value)
+    }
     return array
 }
 
@@ -48,13 +66,20 @@ Map.prototype.toArray = function() {
  * Returns an array of [key, value] arrays of the map.
  * Useful because both Map and Array preserve the order of keys (but object doesn't).
  * Map can be restored with utils.objects.mapFromToupleArray()
+ * This function can be used to serialize nested maps recursively.
  * @returns {Array}
  */
 Map.prototype.toToupleArray = function<V>() {
     let array: MapToupleArray<V>[] = []
     let keys = this.keys()
     for (let k of keys)
-        array.push([k, this.get(k)])
+    {
+        //array.push([k, this.get(k)])
+        let value = this.get(k);
+        if (value instanceof Map)
+            value = value.toToupleArray();
+        array.push([k, value])
+    }
     return array
 }
 
@@ -94,7 +119,14 @@ export function objectToStrMap<T>(object: any) {
     return strMap
 }
 
+/**
+ * Restore a map which has been serialized using toToupleArray().
+ * For nested maps this function will only restore the root map entries.
+ * @param arr
+ */
 export function mapFromToupleArray<V>(arr: MapToupleArray<V>[]) {
+    // TODO restore nested maps. Since we don't know the class of child maps this requires a factory function.
+    // Might be simpler to just unserialize those maps in their constructor.
     return new Map<string, V>(arr) // array is a valid iterator
 }
 

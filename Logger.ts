@@ -37,6 +37,7 @@ if (process.env.IS_CHILD) {
             // @ts-ignore // TODO wait for typings
             new (winston.transports.ChildProc)({
                 level: nconf.get('debug') === true ? 'debug' : 'info'
+                // TODO log meta is not always logged from childProc (only PID)
             }),
         ]})
 
