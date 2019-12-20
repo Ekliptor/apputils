@@ -883,9 +883,8 @@ export function decodeHtml(str: string, trim = true) {
 }
 
 /**
- * promiseDelay returns a promise that gets resolved after the specifyed time
+ * promiseDelay returns a promise that gets resolved after the specified time
  */
-
 export function promiseDelay<T>(delayMs: number, value: T = null) {
     return new Promise<T>((resolve, reject)=>{
         setTimeout(() => {

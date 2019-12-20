@@ -60,6 +60,11 @@ export async function getFileSize(filePath: string): Promise<number> {
     }
 }
 
+/**
+ * Delete a folder (or single file) with all its files recursively.
+ * @param folderPath
+ * @param callback(err)
+ */
 export function removeFolder(folderPath: string, callback) {
     fs.lstat(folderPath, (err, stat) => {
         if (err) {
@@ -73,7 +78,7 @@ export function removeFolder(folderPath: string, callback) {
                     return callback(err)
                 Promise.all(files.map((file) => {
                     return new Promise((resolve, reject) => {
-                        this.removeFolder(path.join(folderPath, file), (err) => {
+                        removeFolder(path.join(folderPath, file), (err) => {
                             resolve(err)
                         })
                     })

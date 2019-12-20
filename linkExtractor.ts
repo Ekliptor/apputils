@@ -55,12 +55,14 @@ let isIgnoredLink = (urlObj: url.Url) => {
     return knownDomain.IGNORE_LIST.has(urlObj.hostname);
 }
 
-let getLinkForMarker = (html, htmlLower, domain, startTxt, filterSpamLinks = true) => {
+let getLinkForMarker = (html, htmlLower, domain, startTxt, filterSpamLinks = true, domainEnding: string = ""): string[] => {
     let links = []
     let max = htmlLower.length
     let start = 0
+    const shortStartText = startTxt.length <= 3;
     let linkProtocol = startTxt.indexOf('http') !== 0 && startTxt.indexOf(':') === -1 ? 'http://' : '' // if startTxt is a protocol add nothing, otherwise assume http
-    let domainEnding = domain.length !== 0 && domain.match(/\.[a-z0-9]+$/i) === null ? '.' : ''
+    if (!domainEnding)
+        domainEnding = domain.length !== 0 && domain.match(/\.[a-z0-9]+$/i) === null ? '.' : '';
     //let removeBackslash = startTxt.indexOf('\\') !== -1 // they get extracted with "www." marker too
     let count = 0
     while ((start = htmlLower.indexOf(startTxt + domain + domainEnding, start)) !== -1)
@@ -89,6 +91,11 @@ let getLinkForMarker = (html, htmlLower, domain, startTxt, filterSpamLinks = tru
         //if (removeBackslash)
         if (link.indexOf('\\') !== -1)
             link = link.replace(/\\/g, '')
+
+        // TODO re-add the full sub-domain such as www15.zippyhsare.com. but most hosters do a proper redirect to correct subdomain either way
+        if (shortStartText === true && link.substr(0, startTxt.length) === startTxt)
+            link = "http://" + link.substr(startTxt.length); // remove start such as "." or else URL parser will fail
+
         //link = entities.decodeHTML(link).replace(/ *\\r$/, '').trim() // doesn't always work. why?
         link = entities.decodeHTML(link).trim()
         start += domain.length + 1
@@ -122,6 +129,7 @@ let getExternalLinks = (html, domain) => {
     links = links.concat(getLinkForMarker(html, htmlLower, domain, 'http:\\/\\/'))
     links = links.concat(getLinkForMarker(html, htmlLower, domain, 'https:\\/\\/'))
     links = links.concat(getLinkForMarker(html, htmlLower, domain, 'www.'))
+    links = links.concat(getLinkForMarker(html, htmlLower, domain, '.', true, "/")) // find www15.zippyshare.com/
     return links
 }
 

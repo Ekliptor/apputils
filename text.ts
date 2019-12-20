@@ -222,6 +222,7 @@ export function fixUrl(url: string, hostBase: urlModule.Url | string) {
 export function translate(text: string, tr: TranslationFunction, variables: any, safeHtml: boolean) {
     if (typeof text !== "string") {
         try {
+            // @ts-ignore
             text = text.toString();
         }
         catch (e) {
@@ -332,7 +333,7 @@ export function ensureMultiPlatformLineBreaks(str: string) {
 export function addHtmlLineBreaks(str: string, escape = true) {
     if (escape)
         str = utils.escapeHtml(str);
-    return str.replace(/(\r\n)/g, "$1<br>");
+    return str.replace(/(\r\n|\n)/g, "$1<br>");
 }
 
 export function isHtml(str: string) {
