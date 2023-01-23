@@ -59,7 +59,8 @@ else if (cluster.isMaster) {
         })
     ]
     const logfile = nconf.get('logfile') // don't pass this in as an ncof call to winston
-    if (logfile !== undefined && logfile != '' && !process.env.IS_CHILD) {
+    // TODO to have the log before the update we need an env var AFTER_UPDATE and not copy the log then
+    if (logfile !== undefined && logfile != '' && !process.env.IS_CHILD/* && !process.env.IS_UPDATER*/) {
         if (nconf.get('backupLastLog') === true) {
             const lastLogBackupPath = logfile + ".bak";
             try {

@@ -1,14 +1,6 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ensureDirPath = exports.ensureDir = exports.readFile = exports.getInstallDate = exports.cleanupDir = exports.isSafePath = exports.touch = exports.removeUnallowedChars = exports.deleteFiles = exports.copyFile = exports.copy = exports.getDirFromPath = exports.getNameFromPath = exports.getFileExtension = exports.getExistingFiles = exports.listDir = exports.removeFolder = exports.getFileSize = exports.getFolderSize = exports.fileExists = void 0;
 //let logger = require('../../src/utils/Logger')
 const fs = require("fs");
 const path = require("path");
@@ -57,18 +49,16 @@ exports.getFolderSize = getFolderSize;
  * If the file doesn't exist this function returns 0.
  * @param filePath
  */
-function getFileSize(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let stats = yield fs.promises.stat(filePath);
-            return stats.size;
-        }
-        catch (err) {
-            if (err && err.code === 'ENOENT')
-                return 0;
-            throw err;
-        }
-    });
+async function getFileSize(filePath) {
+    try {
+        let stats = await fs.promises.stat(filePath);
+        return stats.size;
+    }
+    catch (err) {
+        if (err && err.code === 'ENOENT')
+            return 0;
+        throw err;
+    }
 }
 exports.getFileSize = getFileSize;
 /**
@@ -125,7 +115,7 @@ function listDir(folderPath, callback, replacePath) {
         if (pending === 0)
             return callback(err, dirFiles);
         files.forEach((file) => {
-            let fullpath = path.join(folderPath, file);
+            const fullpath = path.join(folderPath, file);
             fs.stat(fullpath, (err, stat) => {
                 if (err) {
                     if (--pending === 0)
@@ -447,20 +437,18 @@ exports.ensureDir = ensureDir;
  * @param {string} baseDir the base dir to start the creation from. Defaults to the applications working dir.
  * @returns {Promise<void>}
  */
-function ensureDirPath(dirPath, baseDir = "") {
-    return __awaiter(this, void 0, void 0, function* () {
-        let dirParts = dirPath.split(path.sep);
-        let curPath = baseDir ? baseDir : path.parse(dirPath).root; // usually C:\\ or /
-        for (let i = 0; i < dirParts.length; i++) {
-            if (!dirParts[i])
-                continue;
-            if (curPath.length === 0)
-                curPath = dirParts[i];
-            else
-                curPath = path.join(curPath, dirParts[i]);
-            yield ensureDir(curPath);
-        }
-    });
+async function ensureDirPath(dirPath, baseDir = "") {
+    let dirParts = dirPath.split(path.sep);
+    let curPath = baseDir ? baseDir : path.parse(dirPath).root; // usually C:\\ or /
+    for (let i = 0; i < dirParts.length; i++) {
+        if (!dirParts[i])
+            continue;
+        if (curPath.length === 0)
+            curPath = dirParts[i];
+        else
+            curPath = path.join(curPath, dirParts[i]);
+        await ensureDir(curPath);
+    }
 }
 exports.ensureDirPath = ensureDirPath;
 //# sourceMappingURL=file.js.map

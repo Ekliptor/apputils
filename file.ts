@@ -109,12 +109,12 @@ export function listDir(folderPath: string, callback: (err: any, dirFiles?: stri
     fs.readdir(folderPath, (err, files) => {
         if (err)
             return callback(err)
-        let dirFiles = []
+        let dirFiles: string[] = []
         let pending = files.length
         if (pending === 0)
             return callback(err, dirFiles)
         files.forEach((file) => {
-            let fullpath = path.join(folderPath, file)
+            const fullpath = path.join(folderPath, file)
             fs.stat(fullpath, (err, stat) => {
                 if (err) {
                     if (--pending === 0)

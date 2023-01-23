@@ -11,6 +11,13 @@ export declare function dateFromJsonArr(objArr: any[], dateProps: string[]): any
  * @returns {Date}
  */
 export declare function dateFromUtc(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date;
+/**
+ * Adds the given units of interval to the date.
+ * It returns a copy of the date, so the given date is not modified.
+ * @param date
+ * @param interval
+ * @param units
+ */
 export declare function dateAdd(date: Date, interval: DateInterval, units: number): Date;
 export declare function createDateAsUTC(date: Date): Date;
 export declare function convertDateToUTC(date: Date): Date;

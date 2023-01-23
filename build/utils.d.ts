@@ -10,9 +10,9 @@ import * as request from "request";
 import * as urlModule from "url";
 import * as conf from "./conf";
 import * as text from "./text";
-import tail from "./tail";
+import { tail, tailPromise } from "./tail";
 import * as date from "./date";
-export { conf, text, tail, sprintf, vsprintf, EJSON };
+export { conf, text, tail, tailPromise, sprintf, vsprintf, EJSON };
 export declare const startDir: string;
 export { appDir };
 export { logger, nconf };
@@ -41,7 +41,13 @@ export declare function toBase64(text: string, from?: string): any;
 export declare function fromBase64(text: string, to?: string): string;
 export declare function toBase32(text: string, from?: string): any;
 export declare function fromBase32(text: string, to?: string): any;
-export declare function padNumber(number: number | string, size: number): string;
+/**
+ * Adds the supplied padding to the number until it reaches the desired size (length).
+ * @param number
+ * @param size
+ * @param padding
+ */
+export declare function padNumber(number: number | string, size: number, padding?: string): string;
 /**
  * Return a readable unix time string, for example: 2018-09-16 07:04:30
  * @param withSeconds
@@ -175,6 +181,11 @@ export declare function decodeHtml(str: string, trim?: boolean): string;
  * promiseDelay returns a promise that gets resolved after the specified time
  */
 export declare function promiseDelay<T>(delayMs: number, value?: T): Promise<T>;
+/**
+ * promiseTimeout implements a timeout that will reject after ms millieseconds
+ * if the given promise doesn't resolve before.
+ */
+export declare function promiseTimeout<T>(ms: number, promise: Promise<T>): Promise<T>;
 /**
  * Returns a logger object that can be used instead of console.log().
  * The object will log to our previously configured global app logger

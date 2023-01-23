@@ -93,9 +93,9 @@ import * as urlModule from "url";
 
 import * as conf from "./conf";
 import * as text from "./text";
-import tail from "./tail";
+import {tail, tailPromise} from "./tail";
 import * as date from "./date";
-export {conf, text, tail, sprintf, vsprintf, EJSON};
+export {conf, text, tail, tailPromise, sprintf, vsprintf, EJSON};
 
 export const startDir = appDir; // require() calls go into this dir, requests for resources into appDir
 if (isExpress) {
@@ -234,14 +234,20 @@ export function fromBase32(text: string, to = 'utf8') {
     return base32.decode(text).toString(to)
 }
 
-export function padNumber(number: number | string, size: number): string {
+/**
+ * Adds the supplied padding to the number until it reaches the desired size (length).
+ * @param number
+ * @param size
+ * @param padding
+ */
+export function padNumber(number: number | string, size: number, padding: string = "0"): string {
     let str
     if (typeof number === 'number')
         str = number.toString()
     else
         str = number
     while (str.length < size)
-        str = '0' + str
+        str = padding + str
     return str
 }
 
@@ -892,6 +898,27 @@ export function promiseDelay<T>(delayMs: number, value: T = null) {
         }, delayMs);
     })
 }
+
+/**
+ * promiseTimeout implements a timeout that will reject after ms millieseconds
+ * if the given promise doesn't resolve before.
+ */
+export function promiseTimeout<T> (ms: number, promise: Promise<T>): Promise<T> {
+    // Create a promise that rejects in <ms> milliseconds
+    let timeout = new Promise<T>((resolve, reject) => {
+        let id = setTimeout(() => {
+            clearTimeout(id);
+            reject('Timed out in '+ ms + 'ms.')
+        }, ms)
+    })
+
+    // Returns a race between our timeout and the passed in promise
+    return Promise.race<T>([
+        promise,
+        timeout
+    ])
+}
+
 
 /**
  * Returns a logger object that can be used instead of console.log().

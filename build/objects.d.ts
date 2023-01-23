@@ -49,7 +49,7 @@ export declare function mergeOrderedArray(ascending?: boolean, ...objArgs: any[]
  * @returns {array}
  */
 export declare function aggregateToLimit(map: any, limit: number): AggregateCountItem[];
-export declare function getUniqueResults<T>(resultArr: T[], uniqueProp: string, propFilterFn: (itemProp: any) => any): T[];
+export declare function getUniqueResults<T>(resultArr: T[], uniqueProp: string, propFilterFn?: (itemProp: any) => any): T[];
 export declare function isObject(x: any): boolean;
 /**
  * Counts how often each value is present in the array
@@ -95,5 +95,23 @@ export declare function getPlainArrayData(arr: any[], keyPrefix?: string): any;
  * @param arr2
  */
 export declare function isSameElementArray(arr1: any[], arr2: any[]): boolean;
+/**
+ * Returns the values of an object as a plain array.
+ * Values may be null/undefined.
+ * This function is useful to values from an object such as MongoDB result.insertedIds:
+ * http://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#~insertWriteOpResult
+ * @param obj
+ */
+export declare function getIndexedObjectValues<V>(obj: {
+    [key: number]: any;
+}): V[];
+/**
+ * Returns the values of an object as a plain array.
+ * Values may be null/undefined.
+ * @param obj
+ */
+export declare function getdObjectValues<V>(obj: {
+    [key: string]: any;
+}): V[];
 import deepAssign from "./src/deepAssign";
 export { deepAssign };

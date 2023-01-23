@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-export function readData(path: string, cb: (errOrData) => void) {
+export function readData(path: string, cb: (errOrData) => void): void {
     fs.readFile(path, 'utf8', (err, data) => {
         if (err)
             return cb(err)
@@ -9,11 +9,11 @@ export function readData(path: string, cb: (errOrData) => void) {
     })
 }
 
-export function createObject(base, extend) {
+export function createObject<T>(base: any, extend: any): T {
     return Object.assign(base, extend)
 }
 
-export function getPassedTime(startMs: number, endMs: number = null) {
+export function getPassedTime(startMs: number, endMs: number = null): string {
     if (endMs == null)
         endMs = Date.now()
     let totalTime = endMs - startMs
@@ -31,7 +31,7 @@ export function getPassedTime(startMs: number, endMs: number = null) {
     return timeStr
 }
 
-export function dumpError(err, logger = null) {
+export function dumpError(err, logger = null): string {
     if (logger === null)
         logger = console
     let output = ''

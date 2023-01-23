@@ -13,7 +13,7 @@ export declare function regexIndexOf(str: string, regex: RegExp, startpos?: numb
 export declare function formatNumber(number: string | number, commaDigits: number, decimalSep: string, thousandSep: string): string;
 export declare function formatCurrency(amount: string | number, tr: TranslationFunction): string;
 export declare function formatBtc(amount: string | number, tr: TranslationFunction): string;
-export declare function getDisplaySize(sizeBytes: number, tr: TranslationFunction): string;
+export declare function getDisplaySize(sizeBytes: number, tr?: TranslationFunction): string;
 export declare function escapeRegex(str: string): string;
 /**
  * Highlight a string-result of a keyword search to show it in the browser

@@ -67,7 +67,9 @@ export function formatBtc(amount: string | number, tr: TranslationFunction) {
     return formatNumber(amount, 8, tr("decPoint"), tr("thousandsSep"));
 }
 
-export function getDisplaySize(sizeBytes: number, tr: TranslationFunction) {
+export function getDisplaySize(sizeBytes: number, tr: TranslationFunction = null) {
+    if (tr === null)
+        tr = getTranslateSizeFunction();
     if (sizeBytes < 1024)
         return formatCurrency(sizeBytes, tr) + ' ' + tr('bytes')
     else if (sizeBytes < 1024*1024)
@@ -78,6 +80,17 @@ export function getDisplaySize(sizeBytes: number, tr: TranslationFunction) {
         return formatCurrency(sizeBytes/(1024*1024*1024), tr) + ' ' + tr('gb')
     else// if (sizeBytes < 1024*1024*1024*1024*1024)
         return formatCurrency(sizeBytes/(1024*1024*1024*1024), tr) + ' ' + tr('tb')
+}
+
+function getTranslateSizeFunction(): TranslationFunction {
+    return (key: string) => {
+        switch (key) {
+            case "decPoint":            return ".";
+            case "thousandsSep":        return ",";
+            case "bytes":               return "Bytes";
+            default:                    return key.toUpperCase();
+        }
+    }
 }
 
 export function escapeRegex(str: string) {

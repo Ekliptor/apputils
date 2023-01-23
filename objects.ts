@@ -326,7 +326,7 @@ export function aggregateToLimit(map: any, limit: number): AggregateCountItem[] 
     return aggregate
 }
 
-export function getUniqueResults<T>(resultArr: T[], uniqueProp: string, propFilterFn: (itemProp: any) => any): T[] {
+export function getUniqueResults<T>(resultArr: T[], uniqueProp: string, propFilterFn?: (itemProp: any) => any): T[] {
     let filter = new Map<string, T>() // map guarantess key order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Objects_and_maps_compared
     if (typeof propFilterFn !== 'function') {
         propFilterFn = (prop) => {
@@ -478,6 +478,26 @@ export function isSameElementArray(arr1: any[], arr2: any[]) {
             return false;
     }
     return true;
+}
+
+/**
+ * Returns the values of an object as a plain array.
+ * Values may be null/undefined.
+ * This function is useful to values from an object such as MongoDB result.insertedIds:
+ * http://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#~insertWriteOpResult
+ * @param obj
+ */
+export function getIndexedObjectValues<V>(obj: {[key: number]: any}): V[] {
+    return Object.entries(obj).map(o => o[1]);
+}
+
+/**
+ * Returns the values of an object as a plain array.
+ * Values may be null/undefined.
+ * @param obj
+ */
+export function getdObjectValues<V>(obj: {[key: string]: any}): V[] {
+    return Object.entries(obj).map(o => o[1]);
 }
 
 /* // promises will always get executed. only results will be in the order supplied here. only possible with an array of functions (see async library)

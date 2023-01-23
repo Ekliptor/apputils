@@ -7,8 +7,13 @@ export interface TailCallback {
     (error: any, lines?: string[]): void;
 }
 
-export default function tail(fileName: string, lineCount: number, cb: TailCallback) {
-
+/**
+ * Read the last lines of the given file.
+ * @param fileName
+ * @param lineCount
+ * @param cb
+ */
+export function tail(fileName: string, lineCount: number, cb: TailCallback) {
     if(!lineCount)
         lineCount = DEFAULT_LINES
 
@@ -31,7 +36,7 @@ export default function tail(fileName: string, lineCount: number, cb: TailCallba
                     togo = pos;
                     pos = 0;
                 }
-                 
+
                 fs.read(fd,new Buffer(togo),0,togo,pos,function(err,bytesRead,buf) {
                     if(err) return cb({txt: "error read", err: err});
 
@@ -63,4 +68,19 @@ export default function tail(fileName: string, lineCount: number, cb: TailCallba
             getNextText()
         })
     })
+}
+
+/**
+ * Read the last lines of the given file.
+ * @param fileName
+ * @param lineCount
+ */
+export function tailPromise(fileName: string, lineCount: number): Promise<string[]> {
+    return new Promise<string[]>((resolve, reject) => {
+        tail(fileName, lineCount, (err, lines) => {
+            if (err)
+                return reject(err);
+            resolve(lines);
+        });
+    });
 }
