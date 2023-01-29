@@ -11,6 +11,9 @@ function roundTo(value, stepSize = 1.0) {
     return Math.round(value * inverse) / inverse;
 }
 exports.roundTo = roundTo;
+// export function roundInteger(int: number, base: number) {
+//     return Math.round(int / base) * base;
+// }
 /**
  * Returns an array of ascending or equal numbers. It replaces a number by the last number if the number decreased.
  * @param nrs
