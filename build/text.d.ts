@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import * as urlModule from "url";
 export interface GetBetweenOptions {
     startPos?: number;
