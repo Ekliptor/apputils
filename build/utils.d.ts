@@ -82,11 +82,11 @@ export declare function parseBool(str: any): any;
  * @param deleteOnError {boolean} delete the file if we can't load cookies from it. If the file has errors saving will fail too.
  * @returns {CookieJar}
  */
-export declare function getNewCookieJar(cookieFilename?: string, deleteOnError?: boolean): any;
+export declare function getNewCookieJar(cookieFilename?: string, deleteOnError?: boolean): request.CookieJar;
 export interface UtilsHttpCallback {
     (body: string | false, response: request.RequestResponse): void;
 }
-export declare function getPageCode(address: string, callback: UtilsHttpCallback, options?: any): any;
+export declare function getPageCode(address: string, callback: UtilsHttpCallback, options?: any): request.Request;
 /**
  * Post data to an address.
  * @param address
@@ -102,13 +102,13 @@ export declare function getPageCode(address: string, callback: UtilsHttpCallback
  * @param options
  * @returns {Object} request
  */
-export declare function postData(address: string, data: any, callback: UtilsHttpCallback, options?: any): any;
-export declare function postDataAsJson(address: string, obj: any, callback: UtilsHttpCallback, options?: {}): any;
+export declare function postData(address: string, data: any, callback: UtilsHttpCallback, options?: any): request.Request;
+export declare function postDataAsJson(address: string, obj: any, callback: UtilsHttpCallback, options?: {}): false | request.Request;
 /**
  * Returns the request library for convenience (and to avoid hard dependency on it it projects)
  * @returns {request}
  */
-export declare function getRequest(): any;
+export declare function getRequest(): request.RequestAPI<request.Request, request.CoreOptions, request.RequiredUriUrl>;
 export declare function toPlainRequest(reqOptions: any): any;
 export declare function getPostObject(obj: any, output?: {}): {};
 export declare function isWindows(): boolean;
@@ -170,7 +170,7 @@ export interface StringReplaceMap {
     [search: string]: string;
 }
 export declare function replaceStr(str: string, replaceMap: StringReplaceMap): string;
-export declare function escapeHtml(str: string): any;
+export declare function escapeHtml(str: string): string;
 /**
  * Replaces HTML chars such as &amp; with their Unicode representation.
  * @param str
