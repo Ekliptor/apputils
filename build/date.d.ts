@@ -1,4 +1,4 @@
-export declare type DateInterval = "year" | "quarter" | "month" | "week" | "day" | "hour" | "minute" | "second";
+export type DateInterval = "year" | "quarter" | "month" | "week" | "day" | "hour" | "minute" | "second";
 export interface DateRange {
     start: Date;
     end: Date;
