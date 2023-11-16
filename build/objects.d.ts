@@ -1,15 +1,20 @@
 export declare const OBJECT_OVERWRITES: string[];
-export declare type AggregateCountItem = [string, number];
+export type AggregateCountItem = [string, number];
 export interface MergedOrderedObject {
     [key: string]: AggregateCountItem[];
 }
-export declare type MapToupleArray<V> = [string, V];
+export type MapToupleArray<V> = [string, V];
 /**
  * Creates a map with string keys and T values from a JavaScript object.
  * @param object
  * @returns {Map<string, T>}
  */
 export declare function objectToStrMap<T>(object: any): Map<string, T>;
+/**
+ * Return the first key of an object.
+ * @param object
+ */
+export declare function getFirstKey(object: any): string;
 /**
  * Restore a map which has been serialized using toToupleArray().
  * For nested maps this function will only restore the root map entries.
