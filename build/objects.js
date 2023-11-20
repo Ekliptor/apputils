@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deepAssign = exports.getdObjectValues = exports.getIndexedObjectValues = exports.isSameElementArray = exports.getPlainArrayData = exports.fillCreateArray = exports.applyMixins = exports.isEmpty = exports.removeElasticsearchProperties = exports.cartesianProduct = exports.permute = exports.countArrayValues = exports.isObject = exports.getUniqueResults = exports.aggregateToLimit = exports.mergeOrderedArray = exports.mergeNumberObjects = exports.concatInnerArrays = exports.getValueArr = exports.getKeyArr = exports.sortByKey = exports.sortByValue = exports.mapFromToupleArray = exports.objectToStrMap = exports.OBJECT_OVERWRITES = void 0;
+exports.deepAssign = exports.getdObjectValues = exports.getIndexedObjectValues = exports.isSameElementArray = exports.getPlainArrayData = exports.fillCreateArray = exports.applyMixins = exports.isEmpty = exports.removeElasticsearchProperties = exports.cartesianProduct = exports.permute = exports.countArrayValues = exports.isObject = exports.getUniqueResults = exports.aggregateToLimit = exports.mergeOrderedArray = exports.mergeNumberObjects = exports.concatInnerArrays = exports.getValueArr = exports.getKeyArr = exports.sortByKey = exports.sortByValue = exports.mapFromToupleArray = exports.getFirstKey = exports.objectToStrMap = exports.OBJECT_OVERWRITES = void 0;
 // nothing to export here. just include this file to extend some objects
 // for calling parent http://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
 // but we can't overwrite node module functions
@@ -94,6 +94,16 @@ function objectToStrMap(object) {
     return strMap;
 }
 exports.objectToStrMap = objectToStrMap;
+/**
+ * Return the first key of an object.
+ * @param object
+ */
+function getFirstKey(object) {
+    for (let k of Object.keys(object))
+        return k;
+    return null;
+}
+exports.getFirstKey = getFirstKey;
 /**
  * Restore a map which has been serialized using toToupleArray().
  * For nested maps this function will only restore the root map entries.

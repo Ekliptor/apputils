@@ -120,6 +120,16 @@ export function objectToStrMap<T>(object: any) {
 }
 
 /**
+ * Return the first key of an object.
+ * @param object
+ */
+export function getFirstKey(object: any): string {
+    for (let k of Object.keys(object))
+        return k
+    return null
+}
+
+/**
  * Restore a map which has been serialized using toToupleArray().
  * For nested maps this function will only restore the root map entries.
  * @param arr
