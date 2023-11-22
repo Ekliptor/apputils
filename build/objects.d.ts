@@ -1,9 +1,9 @@
 export declare const OBJECT_OVERWRITES: string[];
-export declare type AggregateCountItem = [string, number];
+export type AggregateCountItem = [string, number];
 export interface MergedOrderedObject {
     [key: string]: AggregateCountItem[];
 }
-export declare type MapToupleArray<V> = [string, V];
+export type MapToupleArray<V> = [string, V];
 /**
  * Creates a map with string keys and T values from a JavaScript object.
  * @param object
