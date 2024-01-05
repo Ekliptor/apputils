@@ -7,35 +7,35 @@ exports.stripBom = exports.winstonMongodb = exports.winstonChildProc = exports.w
 // we currently compile this module and always include the compiled code (also in typescript projects)
 // otherwise we need a fork with another name so we can require the right one in every ts/js project
 // IMPORTANT: never use "this" in exported functions, because we might be bound to a different context
-const nconf = require("nconf");
+var nconf = require("nconf");
 exports.nconf = nconf;
-const winstonGlobal = require("winston");
+var winstonGlobal = require("winston");
 exports.winstonGlobal = winstonGlobal;
 //let appRoot = require('app-root-path')
-const path = require("path");
-const fs = require("fs");
-const base64url = require("base64-url");
-const base32 = require("hi-base32");
-const iconv = require("iconv-lite");
-const escapeHtmlMod = require("escape-html");
-const vm = require("vm");
-const FileCookieStore = require("tough-cookie-filestore");
-const sprintf_js_1 = require("sprintf-js");
+var path = require("path");
+var fs = require("fs");
+var base64url = require("base64-url");
+var base32 = require("hi-base32");
+var iconv = require("iconv-lite");
+var escapeHtmlMod = require("escape-html");
+var vm = require("vm");
+var FileCookieStore = require("tough-cookie-filestore");
+var sprintf_js_1 = require("sprintf-js");
 Object.defineProperty(exports, "sprintf", { enumerable: true, get: function () { return sprintf_js_1.sprintf; } });
 Object.defineProperty(exports, "vsprintf", { enumerable: true, get: function () { return sprintf_js_1.vsprintf; } });
-const EJSON = require("ejson");
+var EJSON = require("ejson");
 exports.EJSON = EJSON;
 //import {strip_bom} from "strip-bom"; // doesn't work
-const stripBom = require("strip-bom");
+var stripBom = require("strip-bom");
 exports.stripBom = stripBom;
-const entities = require("entities");
-let useWinston = true;
-let isExpress = false;
-let appDir = path.dirname(require.main.filename);
+var entities = require("entities");
+var useWinston = true;
+var isExpress = false;
+var appDir = path.dirname(require.main.filename);
 exports.appDir = appDir;
-let logger = null; // ensure we have defined this before functions using it
+var logger = null; // ensure we have defined this before functions using it
 exports.logger = logger;
-const sepStr = '\\' + path.sep;
+var sepStr = '\\' + path.sep;
 if (global["appRootPath"])
     exports.appDir = appDir = global["appRootPath"];
 else if (appDir.match(sepStr + '.meteor' + sepStr + 'local' + sepStr + 'build$')) // fix for meteor apps
@@ -46,8 +46,8 @@ else if (appDir.match(sepStr + 'bin$')) { // fix for express apps
     isExpress = true;
 }
 // load config
-let configFile = require(appDir + path.sep + 'config'); // .js or .ts
-const saveConfigFile = "config.json";
+var configFile = require(appDir + path.sep + 'config'); // .js or .ts
+var saveConfigFile = "config.json";
 if (fs.existsSync(saveConfigFile) === false || parseJson(fs.readFileSync(saveConfigFile, { encoding: "utf8" })) === null) {
     fs.writeFileSync(saveConfigFile, "{}", { encoding: "utf8" }); // crash if we can't write to our working dir
 }
@@ -81,8 +81,8 @@ if (configFile.reload) {
         host: nconf.get('host'),
         port: nconf.get('port'),
         pathRoot: nconf.get('pathRoot')
-    }, (updatedProps) => {
-        for (let prop in updatedProps)
+    }, function (updatedProps) {
+        for (var prop in updatedProps)
             nconf.set(prop, updatedProps[prop]);
     });
 }
@@ -91,16 +91,16 @@ if (typeof process.getuid === 'function' && process.getuid() === 0 && !process.e
     console.error('Refusing to run NodeJS app as root'); // logger has a dependency on this file (which can't be loaded because of this line)
     process.exit(1);
 }
-const request = require("request");
-const urlModule = require("url");
-const conf = require("./conf");
+var request = require("request");
+var urlModule = require("url");
+var conf = require("./conf");
 exports.conf = conf;
-const text = require("./text");
+var text = require("./text");
 exports.text = text;
-const tail_1 = require("./tail");
+var tail_1 = require("./tail");
 Object.defineProperty(exports, "tail", { enumerable: true, get: function () { return tail_1.tail; } });
 Object.defineProperty(exports, "tailPromise", { enumerable: true, get: function () { return tail_1.tailPromise; } });
-const date = require("./date");
+var date = require("./date");
 exports.date = date;
 exports.startDir = appDir; // require() calls go into this dir, requests for resources into appDir
 if (isExpress) {
@@ -113,15 +113,15 @@ if (isExpress)
     exports.appDir = appDir = appDir.replace(new RegExp('\\' + path.sep + 'src'), path.sep);
 if (appDir.substr(-1) !== path.sep)
     exports.appDir = appDir += path.sep;
-const mime = require("mime");
-const objects = require("./objects"); // include this after requiring the above objects because we modify them too
+var mime = require("mime");
+var objects = require("./objects"); // include this after requiring the above objects because we modify them too
 exports.objects = objects;
-const cloudscraper = require("./src/cloudscraper/cloudscraper");
+var cloudscraper = require("./src/cloudscraper/cloudscraper");
 exports.cloudscraper = cloudscraper;
 if (typeof nconf.get('http:timeoutMs') === 'undefined')
     nconf.add('utilsDefaults', { type: 'literal', store: require(__dirname + '/config.js').config });
 if (nconf.get('debug')) { // require() caches includes, so this is only called once
-    process.on('unhandledRejection', (reason, promise) => {
+    process.on('unhandledRejection', function (reason, promise) {
         logger.warn('Unhandled promise rejection', reason);
     });
 }
@@ -131,7 +131,8 @@ if (nconf.get('debug')) { // require() caches includes, so this is only called o
  * @param tryEvalJs
  * @returns {any}
  */
-function parseJson(json, tryEvalJs = false) {
+function parseJson(json, tryEvalJs) {
+    if (tryEvalJs === void 0) { tryEvalJs = false; }
     // for redis and client-server we need a JSON representation for Dates: "{"mydate":"2017-01-23T13:39:05.443Z"}"
     // append someting to the key? or check the value via regex (slow?) ? or just a function/parameter converting it back to Date?
     // solved by using EJSON
@@ -148,7 +149,7 @@ function parseJson(json, tryEvalJs = false) {
         }
     }
     // try parsing a string with no "" around keys, for example: {foo: "abc"}
-    let sandbox = {
+    var sandbox = {
         // custom js properties for global context
         document: {}
     };
@@ -189,15 +190,18 @@ exports.stringifyBeautiful = stringifyBeautiful;
  * @param obj
  * @param dateFields
  */
-function restoreJson(obj, dateFields = []) {
-    for (let prop of dateFields) {
+function restoreJson(obj, dateFields) {
+    if (dateFields === void 0) { dateFields = []; }
+    for (var _i = 0, dateFields_1 = dateFields; _i < dateFields_1.length; _i++) {
+        var prop = dateFields_1[_i];
         if (obj[prop])
             obj[prop] = new Date(obj[prop]);
     }
     return obj;
 }
 exports.restoreJson = restoreJson;
-function getJsonPostData(postData, key = 'data') {
+function getJsonPostData(postData, key) {
+    if (key === void 0) { key = 'data'; }
     if (postData == null)
         return null;
     if (Array.isArray(postData[key]))
@@ -217,21 +221,25 @@ function urlDecode(text) {
     return decodeURIComponent(text.replace(/\+/g, '%20'));
 }
 exports.urlDecode = urlDecode;
-function toBase64(text, from = 'utf8') {
+function toBase64(text, from) {
+    if (from === void 0) { from = 'utf8'; }
     if (from === "base64")
         return base64url.escape(text);
     return base64url.escape(new Buffer(text, from).toString('base64'));
 }
 exports.toBase64 = toBase64;
-function fromBase64(text, to = 'utf8') {
+function fromBase64(text, to) {
+    if (to === void 0) { to = 'utf8'; }
     return new Buffer(base64url.unescape(text), 'base64').toString(to);
 }
 exports.fromBase64 = fromBase64;
-function toBase32(text, from = 'utf8') {
+function toBase32(text, from) {
+    if (from === void 0) { from = 'utf8'; }
     return base32.encode(new Buffer(text, from));
 }
 exports.toBase32 = toBase32;
-function fromBase32(text, to = 'utf8') {
+function fromBase32(text, to) {
+    if (to === void 0) { to = 'utf8'; }
     return base32.decode(text).toString(to);
 }
 exports.fromBase32 = fromBase32;
@@ -241,8 +249,9 @@ exports.fromBase32 = fromBase32;
  * @param size
  * @param padding
  */
-function padNumber(number, size, padding = "0") {
-    let str;
+function padNumber(number, size, padding) {
+    if (padding === void 0) { padding = "0"; }
+    var str;
     if (typeof number === 'number')
         str = number.toString();
     else
@@ -258,14 +267,17 @@ exports.padNumber = padNumber;
  * @param now
  * @param utc
  */
-function getUnixTimeStr(withSeconds = false, now = new Date(), utc = false) {
+function getUnixTimeStr(withSeconds, now, utc) {
+    if (withSeconds === void 0) { withSeconds = false; }
+    if (now === void 0) { now = new Date(); }
+    if (utc === void 0) { utc = false; }
     return date.toDateTimeStr(now, withSeconds, utc);
 }
 exports.getUnixTimeStr = getUnixTimeStr;
 function format(string) {
-    let start = 0;
-    for (let i = 1; i < arguments.length; i++) {
-        let search = "%" + i;
+    var start = 0;
+    for (var i = 1; i < arguments.length; i++) {
+        var search = "%" + i;
         start = string.indexOf(search, start);
         if (start === -1)
             break;
@@ -279,16 +291,18 @@ function escapeRegex(str) {
     return text.escapeRegex(str);
 }
 exports.escapeRegex = escapeRegex;
-function getCurrentTick(ms = true) {
+function getCurrentTick(ms) {
+    if (ms === void 0) { ms = true; }
     if (ms === true)
         return Date.now();
     return Math.round(Date.now() / 1000.0);
 }
 exports.getCurrentTick = getCurrentTick;
-function getRandomString(len, hex = false) {
-    let chars = hex ? '1234567890ABCDEF' : '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    let random = '';
-    for (let i = 0; i < len; i++)
+function getRandomString(len, hex) {
+    if (hex === void 0) { hex = false; }
+    var chars = hex ? '1234567890ABCDEF' : '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var random = '';
+    for (var i = 0; i < len; i++)
         random += chars.charAt(Math.floor(Math.random() * chars.length));
     return random;
 }
@@ -320,7 +334,7 @@ function getRandomInt(min, max) {
 }
 exports.getRandomInt = getRandomInt;
 function parseBool(str) {
-    let type = typeof str;
+    var type = typeof str;
     if (type === 'boolean')
         return str;
     if (type === 'number')
@@ -349,7 +363,9 @@ exports.parseBool = parseBool;
  * @param deleteOnError {boolean} delete the file if we can't load cookies from it. If the file has errors saving will fail too.
  * @returns {CookieJar}
  */
-function getNewCookieJar(cookieFilename = "", deleteOnError = true) {
+function getNewCookieJar(cookieFilename, deleteOnError) {
+    if (cookieFilename === void 0) { cookieFilename = ""; }
+    if (deleteOnError === void 0) { deleteOnError = true; }
     if (!cookieFilename)
         return request.jar();
     try {
@@ -358,7 +374,7 @@ function getNewCookieJar(cookieFilename = "", deleteOnError = true) {
     catch (e) {
         logger.error("Error loading cookie jar from disk: %s", cookieFilename, e);
         if (deleteOnError) {
-            fs.unlink(cookieFilename, (err) => {
+            fs.unlink(cookieFilename, function (err) {
                 if (err)
                     logger.error("Error deleting invalid cookie jar from disk: %s", cookieFilename, err);
             });
@@ -367,7 +383,7 @@ function getNewCookieJar(cookieFilename = "", deleteOnError = true) {
     }
 }
 exports.getNewCookieJar = getNewCookieJar;
-let prepareRequest = function (address, options) {
+var prepareRequest = function (address, options) {
     if (typeof options.retry !== 'boolean')
         options.retry = true;
     if (typeof options.retryWaitMs !== 'number')
@@ -375,10 +391,12 @@ let prepareRequest = function (address, options) {
     if (typeof options.cookieJar !== 'object')
         options.cookieJar = options.jar ? options.jar : getNewCookieJar();
     if (typeof options.cookies === 'object') {
-        let urlParts = urlModule.parse(address);
-        let rootUrl = urlParts.protocol + '//' + urlParts.host; // we st the cookies for the root of the current request path (in case of rediects)
-        for (let cookie of options.cookies)
+        var urlParts = urlModule.parse(address);
+        var rootUrl = urlParts.protocol + '//' + urlParts.host; // we st the cookies for the root of the current request path (in case of rediects)
+        for (var _i = 0, _a = options.cookies; _i < _a.length; _i++) {
+            var cookie = _a[_i];
             options.cookieJar.setCookie(request.cookie(cookie), rootUrl);
+        }
     }
     if (typeof options.headers !== 'object')
         options.headers = {};
@@ -388,7 +406,7 @@ let prepareRequest = function (address, options) {
         options.headers['Accept'] = nconf.get('http:Accept');
     return options;
 };
-let handleIsoEncoding = function (body, response) {
+var handleIsoEncoding = function (body, response) {
     // handle non-utf8 responses
     // the proper way would be to pass encoding: null and detect them afterwards. but we use utf8 99% of the time
     // only looking at headers should be ok http://stackoverflow.com/questions/7102925/prefer-charset-declaration-in-html-meta-tag-or-http-header
@@ -396,9 +414,9 @@ let handleIsoEncoding = function (body, response) {
     // 1. http header
     // 2. BOM (we currently ignore)
     // 3. meta charset (the first one determines it)
-    let bufferToString = (buffer, encoding) => {
+    var bufferToString = function (buffer, encoding) {
         try {
-            let str = iconv.decode(buffer, encoding); // default utf8 // this sometimes caused crashes in toString(). why?
+            var str = iconv.decode(buffer, encoding); // default utf8 // this sometimes caused crashes in toString(). why?
             //if (encoding === "utf8")
             //str = stripBom(str); // BOM is optional, sometimes causes problems // better let the dev decide via utils.stripBom()
             return str;
@@ -408,17 +426,17 @@ let handleIsoEncoding = function (body, response) {
             return "";
         }
     };
-    let getContentTypeFromMeta = (buffer) => {
-        let tempStr = bufferToString(buffer, 'utf8');
-        let metaType = text.getMetaContentType(tempStr);
+    var getContentTypeFromMeta = function (buffer) {
+        var tempStr = bufferToString(buffer, 'utf8');
+        var metaType = text.getMetaContentType(tempStr);
         if (metaType !== "iso")
             return tempStr; // assume utf8 as default just as request does
         return bufferToString(buffer, 'ISO-8859-1');
     };
-    let buffer = new Buffer(body);
+    var buffer = new Buffer(body);
     if (!response.headers['content-type'])
         return getContentTypeFromMeta(buffer);
-    let type = response.headers['content-type'].toLowerCase(); // header keys are always lowercase by nodejs, but NOT the values
+    var type = response.headers['content-type'].toLowerCase(); // header keys are always lowercase by nodejs, but NOT the values
     if (type.substr(0, 16) === "application/json")
         return bufferToString(buffer, 'utf8');
     if (type.substr(0, 5) !== 'text/')
@@ -429,10 +447,11 @@ let handleIsoEncoding = function (body, response) {
         return bufferToString(buffer, 'utf8');
     return bufferToString(buffer, 'ISO-8859-1');
 };
-function getPageCode(address, callback, options = {}) {
+function getPageCode(address, callback, options) {
+    if (options === void 0) { options = {}; }
     options = prepareRequest(address, options);
-    let requestFunction = request.get;
-    let reqOptions = {
+    var requestFunction = request.get;
+    var reqOptions = {
         url: address,
         gzip: true,
         timeout: typeof options.timeout !== 'number' ? nconf.get('http:timeoutMs') : options.timeout,
@@ -458,12 +477,12 @@ function getPageCode(address, callback, options = {}) {
     }
     if (options.method == 'DELETE')
         requestFunction = request.delete;
-    return requestFunction(reqOptions, (error, response, body) => {
+    return requestFunction(reqOptions, function (error, response, body) {
         if (error) {
             if (options.retry === true && /*error.indexOf('ENOTFOUND') === -1*/ error.code === 'ETIMEDOUT') {
                 options.retry = false;
                 reqOptions.logger.debug('retrying timed out GET request to %s', address);
-                setTimeout(() => {
+                setTimeout(function () {
                     getPageCode(address, callback, options);
                 }, options.retryWaitMs);
                 return;
@@ -498,10 +517,11 @@ exports.getPageCode = getPageCode;
  * @param options
  * @returns {Object} request
  */
-function postData(address, data, callback, options = {}) {
+function postData(address, data, callback, options) {
+    if (options === void 0) { options = {}; }
     options = prepareRequest(address, options);
-    let requestFunction = request.post;
-    let reqOptions = {
+    var requestFunction = request.post;
+    var reqOptions = {
         url: address,
         gzip: true,
         timeout: typeof options.timeout !== 'number' ? nconf.get('http:timeoutMs') : options.timeout,
@@ -537,12 +557,12 @@ function postData(address, data, callback, options = {}) {
     }
     if (options.method == 'DELETE')
         requestFunction = request.delete;
-    return requestFunction(reqOptions, (error, response, body) => {
+    return requestFunction(reqOptions, function (error, response, body) {
         if (error) {
             if (options.retry === true && /*error.indexOf('ENOTFOUND') === -1*/ error.code === 'ETIMEDOUT') {
                 options.retry = false;
                 reqOptions.logger.debug('retrying timed out POST request to %s', address);
-                setTimeout(() => {
+                setTimeout(function () {
                     postData(address, data, callback, options);
                 }, options.retryWaitMs);
                 return;
@@ -562,8 +582,9 @@ function postData(address, data, callback, options = {}) {
     });
 }
 exports.postData = postData;
-function postDataAsJson(address, obj, callback, options = {}) {
-    let json;
+function postDataAsJson(address, obj, callback, options) {
+    if (options === void 0) { options = {}; }
+    var json;
     try {
         json = JSON.stringify(obj);
     }
@@ -591,9 +612,10 @@ function toPlainRequest(reqOptions) {
     return reqOptions;
 }
 exports.toPlainRequest = toPlainRequest;
-function getPostObject(obj, output = {}) {
-    for (let i in obj) {
-        let type = typeof obj[i];
+function getPostObject(obj, output) {
+    if (output === void 0) { output = {}; }
+    for (var i in obj) {
+        var type = typeof obj[i];
         if (type === 'boolean')
             output[i] = obj[i] === true ? 'true' : 'false'; // boolean handling buggy, casues type error
         else if (type === 'object') {
@@ -627,7 +649,7 @@ exports.isWindows = isWindows;
  */
 function getStringDiff(path1, path2) {
     if (path1.length > path2.length) { // take path1 as the shorter one
-        let tempPath = path2;
+        var tempPath = path2;
         path2 = path1;
         path1 = tempPath;
     }
@@ -641,21 +663,24 @@ function getStringDiff(path1, path2) {
 }
 exports.getStringDiff = getStringDiff;
 // moved all url functions. keep them here for legacy reasons
-const url = require("./url");
+var url = require("./url");
 exports.url = url;
 function parseUrl(linkStr) {
     return url.parseUrl(linkStr);
 }
 exports.parseUrl = parseUrl;
-function getRootHostname(urlObj, stripSubdomains = false) {
+function getRootHostname(urlObj, stripSubdomains) {
+    if (stripSubdomains === void 0) { stripSubdomains = false; }
     return url.getRootHostname(urlObj, stripSubdomains);
 }
 exports.getRootHostname = getRootHostname;
-function getRootHost(urlObj, stripSubdomains = false) {
+function getRootHost(urlObj, stripSubdomains) {
+    if (stripSubdomains === void 0) { stripSubdomains = false; }
     return url.getRootHost(urlObj, stripSubdomains);
 }
 exports.getRootHost = getRootHost;
-function formatUrl(urlObj, removeFragment = true) {
+function formatUrl(urlObj, removeFragment) {
+    if (removeFragment === void 0) { removeFragment = true; }
     return url.formatUrl(urlObj, removeFragment);
 }
 exports.formatUrl = formatUrl;
@@ -668,12 +693,12 @@ function uniqueArrayValues(arr) {
 }
 exports.uniqueArrayValues = uniqueArrayValues;
 function getUniqueUrls(arr) {
-    let protocolFilter = (url) => {
+    var protocolFilter = function (url) {
         return url.replace(/^https?:\/\//i, '');
     };
-    let objArr = arr.map((x) => { return { url: x }; }); // doesn't work inline
-    let uniqueArr = objects.getUniqueResults(objArr, 'url', protocolFilter);
-    return uniqueArr.map(x => x.url);
+    var objArr = arr.map(function (x) { return { url: x }; }); // doesn't work inline
+    var uniqueArr = objects.getUniqueResults(objArr, 'url', protocolFilter);
+    return uniqueArr.map(function (x) { return x.url; });
 }
 exports.getUniqueUrls = getUniqueUrls;
 /**
@@ -683,12 +708,13 @@ exports.getUniqueUrls = getUniqueUrls;
  * @param options {string} RegExp options such as "i"
  * @return {bool}
  */
-function matchPhrase(result, keyword, options = '') {
-    let resultArr = typeof result === 'string' ? [result] : result;
+function matchPhrase(result, keyword, options) {
+    if (options === void 0) { options = ''; }
+    var resultArr = typeof result === 'string' ? [result] : result;
     keyword = keyword.split(new RegExp(conf.WORD_SEPARATOR_REGEX)).join(conf.WORD_SEPARATOR_REGEX);
     keyword = text.escapeRegex(keyword);
-    let phraseRegex = new RegExp(keyword, options);
-    for (let i = 0; i < resultArr.length; i++) {
+    var phraseRegex = new RegExp(keyword, options);
+    for (var i = 0; i < resultArr.length; i++) {
         if (resultArr[i] == '' || typeof resultArr[i] !== 'string')
             continue; // some search backends return false or null
         if (phraseRegex.test(resultArr[i]) === true) {
@@ -707,25 +733,29 @@ exports.matchPhrase = matchPhrase;
  * @param ignoreKeywordRegex {string[]} A list of keywords to ignore (they will pass through as a successfull match)
  * @returns {boolean}
  */
-function matchBoolean(result, keyword, options = '', inOrder = false, ignoreKeywordRegex = []) {
-    let resultArr = typeof result === 'string' ? [result] : result;
-    let keywordArr = keyword.split(new RegExp(conf.WORD_SEPARATOR_REGEX));
-    let isIgnoredKeyword = (curKeyword) => {
-        for (let i = 0; i < ignoreKeywordRegex.length; i++) {
+function matchBoolean(result, keyword, options, inOrder, ignoreKeywordRegex) {
+    if (options === void 0) { options = ''; }
+    if (inOrder === void 0) { inOrder = false; }
+    if (ignoreKeywordRegex === void 0) { ignoreKeywordRegex = []; }
+    var resultArr = typeof result === 'string' ? [result] : result;
+    var keywordArr = keyword.split(new RegExp(conf.WORD_SEPARATOR_REGEX));
+    var isIgnoredKeyword = function (curKeyword) {
+        for (var i = 0; i < ignoreKeywordRegex.length; i++) {
             if (curKeyword.match(new RegExp(ignoreKeywordRegex[i], "i")) !== null)
                 return true;
         }
         return false;
     };
-    for (let i = 0; i < resultArr.length; i++) {
+    for (var i = 0; i < resultArr.length; i++) {
         if (resultArr[i] == '' || typeof resultArr[i] !== 'string')
             continue; // some search backends return false or null
-        let foundAllKeywords = true;
-        for (let curKeyword of keywordArr) {
+        var foundAllKeywords = true;
+        for (var _i = 0, keywordArr_1 = keywordArr; _i < keywordArr_1.length; _i++) {
+            var curKeyword = keywordArr_1[_i];
             if (curKeyword.length < 2 || isIgnoredKeyword(curKeyword))
                 continue; // difficult to match, might be a separator
             curKeyword = text.escapeRegex(curKeyword);
-            let searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + curKeyword + conf.WORD_SEPARATOR_END, options);
+            var searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + curKeyword + conf.WORD_SEPARATOR_END, options);
             if (searchRegex.test(resultArr[i]) === false) {
                 foundAllKeywords = false;
                 break; // a keyword is missing, continue with next result string
@@ -748,12 +778,15 @@ exports.matchBoolean = matchBoolean;
  * @param options regex options, default "i"
  * @returns {boolean}
  */
-function matchRegex(result, regexStrings, options = "i") {
-    for (let resultField of result) {
+function matchRegex(result, regexStrings, options) {
+    if (options === void 0) { options = "i"; }
+    for (var _i = 0, result_1 = result; _i < result_1.length; _i++) {
+        var resultField = result_1[_i];
         if (!resultField)
             continue;
-        for (let regex of regexStrings) {
-            let testRegex = new RegExp(regex, options);
+        for (var _a = 0, regexStrings_1 = regexStrings; _a < regexStrings_1.length; _a++) {
+            var regex = regexStrings_1[_a];
+            var testRegex = new RegExp(regex, options);
             if (testRegex.test(resultField) === true)
                 return true;
         }
@@ -768,13 +801,15 @@ exports.matchRegex = matchRegex;
  * @returns {boolean}
  */
 function matchTag(result, tags) {
-    const options = "i";
-    for (let resultField of result) {
+    var options = "i";
+    for (var _i = 0, result_2 = result; _i < result_2.length; _i++) {
+        var resultField = result_2[_i];
         if (!resultField)
             continue;
-        for (let tag of tags) {
-            let curTag = text.escapeRegex(tag.replaceAll(" ", conf.WORD_SEPARATORS_SEARCH)); // match all space chars: "BD Rip", "BD-Rip",...
-            let searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + curTag + conf.WORD_SEPARATOR_END, options);
+        for (var _a = 0, tags_1 = tags; _a < tags_1.length; _a++) {
+            var tag = tags_1[_a];
+            var curTag = text.escapeRegex(tag.replaceAll(" ", conf.WORD_SEPARATORS_SEARCH)); // match all space chars: "BD Rip", "BD-Rip",...
+            var searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + curTag + conf.WORD_SEPARATOR_END, options);
             if (searchRegex.test(resultField) === true)
                 return true;
         }
@@ -782,13 +817,16 @@ function matchTag(result, tags) {
     return false;
 }
 exports.matchTag = matchTag;
-function matchExcludeWord(result, excludeWords, options = "i") {
+function matchExcludeWord(result, excludeWords, options) {
+    if (options === void 0) { options = "i"; }
     //let wordArr = excludeWords.split(" "); // or split by separator regex?
-    let wordArr = excludeWords.split(new RegExp(conf.WORD_SEPARATORS_SEARCH));
-    for (let excludeWord of wordArr) {
+    var wordArr = excludeWords.split(new RegExp(conf.WORD_SEPARATORS_SEARCH));
+    for (var _i = 0, wordArr_1 = wordArr; _i < wordArr_1.length; _i++) {
+        var excludeWord = wordArr_1[_i];
         if (!excludeWord)
             continue;
-        for (let resultField of result) {
+        for (var _a = 0, result_3 = result; _a < result_3.length; _a++) {
+            var resultField = result_3[_a];
             if (!resultField)
                 continue;
             if (containsWord(resultField, excludeWord, options))
@@ -798,13 +836,15 @@ function matchExcludeWord(result, excludeWords, options = "i") {
     return false;
 }
 exports.matchExcludeWord = matchExcludeWord;
-function getWordPositions(text, keywordArr, options = '') {
-    let pos = [];
-    for (let curKeyword of keywordArr) {
+function getWordPositions(text, keywordArr, options) {
+    if (options === void 0) { options = ''; }
+    var pos = [];
+    for (var _i = 0, keywordArr_2 = keywordArr; _i < keywordArr_2.length; _i++) {
+        var curKeyword = keywordArr_2[_i];
         //pos.push(text.indexOf(curKeyword)) // check by regex with word separators
         curKeyword = escapeRegex(curKeyword);
-        let regex = new RegExp(conf.WORD_SEPARATOR_BEGIN + curKeyword + conf.WORD_SEPARATOR_END, options);
-        let match = regex.exec(text);
+        var regex = new RegExp(conf.WORD_SEPARATOR_BEGIN + curKeyword + conf.WORD_SEPARATOR_END, options);
+        var match = regex.exec(text);
         if (match !== null)
             pos.push(match.index); // will be the pos of the word separator, but ok
         else
@@ -813,12 +853,14 @@ function getWordPositions(text, keywordArr, options = '') {
     return pos;
 }
 exports.getWordPositions = getWordPositions;
-function isAscendingWordOrder(text, keywordArr, options = '') {
-    let lastPos = -1;
+function isAscendingWordOrder(text, keywordArr, options) {
+    if (options === void 0) { options = ''; }
+    var lastPos = -1;
     // filter duplicate words (for example in "Bon Cop Bad Cop 2") // TODO improve to be able to check 2 different positions of the same word
     keywordArr = uniqueArrayValues(keywordArr);
-    let positions = getWordPositions(text, keywordArr, options);
-    for (let pos of positions) {
+    var positions = getWordPositions(text, keywordArr, options);
+    for (var _i = 0, positions_1 = positions; _i < positions_1.length; _i++) {
+        var pos = positions_1[_i];
         if (pos < lastPos)
             return false;
         lastPos = pos;
@@ -826,21 +868,22 @@ function isAscendingWordOrder(text, keywordArr, options = '') {
     return true;
 }
 exports.isAscendingWordOrder = isAscendingWordOrder;
-function containsWord(str, find, options = '') {
+function containsWord(str, find, options) {
+    if (options === void 0) { options = ''; }
     find = escapeRegex(find);
-    let searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + find + conf.WORD_SEPARATOR_END, options);
+    var searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + find + conf.WORD_SEPARATOR_END, options);
     return searchRegex.test(str) === true;
 }
 exports.containsWord = containsWord;
 function getWordCount(text) {
     text = escapeRegex(text);
-    let textParts = text.split(new RegExp(conf.WORD_SEPARATOR_REGEX));
+    var textParts = text.split(new RegExp(conf.WORD_SEPARATOR_REGEX));
     return textParts.length;
 }
 exports.getWordCount = getWordCount;
 function replaceStr(str, replaceMap) {
-    let replaceRegex = new RegExp(Object.keys(replaceMap).join("|"), "gi");
-    str = str.replace(replaceRegex, (matched) => {
+    var replaceRegex = new RegExp(Object.keys(replaceMap).join("|"), "gi");
+    str = str.replace(replaceRegex, function (matched) {
         return replaceMap[matched];
     });
     return str;
@@ -855,7 +898,8 @@ exports.escapeHtml = escapeHtml;
  * @param str
  * @param trim default true
  */
-function decodeHtml(str, trim = true) {
+function decodeHtml(str, trim) {
+    if (trim === void 0) { trim = true; }
     str = entities.decodeHTML(str);
     return trim === true ? str.trim() : str;
 }
@@ -863,9 +907,10 @@ exports.decodeHtml = decodeHtml;
 /**
  * promiseDelay returns a promise that gets resolved after the specified time
  */
-function promiseDelay(delayMs, value = null) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
+function promiseDelay(delayMs, value) {
+    if (value === void 0) { value = null; }
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
             resolve(value);
         }, delayMs);
     });
@@ -877,8 +922,8 @@ exports.promiseDelay = promiseDelay;
  */
 function promiseTimeout(ms, promise) {
     // Create a promise that rejects in <ms> milliseconds
-    let timeout = new Promise((resolve, reject) => {
-        let id = setTimeout(() => {
+    var timeout = new Promise(function (resolve, reject) {
+        var id = setTimeout(function () {
             clearTimeout(id);
             reject('Timed out in ' + ms + 'ms.');
         }, ms);
@@ -916,10 +961,10 @@ function getConsoleLogger() {
 }
 exports.getConsoleLogger = getConsoleLogger;
 function restoreLogLines(dbLogDocs) {
-    let lines = [];
-    dbLogDocs.forEach((doc) => {
+    var lines = [];
+    dbLogDocs.forEach(function (doc) {
         // 2017-12-18 09:11:44 - info: Updater: Uploaded bundle
-        let line = getUnixTimeStr(true, doc.timestamp) + " - " + doc.level + ": " + doc.message;
+        var line = getUnixTimeStr(true, doc.timestamp) + " - " + doc.level + ": " + doc.message;
         if (doc.meta && Object.keys(doc.meta).length !== 0)
             line += " " + JSON.stringify(doc.meta);
         lines.push(line);
@@ -927,9 +972,10 @@ function restoreLogLines(dbLogDocs) {
     return lines;
 }
 exports.restoreLogLines = restoreLogLines;
-function str2ab(str, togo = -1) {
-    let buf = new ArrayBuffer(str.length); // 2 bytes for each char
-    let bufView = new Uint8Array(buf);
+function str2ab(str, togo) {
+    if (togo === void 0) { togo = -1; }
+    var buf = new ArrayBuffer(str.length); // 2 bytes for each char
+    var bufView = new Uint8Array(buf);
     if (togo == -1 || togo > str.length)
         togo = str.length;
     for (var i = 0; i < togo; i++) {
@@ -938,33 +984,32 @@ function str2ab(str, togo = -1) {
     return buf;
 }
 exports.str2ab = str2ab;
-const file = require("./file");
+var file = require("./file");
 exports.file = file;
-const test = require("./test");
+var test = require("./test");
 exports.test = test;
-const constants = require("./const");
+var constants = require("./const");
 exports.constants = constants;
-const db = require("./db");
+var db = require("./db");
 exports.db = db;
-const http = require("./http");
+var http = require("./http");
 exports.http = http;
-const SessionBrowser_1 = require("./SessionBrowser");
+var SessionBrowser_1 = require("./SessionBrowser");
 Object.defineProperty(exports, "SessionBrowser", { enumerable: true, get: function () { return SessionBrowser_1.SessionBrowser; } });
-const dispatcher = require("@ekliptor/multihttpdispatcher");
+var dispatcher = require("@ekliptor/multihttpdispatcher");
 exports.dispatcher = dispatcher;
-const linkExtractor = require("./linkExtractor");
+var linkExtractor = require("./linkExtractor");
 exports.linkExtractor = linkExtractor;
-const crypto = require("./crypto");
+var crypto = require("./crypto");
 exports.crypto = crypto;
-const proc = require("./process");
+var proc = require("./process");
 exports.proc = proc;
-const calc = require("./calc");
+var calc = require("./calc");
 exports.calc = calc;
 //import {add} from "nconf";
-const winstonChildProc = require("./src/winston-childproc");
+var winstonChildProc = require("./src/winston-childproc");
 exports.winstonChildProc = winstonChildProc;
 //import * as winstonMongodb from "winston-mongodb";
-const winstonMongodb = require("./src/winston-mongodb/winston-mongodb");
+var winstonMongodb = require("./src/winston-mongodb/winston-mongodb");
 exports.winstonMongodb = winstonMongodb;
 require("./src/cache/FileHttpCache");
-//# sourceMappingURL=utils.js.map

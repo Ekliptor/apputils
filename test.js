@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.assertUnreachableCode = exports.dumpError = exports.getPassedTime = exports.createObject = exports.readData = void 0;
-const fs = require("fs");
+var fs = require("fs");
 function readData(path, cb) {
-    fs.readFile(path, 'utf8', (err, data) => {
+    fs.readFile(path, 'utf8', function (err, data) {
         if (err)
             return cb(err);
-        let testData = JSON.parse(data).data;
+        var testData = JSON.parse(data).data;
         cb(testData);
     });
 }
@@ -15,13 +15,14 @@ function createObject(base, extend) {
     return Object.assign(base, extend);
 }
 exports.createObject = createObject;
-function getPassedTime(startMs, endMs = null) {
+function getPassedTime(startMs, endMs) {
+    if (endMs === void 0) { endMs = null; }
     if (endMs == null)
         endMs = Date.now();
-    let totalTime = endMs - startMs;
+    var totalTime = endMs - startMs;
     if (totalTime === Number.NaN || totalTime < 0)
         totalTime = 0;
-    let timeStr = totalTime + "";
+    var timeStr = totalTime + "";
     if (totalTime < 1000)
         timeStr = totalTime + ' ms';
     else if (totalTime < 1000 * 60)
@@ -33,10 +34,11 @@ function getPassedTime(startMs, endMs = null) {
     return timeStr;
 }
 exports.getPassedTime = getPassedTime;
-function dumpError(err, logger = null) {
+function dumpError(err, logger) {
+    if (logger === void 0) { logger = null; }
     if (logger === null)
         logger = console;
-    let output = '';
+    var output = '';
     // log() with 1 argument is only available on console logger. debug()/error() on winston & console
     if (!err)
         return output;
@@ -66,4 +68,3 @@ function assertUnreachableCode(x) {
     throw new Error("Unexpected object: " + x);
 }
 exports.assertUnreachableCode = assertUnreachableCode;
-//# sourceMappingURL=test.js.map

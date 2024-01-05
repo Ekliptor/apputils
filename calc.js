@@ -2,12 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDecimalCount = exports.getNumberPrecision = exports.ensureIncreasing = exports.roundTo = exports.round = void 0;
 function round(nr, numDecimals) {
-    const factor = Math.pow(10, numDecimals);
+    var factor = Math.pow(10, numDecimals);
     return Math.round(nr * factor) / factor;
 }
 exports.round = round;
-function roundTo(value, stepSize = 1.0) {
-    let inverse = 1.0 / stepSize;
+function roundTo(value, stepSize) {
+    if (stepSize === void 0) { stepSize = 1.0; }
+    var inverse = 1.0 / stepSize;
     return Math.round(value * inverse) / inverse;
 }
 exports.roundTo = roundTo;
@@ -19,9 +20,9 @@ exports.roundTo = roundTo;
  * @param nrs
  */
 function ensureIncreasing(nrs) {
-    let last = Number.NEGATIVE_INFINITY;
-    let ascending = [];
-    for (let i = 0; i < nrs.length; i++) {
+    var last = Number.NEGATIVE_INFINITY;
+    var ascending = [];
+    for (var i = 0; i < nrs.length; i++) {
         if (nrs[i] < last)
             ascending.push(last);
         else {
@@ -40,7 +41,7 @@ exports.ensureIncreasing = ensureIncreasing;
 function getNumberPrecision(a) {
     if (!isFinite(a))
         return 0;
-    let e = 1, p = 0;
+    var e = 1, p = 0;
     while (Math.round(a * e) / e !== a) {
         e *= 10;
         p++;
@@ -58,4 +59,3 @@ function getDecimalCount(nr) {
     return (nr + "").split(".")[1].length || 0;
 }
 exports.getDecimalCount = getDecimalCount;
-//# sourceMappingURL=calc.js.map

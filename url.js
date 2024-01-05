@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFileNameFromUrl = exports.getLangReqHeader = exports.isValidDomain = exports.getRawHeaderObject = exports.isVideoLink = exports.isImageLink = exports.isMediaLink = exports.isValidLink = exports.getUrlParameters = exports.addParamToUrl = exports.formatUrl = exports.getRootHost = exports.getRootHostname = exports.parseUrl = void 0;
-const utils = require("./utils");
-const url = require("url");
+var utils = require("./utils");
+var url = require("url");
 //import {UrlWithStringQuery} from "url";
 function parseUrl(linkStr) {
     if (linkStr.substr(0, 4) !== 'http')
@@ -10,7 +10,8 @@ function parseUrl(linkStr) {
     return url.parse(linkStr); // returns protocol=hostname if we pass in a host
 }
 exports.parseUrl = parseUrl;
-function getRootHostname(urlObj, stripSubdomains = false) {
+function getRootHostname(urlObj, stripSubdomains) {
+    if (stripSubdomains === void 0) { stripSubdomains = false; }
     if (typeof urlObj === "string")
         urlObj = parseUrl(urlObj);
     if (!urlObj)
@@ -20,7 +21,8 @@ function getRootHostname(urlObj, stripSubdomains = false) {
     return urlObj.hostname.replace(/^[a-z0-9\-]*\.(.+)\.(.+)$/i, '$1.$2');
 }
 exports.getRootHostname = getRootHostname;
-function getRootHost(urlObj, stripSubdomains = false) {
+function getRootHost(urlObj, stripSubdomains) {
+    if (stripSubdomains === void 0) { stripSubdomains = false; }
     if (typeof urlObj === "string")
         urlObj = parseUrl(urlObj);
     if (!urlObj)
@@ -30,10 +32,11 @@ function getRootHost(urlObj, stripSubdomains = false) {
     return urlObj.host.replace(/^[a-z0-9\-]*\.(.+)\.(.+)$/i, '$1.$2');
 }
 exports.getRootHost = getRootHost;
-function formatUrl(urlObj, removeFragment = true) {
-    let urlStr = url.format(urlObj);
+function formatUrl(urlObj, removeFragment) {
+    if (removeFragment === void 0) { removeFragment = true; }
+    var urlStr = url.format(urlObj);
     if (removeFragment === true) {
-        let pos = urlStr.lastIndexOf("#");
+        var pos = urlStr.lastIndexOf("#");
         if (pos !== -1)
             urlStr = urlStr.substr(0, pos);
         pos = urlStr.lastIndexOf('.html,');
@@ -46,16 +49,18 @@ function formatUrl(urlObj, removeFragment = true) {
     return urlStr;
 }
 exports.formatUrl = formatUrl;
-function addParamToUrl(urlStr, key, value = '1', overwrite = false) {
-    let start = urlStr.indexOf('?');
+function addParamToUrl(urlStr, key, value, overwrite) {
+    if (value === void 0) { value = '1'; }
+    if (overwrite === void 0) { overwrite = false; }
+    var start = urlStr.indexOf('?');
     if (start !== -1 && urlStr.indexOf(key + '=') !== -1) {
         if (!overwrite)
             return urlStr; // param already exists
-        let search = utils.escapeRegex(key + '=');
+        var search = utils.escapeRegex(key + '=');
         urlStr = urlStr.replace(new RegExp(search + '[^&]*(&|$)'), ''); // remove it and add it to the end of the url
         urlStr = urlStr.replace(/(\?|&)$/, '');
     }
-    let queryParam = urlStr.indexOf('?') !== -1 ? '&' : '?';
+    var queryParam = urlStr.indexOf('?') !== -1 ? '&' : '?';
     return urlStr + queryParam + key + '=' + value;
 }
 exports.addParamToUrl = addParamToUrl;
@@ -94,10 +99,11 @@ export function getUrlParameters(urlStr, decode = true) {
     return $parameters;
 }
 */
-function getUrlParameters(url, decode = false) {
+function getUrlParameters(url, decode) {
+    if (decode === void 0) { decode = false; }
     decode = typeof decode === "boolean" && decode === true;
-    let parameters = {};
-    let start = url.indexOf("?");
+    var parameters = {};
+    var start = url.indexOf("?");
     if (start === -1) {
         start = url.indexOf("#!");
         if (start === -1) {
@@ -115,12 +121,12 @@ function getUrlParameters(url, decode = false) {
     url = url.substring(start);
     if (url.length === 0)
         return parameters;
-    let pos = url.indexOf("#");
+    var pos = url.indexOf("#");
     if (pos !== -1)
         url = url.substring(0, pos); // don't search in both
-    let fragments = url.split("&");
-    for (let i = 0; i < fragments.length; i++) {
-        let parts = fragments[i].split("=");
+    var fragments = url.split("&");
+    for (var i = 0; i < fragments.length; i++) {
+        var parts = fragments[i].split("=");
         if (parts.length !== 2)
             continue;
         parameters[parts[0]] = decode ? utils.urlDecode(parts[1]) : parts[1];
@@ -147,7 +153,8 @@ function isImageLink(urlStr) {
     return urlStr.match(utils.conf.IMAGE_EXT_REGEX) !== null;
 }
 exports.isImageLink = isImageLink;
-function isVideoLink(urlStr, allowHtmlEnding = false) {
+function isVideoLink(urlStr, allowHtmlEnding) {
+    if (allowHtmlEnding === void 0) { allowHtmlEnding = false; }
     if (allowHtmlEnding === true) {
         // http://foo.com/name.mp4.html
         return urlStr.match('\.(' + utils.conf.VIDEO_EXTENSIONS + ')($|\.htm|\.html)') !== null;
@@ -159,14 +166,14 @@ function getRawHeaderObject(headerArr) {
     // response.rawHeaders:
     // ['Host',
     // '127.0.0.1:8000', ... ]
-    let headers = {};
-    for (let i = 0; i < headerArr.length - 1; i += 2)
+    var headers = {};
+    for (var i = 0; i < headerArr.length - 1; i += 2)
         headers[headerArr[i]] = headerArr[i + 1];
     return headers;
 }
 exports.getRawHeaderObject = getRawHeaderObject;
 function isValidDomain(domain) {
-    let regex = new RegExp('^([a-z0-9\\-]+\\.)*[a-z0-9\\-]{2,}\\.[a-z]{2,6}$', 'i');
+    var regex = new RegExp('^([a-z0-9\\-]+\\.)*[a-z0-9\\-]{2,}\\.[a-z]{2,6}$', 'i');
     return regex.test(domain);
 }
 exports.isValidDomain = isValidDomain;
@@ -176,17 +183,16 @@ exports.isValidDomain = isValidDomain;
  * @returns {string}
  */
 function getLangReqHeader(langOrLocale) {
-    let langParts = langOrLocale.split("-");
+    var langParts = langOrLocale.split("-");
     if (langParts.length === 1)
         return langParts[0].toLowerCase() + "-" + langParts[0].toUpperCase() + "," + langParts[0].toLowerCase() + ";q=0.5";
     return langParts[0].toLowerCase() + "-" + langParts[1].toUpperCase() + "," + langParts[0].toLowerCase() + ";q=0.5";
 }
 exports.getLangReqHeader = getLangReqHeader;
 function getFileNameFromUrl(url) {
-    let pos = url.lastIndexOf("/");
+    var pos = url.lastIndexOf("/");
     if (pos === -1)
         return url;
     return url.substr(pos + 1);
 }
 exports.getFileNameFromUrl = getFileNameFromUrl;
-//# sourceMappingURL=url.js.map

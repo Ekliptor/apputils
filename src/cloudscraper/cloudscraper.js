@@ -2,12 +2,12 @@
 // from https://github.com/codemanki/cloudscraper
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.request = exports.post = exports.get = void 0;
-const vm = require("vm");
-const requestModule = require('request');
-const jar = requestModule.jar();
-const url = require("url");
+var vm = require("vm");
+var requestModule = require('request');
+var jar = requestModule.jar();
+var url = require("url");
 //Ekliptor> more useragents
-let userAgents = ['Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1',
+var userAgents = ['Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1',
     'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
     'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1',
     'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
@@ -16,12 +16,12 @@ let userAgents = ['Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox
     'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
     'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:63.0) Gecko/20100101 Firefox/63.0',
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'];
-let requestM = requestModule.defaults({ jar: jar }), // Cookies should be enabled // we can still override this by passing our own cookie jar
+var requestM = requestModule.defaults({ jar: jar }), // Cookies should be enabled // we can still override this by passing our own cookie jar
 UserAgent = userAgents[Math.floor(Math.random() * userAgents.length)], Timeout = 6000, // Cloudflare requires a delay of 5 seconds, so wait for at least 6.0
 // part of options.solveCloudflareCaptcha on request function so that every solver instance is bound to a specific request
 //solveCaptcha = null, // a custom function(options) to solve CF captcha. use phantomjs to reload url, solve it and give back the cookies
 waitingHosts = new Map(), waitingHostTimeoutSec = 300; // 5min, remote captcha solving might take some time
-let MaxChallengesToSolve = 3; // Support only this max challenges in row. If CF returns more, throw an error
+var MaxChallengesToSolve = 3; // Support only this max challenges in row. If CF returns more, throw an error
 /**
  * Performs get request to url with headers.
  * @param  {String}    url
@@ -77,7 +77,7 @@ function request(options, callback) {
 }
 exports.request = request;
 function performRequest(options, callback) {
-    let method;
+    var method;
     options = options || {};
     options.headers = options.headers || {};
     // ensure we send proper browser headers (needed for "under attack mode")
@@ -100,7 +100,7 @@ function performRequest(options, callback) {
     if (!options.url || !callback) {
         throw new Error('To perform request, define both url and callback');
     }
-    let hostname = url.parse(options.url).host;
+    var hostname = url.parse(options.url).host;
     if (isWaitingHost(hostname)) {
         return addPendingRequest(hostname, options, callback); // here we return undefined instead of the request object! // TODO better idea?
     }
@@ -135,7 +135,7 @@ function processRequestResponse(options, requestResult, callback) {
         if (validationError.errorType === 1 && typeof options.solveCloudflareCaptcha === "function") { // CF captcha with http code 403
             addWaitingHost(response.request.uri.host);
             options.cloudflareHtml = stringBody;
-            options.solveCloudflareCaptcha(options, (err, html) => {
+            options.solveCloudflareCaptcha(options, function (err, html) {
                 // TODO we currently pass back the wrong response object. but the phantomjs response is very different, so not compatible too?
                 if (err) {
                     //console.log('Error solving cloudflare captcha with phantomjs')
@@ -213,7 +213,7 @@ function solveChallenge(response, body, options, callback) {
         return callback({ errorType: 3, error: 'Error occurred during evaluation: ' + err.message }, response, body);
     }
     if (options.url) { // if we post through an http proxy, the response url is from the proxy
-        let reqUrlObj = url.parse(options.url);
+        var reqUrlObj = url.parse(options.url);
         answerUrl = reqUrlObj.protocol + '//' + reqUrlObj.host;
     }
     else
@@ -284,7 +284,7 @@ function processResponseBody(options, error, response, body, callback) {
         // In case of real encoding, try to validate the response
         // and find potential errors there.
         // If encoding is not provided, return response as it is
-        let validationError;
+        var validationError = void 0;
         if (validationError = checkForErrors(error, body)) {
             return callback(validationError, response, body);
         }
@@ -293,10 +293,10 @@ function processResponseBody(options, error, response, body, callback) {
     //giveResults(options, error, response, body, callback);
 }
 function isWaitingHost(host) {
-    let waitingHost = waitingHosts.get(host);
+    var waitingHost = waitingHosts.get(host);
     if (waitingHost === undefined)
         return false;
-    let expires = new Date().getTime() - waitingHostTimeoutSec * 1000;
+    var expires = new Date().getTime() - waitingHostTimeoutSec * 1000;
     if (waitingHost.started >= expires)
         return true;
     removeWaitingHost(host, false);
@@ -311,18 +311,18 @@ function addWaitingHost(host) {
     });
 }
 function addPendingRequest(host, options, callback) {
-    let waitingHost = waitingHosts.get(host);
+    var waitingHost = waitingHosts.get(host);
     waitingHost.pending.push({
         options: options,
         callback: callback
     });
 }
 function removeWaitingHost(host, success) {
-    let waitingHost = waitingHosts.get(host);
+    var waitingHost = waitingHosts.get(host);
     waitingHosts.delete(host);
     if (success === false || waitingHost === undefined) {
         if (waitingHost && success === false) { // do failed callbacks
-            waitingHost.pending.forEach((pendingReq) => {
+            waitingHost.pending.forEach(function (pendingReq) {
                 if (typeof pendingReq.callback === 'function')
                     pendingReq.callback({ errorType: 0, error: 'failed to make previous request to bypass cloudflare' });
             });
@@ -332,8 +332,7 @@ function removeWaitingHost(host, success) {
     // we successfully made a request. make all other requests for this host
     // it is important that all those requests use the SAME cookie jar (or no cookie jar = the global jar)
     // otherwise they will have to solve the challenge again
-    waitingHost.pending.forEach((pendingReq) => {
+    waitingHost.pending.forEach(function (pendingReq) {
         performRequest(pendingReq.options, pendingReq.callback);
     });
 }
-//# sourceMappingURL=cloudscraper.js.map

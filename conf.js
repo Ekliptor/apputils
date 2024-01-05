@@ -14,4 +14,3 @@ exports.IMAGE_EXTENSIONS = 'jpg|jpeg|bmp|ico|png|webp|gif|psd|tif|ps|svg';
 exports.IMAGE_EXT_REGEX = '\.(' + exports.IMAGE_EXTENSIONS + ')$';
 exports.VIDEO_EXTENSIONS = 'mp4|mov|mpg|mpeg|avi|divx|wmv|vob|swf|rm|flv|asx|asf|3gp|3g2';
 exports.VIDEO_EXT_REGEX = '\.(' + exports.VIDEO_EXTENSIONS + ')$';
-//# sourceMappingURL=conf.js.map

@@ -15,4 +15,3 @@ exports.MB_IN_BYTES = 1024 * exports.KB_IN_BYTES;
 exports.GB_IN_BYTES = 1024 * exports.MB_IN_BYTES;
 exports.TB_IN_BYTES = 1024 * exports.GB_IN_BYTES;
 exports.MAX_32_BIT_INT_VALUE = 2147483647; // in ms it's 24.8 days
-//# sourceMappingURL=const.js.map

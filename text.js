@@ -2,16 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.substrCount = exports.isPossibleJson = exports.unpackGzip = exports.packGzip = exports.isHtml = exports.addHtmlLineBreaks = exports.ensureMultiPlatformLineBreaks = exports.replaceLineBreaks = exports.splitLines = exports.getMetaContentType = exports.translate = exports.fixUrl = exports.getOrdinal = exports.getLastWordPosBackwards = exports.truncateWords = exports.getHighlightedString = exports.escapeRegex = exports.getDisplaySize = exports.formatBtc = exports.formatCurrency = exports.formatNumber = exports.regexIndexOf = exports.getBetween = void 0;
 //let logger = require('../../src/utils/Logger')
-const utils = require("./utils.js");
-let winston = utils.logger;
-const conf = require("./conf");
-const urlModule = require("url");
-const zlib = require("zlib");
-const gzip = zlib.createGzip();
-function getBetween(text, startTxt, endTxt, options = {}) {
+var utils = require("./utils.js");
+var winston = utils.logger;
+var conf = require("./conf");
+var urlModule = require("url");
+var zlib = require("zlib");
+var gzip = zlib.createGzip();
+function getBetween(text, startTxt, endTxt, options) {
+    if (options === void 0) { options = {}; }
     options.startPos = typeof options.startPos === 'number' ? options.startPos : 0;
-    let preStart = typeof options.prestartTxt === 'string' && options.prestartTxt !== '';
-    let searchText = options.caseInsensitive === true ? text.toLocaleLowerCase() : text;
+    var preStart = typeof options.prestartTxt === 'string' && options.prestartTxt !== '';
+    var searchText = options.caseInsensitive === true ? text.toLocaleLowerCase() : text;
     if (options.caseInsensitive === true) {
         if (preStart)
             options.prestartTxt = options.prestartTxt.toLocaleLowerCase();
@@ -28,14 +29,14 @@ function getBetween(text, startTxt, endTxt, options = {}) {
     if (options.startPos === -1)
         return false;
     options.startPos += startTxt.length;
-    let endPos = searchText.indexOf(endTxt, options.startPos);
+    var endPos = searchText.indexOf(endTxt, options.startPos);
     if (endPos === -1)
         return false;
     return text.substr(options.startPos, endPos - options.startPos);
 }
 exports.getBetween = getBetween;
 function regexIndexOf(str, regex, startpos) {
-    let indexOf = str.substring(startpos || 0).search(regex);
+    var indexOf = str.substring(startpos || 0).search(regex);
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
 exports.regexIndexOf = regexIndexOf;
@@ -52,7 +53,8 @@ function formatBtc(amount, tr) {
     return formatNumber(amount, 8, tr("decPoint"), tr("thousandsSep"));
 }
 exports.formatBtc = formatBtc;
-function getDisplaySize(sizeBytes, tr = null) {
+function getDisplaySize(sizeBytes, tr) {
+    if (tr === void 0) { tr = null; }
     if (tr === null)
         tr = getTranslateSizeFunction();
     if (sizeBytes < 1024)
@@ -68,7 +70,7 @@ function getDisplaySize(sizeBytes, tr = null) {
 }
 exports.getDisplaySize = getDisplaySize;
 function getTranslateSizeFunction() {
-    return (key) => {
+    return function (key) {
         switch (key) {
             case "decPoint": return ".";
             case "thousandsSep": return ",";
@@ -88,27 +90,28 @@ exports.escapeRegex = escapeRegex;
  * @return string
  */
 function getHighlightedString(str, keyword) {
-    let stringHighlighted = str.replaceAll("&#39;", "'"); // we have to HTML-escape the output before this function because of the <strong> tags below
-    let keywords = keyword.split(/[ ]+/);
-    for (let curKeyword of keywords) {
-        let regString = '(^|' + conf.WORD_SEPARATORS_SEARCH + ')' + escapeRegex(curKeyword) + '($|' + conf.WORD_SEPARATORS_SEARCH + ')';
-        let keywordExp = new RegExp(regString, 'i');
-        let lastIndex = 0;
-        let tempString = '';
-        const maxReplaces = Math.floor(stringHighlighted.length / 3); // shouldn't happen, but be sure
-        let count = 0;
+    var stringHighlighted = str.replaceAll("&#39;", "'"); // we have to HTML-escape the output before this function because of the <strong> tags below
+    var keywords = keyword.split(/[ ]+/);
+    for (var _i = 0, keywords_1 = keywords; _i < keywords_1.length; _i++) {
+        var curKeyword = keywords_1[_i];
+        var regString = '(^|' + conf.WORD_SEPARATORS_SEARCH + ')' + escapeRegex(curKeyword) + '($|' + conf.WORD_SEPARATORS_SEARCH + ')';
+        var keywordExp = new RegExp(regString, 'i');
+        var lastIndex = 0;
+        var tempString = '';
+        var maxReplaces = Math.floor(stringHighlighted.length / 3); // shouldn't happen, but be sure
+        var count = 0;
         while (true) {
-            let result = keywordExp.exec(stringHighlighted);
+            var result = keywordExp.exec(stringHighlighted);
             if (result === null || ++count > maxReplaces)
                 break;
-            let replacement = result[0];
-            let firstChar = '';
-            let lastChar = '';
+            var replacement = result[0];
+            var firstChar = '';
+            var lastChar = '';
             if (replacement[0] && replacement[0].match(conf.WORD_SEPARATORS_SEARCH) !== null) {
                 firstChar = replacement.substring(0, 1);
                 replacement = replacement.substring(1);
             }
-            let lastPos = replacement.length - 1;
+            var lastPos = replacement.length - 1;
             if (replacement[lastPos] && replacement[lastPos].match(conf.WORD_SEPARATORS_SEARCH) !== null) {
                 lastChar = replacement.substring(lastPos);
                 replacement = replacement.substring(0, lastPos);
@@ -130,7 +133,7 @@ exports.getHighlightedString = getHighlightedString;
 function truncateWords(text, length) {
     length = Math.floor(length);
     if (text.length > length) {
-        let textRegexp = new RegExp('^((\r\n|\n|.){1,' + length + '})(' + conf.WORD_SEPARATOR_REGEX + '(\r\n|\n|.)*|$)', '');
+        var textRegexp = new RegExp('^((\r\n|\n|.){1,' + length + '})(' + conf.WORD_SEPARATOR_REGEX + '(\r\n|\n|.)*|$)', '');
         text = text.replace(textRegexp, '$1...');
     }
     return text;
@@ -146,19 +149,19 @@ exports.truncateWords = truncateWords;
 function getLastWordPosBackwards(text, beginIndex) {
     if (beginIndex < 0)
         return 0;
-    let searchTxt = text.substr(0, beginIndex);
-    let separatorRegexp = new RegExp(conf.WORD_SEPARATOR_REGEX);
-    let wordArr = searchTxt.split(separatorRegexp);
+    var searchTxt = text.substr(0, beginIndex);
+    var separatorRegexp = new RegExp(conf.WORD_SEPARATOR_REGEX);
+    var wordArr = searchTxt.split(separatorRegexp);
     wordArr = wordArr.splice(0, wordArr.length - 1); // return all except the last element
     if (wordArr.length === 0)
         return 0;
-    let resultTxt = wordArr.join(' '); // assume all spaces, separator chars are only 1 char each
+    var resultTxt = wordArr.join(' '); // assume all spaces, separator chars are only 1 char each
     return resultTxt.length + 1;
 }
 exports.getLastWordPosBackwards = getLastWordPosBackwards;
 function getOrdinal(n) {
     // http://en.wikipedia.org/wiki/Ordinal_indicator#English
-    let s = ["th", "st", "nd", "rd"], v = n % 100;
+    var s = ["th", "st", "nd", "rd"], v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 exports.getOrdinal = getOrdinal;
@@ -192,8 +195,8 @@ function fixUrl(url, hostBase) {
         return typeof hostBase === "object" ? hostBase.href + url : hostBase + url;
     return baseUrl + url;
     */
-    let fromHref = typeof hostBase === "object" ? hostBase.href : hostBase;
-    let urlStr = urlModule.resolve(fromHref, url);
+    var fromHref = typeof hostBase === "object" ? hostBase.href : hostBase;
+    var urlStr = urlModule.resolve(fromHref, url);
     if (urlStr.indexOf("//") === 0) { // relative urls
         if (typeof hostBase === "object" && hostBase.protocol)
             urlStr = hostBase.protocol + urlStr;
@@ -265,23 +268,26 @@ function translate(text, tr, variables, safeHtml) {
     return text;
 }
 exports.translate = translate;
-function getMetaContentType(html, rawValue = false) {
-    const quotes = ['"', "'"];
-    const tags = ['<meta charset={quote}', '<meta http-equiv={quote}Content-Type{quote} content={quote}']; // HTML5 and HTML4
-    for (let tag of tags) {
-        for (let quote of quotes) {
-            let options = {
+function getMetaContentType(html, rawValue) {
+    if (rawValue === void 0) { rawValue = false; }
+    var quotes = ['"', "'"];
+    var tags = ['<meta charset={quote}', '<meta http-equiv={quote}Content-Type{quote} content={quote}']; // HTML5 and HTML4
+    for (var _i = 0, tags_1 = tags; _i < tags_1.length; _i++) {
+        var tag = tags_1[_i];
+        for (var _a = 0, quotes_1 = quotes; _a < quotes_1.length; _a++) {
+            var quote = quotes_1[_a];
+            var options = {
                 startPos: 0,
                 caseInsensitive: true
             };
-            let search = tag.replaceAll("{quote}", quote);
-            let metaCharset = utils.text.getBetween(html, search, quote, options);
+            var search = tag.replaceAll("{quote}", quote);
+            var metaCharset = utils.text.getBetween(html, search, quote, options);
             if (metaCharset === false)
                 continue;
             // we found a charset
             if (rawValue)
                 return metaCharset;
-            let metaCharsetLower = metaCharset.toLowerCase();
+            var metaCharsetLower = metaCharset.toLowerCase();
             if (metaCharsetLower.indexOf("iso-") !== -1)
                 return "iso";
             else if (metaCharsetLower.indexOf("utf") !== -1)
@@ -292,7 +298,7 @@ function getMetaContentType(html, rawValue = false) {
 }
 exports.getMetaContentType = getMetaContentType;
 function splitLines(textStr) {
-    return textStr.split("\n").map(line => line.trim());
+    return textStr.split("\n").map(function (line) { return line.trim(); });
 }
 exports.splitLines = splitLines;
 function replaceLineBreaks(str) {
@@ -318,7 +324,8 @@ exports.ensureMultiPlatformLineBreaks = ensureMultiPlatformLineBreaks;
  * @param {boolean} escape Whether to escape existing HTML code to make them safe for printing. Default true.
  * @returns {string}
  */
-function addHtmlLineBreaks(str, escape = true) {
+function addHtmlLineBreaks(str, escape) {
+    if (escape === void 0) { escape = true; }
     if (escape)
         str = utils.escapeHtml(str);
     return str.replace(/(\r\n|\n)/g, "$1<br>");
@@ -327,7 +334,7 @@ exports.addHtmlLineBreaks = addHtmlLineBreaks;
 function isHtml(str) {
     if (!str)
         return false;
-    let formatted = str.trim();
+    var formatted = str.trim();
     if (formatted[0] === "<" && formatted.substr(-1) === ">")
         return true;
     // TODO more checks
@@ -340,8 +347,8 @@ exports.isHtml = isHtml;
  * @returns {Promise<string>}
  */
 function packGzip(input) {
-    return new Promise((resolve, reject) => {
-        zlib.deflate(input, (err, buffer) => {
+    return new Promise(function (resolve, reject) {
+        zlib.deflate(input, function (err, buffer) {
             if (err)
                 return reject({ txt: "Error packing with gzip", err: err });
             resolve(buffer.toString('base64'));
@@ -355,10 +362,10 @@ exports.packGzip = packGzip;
  * @returns {Promise<string>}
  */
 function unpackGzip(input) {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         if (typeof input === "string")
             input = Buffer.from(input, 'base64');
-        zlib.unzip(input, (err, buffer) => {
+        zlib.unzip(input, function (err, buffer) {
             if (err)
                 return reject({ txt: "Error unpacking with gzip", err: err });
             resolve(buffer.toString("utf8"));
@@ -372,16 +379,15 @@ exports.unpackGzip = unpackGzip;
  * @returns {boolean}
  */
 function isPossibleJson(str) {
-    let strTemp = (str || "").trim();
+    var strTemp = (str || "").trim();
     if (strTemp.length === 0)
         return false;
     return strTemp[0] === "{" || strTemp[0] === "[";
 }
 exports.isPossibleJson = isPossibleJson;
 function substrCount(str, find) {
-    let regex = escapeRegex(find);
-    let count = (str.match(new RegExp(regex, 'g')) || []).length;
+    var regex = escapeRegex(find);
+    var count = (str.match(new RegExp(regex, 'g')) || []).length;
     return count;
 }
 exports.substrCount = substrCount;
-//# sourceMappingURL=text.js.map

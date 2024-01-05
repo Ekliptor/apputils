@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tailPromise = exports.tail = void 0;
-const fs = require("fs");
-const DEFAULT_LINES = 100;
-const INITIAL_LING_LENGTH = 128;
+var fs = require("fs");
+var DEFAULT_LINES = 100;
+var INITIAL_LING_LENGTH = 128;
 /**
  * Read the last lines of the given file.
  * @param fileName
@@ -19,12 +19,12 @@ function tail(fileName, lineCount, cb) {
         fs.fstat(fd, function (err, stat) {
             if (err)
                 return cb({ txt: "error fstat", err: err });
-            let pos = stat.size;
-            let togo = lineCount * INITIAL_LING_LENGTH;
-            let textBuff = "";
-            let lines = [];
-            let index = 0;
-            let getNextText = () => {
+            var pos = stat.size;
+            var togo = lineCount * INITIAL_LING_LENGTH;
+            var textBuff = "";
+            var lines = [];
+            var index = 0;
+            var getNextText = function () {
                 if (pos > togo)
                     pos = pos - togo;
                 else {
@@ -37,10 +37,10 @@ function tail(fileName, lineCount, cb) {
                     textBuff = buf + textBuff;
                     index += buf.length;
                     while (lines.length < lineCount) {
-                        let lf = textBuff.lastIndexOf("\n", index);
+                        var lf = textBuff.lastIndexOf("\n", index);
                         if (lf == -1)
                             break;
-                        let line = textBuff.substr(lf, index - lf + 1);
+                        var line = textBuff.substr(lf, index - lf + 1);
                         lines.push(line);
                         index = lf - 1;
                         if (lf == 0) // Note if \n is the first char in the string we need to break here index will become negative -1 this will be fixed in index += buf.length
@@ -48,7 +48,7 @@ function tail(fileName, lineCount, cb) {
                     }
                     if (lines.length >= lineCount || pos == 0) {
                         if (pos == 0 && lines.length < lineCount) { // in this case we are missing the very first top line as it is missing a \n infront
-                            let line = textBuff.substr(0, index);
+                            var line = textBuff.substr(0, index);
                             lines.push(line);
                         }
                         return cb(null, lines.reverse());
@@ -68,8 +68,8 @@ exports.tail = tail;
  * @param lineCount
  */
 function tailPromise(fileName, lineCount) {
-    return new Promise((resolve, reject) => {
-        tail(fileName, lineCount, (err, lines) => {
+    return new Promise(function (resolve, reject) {
+        tail(fileName, lineCount, function (err, lines) {
             if (err)
                 return reject(err);
             resolve(lines);
@@ -77,4 +77,3 @@ function tailPromise(fileName, lineCount) {
     });
 }
 exports.tailPromise = tailPromise;
-//# sourceMappingURL=tail.js.map

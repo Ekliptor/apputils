@@ -6,15 +6,24 @@
  * @author 0@39.yt (Yurij Mikhalevich)
  */
 'use strict';
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoDB = void 0;
-const util = require('util');
-const os = require('os');
-const { LEVEL, MESSAGE } = require('triple-beam');
-const mongodb = require('mongodb');
-const winston = require('winston');
-const Stream = require('stream').Stream;
-const helpers = require('./helpers');
+var util = require('util');
+var os = require('os');
+var _a = require('triple-beam'), LEVEL = _a.LEVEL, MESSAGE = _a.MESSAGE;
+var mongodb = require('mongodb');
+var winston = require('winston');
+var Stream = require('stream').Stream;
+var helpers = require('./helpers');
 /**
  * Constructor for the MongoDB transport object.
  * @constructor
@@ -48,7 +57,7 @@ const helpers = require('./helpers');
  * the log entry message.
  * @param {number} options.expireAfterSeconds Seconds before the entry is removed. Do not use if capped is set.
  */
-let MongoDB = exports.MongoDB = function (options) {
+var MongoDB = exports.MongoDB = function (options) {
     winston.Transport.call(this, options);
     options = (options || {});
     if (!options.db) {
@@ -77,31 +86,33 @@ let MongoDB = exports.MongoDB = function (options) {
         this.hostname = os.hostname();
     }
     this._opQueue = [];
-    let self = this;
+    var self = this;
     function setupDatabaseAndEmptyQueue(db) {
-        return createCollection(db).then(db => {
+        return createCollection(db).then(function (db) {
             self.logDb = db;
             processOpQueue();
-        }, err => {
+        }, function (err) {
             db.close();
             console.error('winston-mongodb, initialization error: ', err);
         });
     }
     function processOpQueue() {
-        self._opQueue.forEach(operation => self[operation.method].apply(self, operation.args));
+        self._opQueue.forEach(function (operation) {
+            return self[operation.method].apply(self, operation.args);
+        });
         delete self._opQueue;
     }
     function createCollection(db) {
-        let opts = self.capped ?
+        var opts = self.capped ?
             { capped: true, size: self.cappedSize, max: self.cappedMax } : {};
-        return db.createCollection(self.collection, opts).then(col => {
-            const ttlIndexName = 'timestamp_1';
-            let indexOpts = { name: ttlIndexName, background: true };
+        return db.createCollection(self.collection, opts).then(function (col) {
+            var ttlIndexName = 'timestamp_1';
+            var indexOpts = { name: ttlIndexName, background: true };
             if (self.expireAfterSeconds) {
                 indexOpts.expireAfterSeconds = self.expireAfterSeconds;
             }
-            return col.indexInformation({ full: true }).then(info => {
-                info = info.filter(i => i.name === ttlIndexName);
+            return col.indexInformation({ full: true }).then(function (info) {
+                info = info.filter(function (i) { return i.name === ttlIndexName; });
                 if (info.length === 0) { // if its a new index then create it
                     return col.createIndex({ timestamp: -1 }, indexOpts);
                 }
@@ -109,18 +120,18 @@ let MongoDB = exports.MongoDB = function (options) {
                     if (info[0].expireAfterSeconds !== undefined &&
                         info[0].expireAfterSeconds !== self.expireAfterSeconds) {
                         return col.dropIndex(ttlIndexName)
-                            .then(() => col.createIndex({ timestamp: -1 }, indexOpts));
+                            .then(function () { return col.createIndex({ timestamp: -1 }, indexOpts); });
                     }
                 }
             });
-        }).then(() => db);
+        }).then(function () { return db; });
     }
     function connectToDatabase(logger) {
-        return mongodb.MongoClient.connect(logger.db, logger.options).then(setupDatabaseAndEmptyQueue, err => {
+        return mongodb.MongoClient.connect(logger.db, logger.options).then(setupDatabaseAndEmptyQueue, function (err) {
             console.error('winston-mongodb: error initialising logger', err);
             if (options.tryReconnect) {
                 console.log('winston-mongodb: will try reconnecting in 10 seconds');
-                return new Promise(resolve => setTimeout(resolve, 10000)).then(() => connectToDatabase(logger));
+                return new Promise(function (resolve) { return setTimeout(resolve, 10000); }).then(function () { return connectToDatabase(logger); });
             }
         });
     }
@@ -128,7 +139,7 @@ let MongoDB = exports.MongoDB = function (options) {
         connectToDatabase(this);
     }
     else if ('function' === typeof this.db.then) {
-        this.db.then(setupDatabaseAndEmptyQueue, err => console.error('winston-mongodb: error initialising logger from promise', err));
+        this.db.then(setupDatabaseAndEmptyQueue, function (err) { return console.error('winston-mongodb: error initialising logger from promise', err); });
     }
     else { // preconnected object
         setupDatabaseAndEmptyQueue(this.db);
@@ -149,10 +160,11 @@ winston.transports.MongoDB = MongoDB;
  * Used by winston Logger.close on transports.
  */
 MongoDB.prototype.close = function () {
+    var _this = this;
     if (!this.logDb) {
         return;
     }
-    this.logDb.close().then(() => this.logDb = null).catch(err => {
+    this.logDb.close().then(function () { return _this.logDb = null; }).catch(function (err) {
         console.error('Winston MongoDB transport encountered on error during '
             + 'closing.', err);
     });
@@ -165,7 +177,8 @@ MongoDB.prototype.close = function () {
 //Ekliptor> fix
 //MongoDB.prototype.log = function(info, cb) {
 MongoDB.prototype.log = function (level, msg, meta, cb) {
-    let info = {
+    var _this = this;
+    var info = {
         //LEVEL: level,
         //MESSAGE: msg,
         meta: meta
@@ -178,34 +191,34 @@ MongoDB.prototype.log = function (level, msg, meta, cb) {
         return true;
     }
     if (!cb) {
-        cb = () => { };
+        cb = function () { };
     }
     // Avoid reentrancy that can be not assumed by database code.
     // If database logs, better not to call database itself in the same call.
-    process.nextTick(() => {
-        if (this.silent || !this.logDb) { //Ekliptor> fix - connection might be closed on next tick
+    process.nextTick(function () {
+        if (_this.silent || !_this.logDb) { //Ekliptor> fix - connection might be closed on next tick
             cb(null, true);
             return; //Ekliptor> fix
         }
-        let entry = { timestamp: new Date(), level: info[LEVEL] };
-        let message = util.format(info[MESSAGE], ...(info.splat || []));
-        entry.message = this.decolorize ? message.replace(/\u001b\[[0-9]{1,2}m/g, '') : message;
+        var entry = { timestamp: new Date(), level: info[LEVEL] };
+        var message = util.format.apply(util, __spreadArray([info[MESSAGE]], (info.splat || []), false));
+        entry.message = _this.decolorize ? message.replace(/\u001b\[[0-9]{1,2}m/g, '') : message;
         entry.meta = helpers.prepareMetaData(info.meta);
-        if (this.storeHost) {
-            entry.hostname = this.hostname;
+        if (_this.storeHost) {
+            entry.hostname = _this.hostname;
         }
-        if (this.label) {
-            entry.label = this.label;
+        if (_this.label) {
+            entry.label = _this.label;
         }
-        this.logDb.collection(this.collection).insertOne(entry).then(() => {
-            this.emit('logged');
+        _this.logDb.collection(_this.collection).insertOne(entry).then(function () {
+            _this.emit('logged');
             cb(null, true);
-        }).catch(err => {
+        }).catch(function (err) {
             //Ekliptor> fix
             if (err && err.toString("server instance pool was destroyed") !== -1)
                 return cb(null, true);
             //Ekliptor< fix
-            this.emit('error', err);
+            _this.emit('error', err);
             cb(err);
         });
     });
@@ -226,9 +239,9 @@ MongoDB.prototype.query = function (opt_options, cb) {
         cb = opt_options;
         opt_options = {};
     }
-    let options = this.normalizeQuery(opt_options);
-    let query = { timestamp: { $gte: options.from, $lte: options.until } };
-    let opt = {
+    var options = this.normalizeQuery(opt_options);
+    var query = { timestamp: { $gte: options.from, $lte: options.until } };
+    var opt = {
         skip: options.start,
         limit: options.rows,
         sort: { timestamp: options.order === 'desc' ? -1 : 1 }
@@ -236,9 +249,9 @@ MongoDB.prototype.query = function (opt_options, cb) {
     if (options.fields) {
         opt.fields = options.fields;
     }
-    this.logDb.collection(this.collection).find(query, opt).toArray().then(docs => {
+    this.logDb.collection(this.collection).find(query, opt).toArray().then(function (docs) {
         if (!options.includeIds) {
-            docs.forEach(log => delete log._id);
+            docs.forEach(function (log) { return delete log._id; });
         }
         cb(null, docs);
     }).catch(cb);
@@ -251,9 +264,10 @@ MongoDB.prototype.query = function (opt_options, cb) {
  * @return {Stream}
  */
 MongoDB.prototype.stream = function (options, stream) {
+    var _this = this;
     options = options || {};
     stream = stream || new Stream;
-    let start = options.start;
+    var start = options.start;
     if (!this.logDb) {
         this._opQueue.push({ method: 'stream', args: [options, stream] });
         return stream;
@@ -264,40 +278,40 @@ MongoDB.prototype.stream = function (options, stream) {
     if (start === -1) {
         start = null;
     }
-    let col = this.logDb.collection(this.collection);
+    var col = this.logDb.collection(this.collection);
     if (start != null) {
-        col.find({}, { skip: start }).toArray().then(docs => {
-            docs.forEach(doc => {
+        col.find({}, { skip: start }).toArray().then(function (docs) {
+            docs.forEach(function (doc) {
                 if (!options.includeIds) {
                     delete doc._id;
                 }
                 stream.emit('log', doc);
             });
             delete options.start;
-            this.stream(options, stream);
-        }).catch(err => stream.emit('error', err));
+            _this.stream(options, stream);
+        }).catch(function (err) { return stream.emit('error', err); });
         return stream;
     }
     if (stream.destroyed) {
         return stream;
     }
-    col.isCapped().then(capped => {
+    col.isCapped().then(function (capped) {
         if (!capped) {
-            return this.streamPoll(options, stream);
+            return _this.streamPoll(options, stream);
         }
-        let cursor = col.find({}, { tailable: true });
+        var cursor = col.find({}, { tailable: true });
         stream.destroy = function () {
             this.destroyed = true;
             cursor.destroy();
         };
-        cursor.on('data', doc => {
+        cursor.on('data', function (doc) {
             if (!options.includeIds) {
                 delete doc._id;
             }
             stream.emit('log', doc);
         });
-        cursor.on('error', err => stream.emit('error', err));
-    }).catch(err => stream.emit('error', err));
+        cursor.on('error', function (err) { return stream.emit('error', err); });
+    }).catch(function (err) { return stream.emit('error', err); });
     return stream;
 };
 /**
@@ -309,9 +323,9 @@ MongoDB.prototype.stream = function (options, stream) {
 MongoDB.prototype.streamPoll = function (options, stream) {
     options = options || {};
     stream = stream || new Stream;
-    let self = this;
-    let start = options.start;
-    let last;
+    var self = this;
+    var start = options.start;
+    var last;
     if (!this.logDb) {
         this._opQueue.push({ method: 'streamPoll', args: [options, stream] });
         return stream;
@@ -326,8 +340,8 @@ MongoDB.prototype.streamPoll = function (options, stream) {
         this.destroyed = true;
     };
     (function check() {
-        let query = last ? { timestamp: { $gte: last } } : {};
-        self.logDb.collection(self.collection).find(query).toArray().then(docs => {
+        var query = last ? { timestamp: { $gte: last } } : {};
+        self.logDb.collection(self.collection).find(query).toArray().then(function (docs) {
             if (stream.destroyed) {
                 return;
             }
@@ -335,7 +349,7 @@ MongoDB.prototype.streamPoll = function (options, stream) {
                 return next();
             }
             if (start == null) {
-                docs.forEach(doc => {
+                docs.forEach(function (doc) {
                     if (!options.includeIds) {
                         delete doc._id;
                     }
@@ -343,7 +357,7 @@ MongoDB.prototype.streamPoll = function (options, stream) {
                 });
             }
             else {
-                docs.forEach(doc => {
+                docs.forEach(function (doc) {
                     if (!options.includeIds) {
                         delete doc._id;
                     }
@@ -357,7 +371,7 @@ MongoDB.prototype.streamPoll = function (options, stream) {
             }
             last = new Date(docs.pop().timestamp);
             next();
-        }).catch(err => {
+        }).catch(function (err) {
             if (stream.destroyed) {
                 return;
             }
@@ -370,4 +384,3 @@ MongoDB.prototype.streamPoll = function (options, stream) {
     })();
     return stream;
 };
-//# sourceMappingURL=winston-mongodb.js.map

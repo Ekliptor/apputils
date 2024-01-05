@@ -1,6 +1,44 @@
 "use strict";
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deepAssign = exports.getdObjectValues = exports.getIndexedObjectValues = exports.isSameElementArray = exports.getPlainArrayData = exports.fillCreateArray = exports.applyMixins = exports.isEmpty = exports.removeElasticsearchProperties = exports.cartesianProduct = exports.permute = exports.countArrayValues = exports.isObject = exports.getUniqueResults = exports.aggregateToLimit = exports.mergeOrderedArray = exports.mergeNumberObjects = exports.concatInnerArrays = exports.getValueArr = exports.getKeyArr = exports.sortByKey = exports.sortByValue = exports.mapFromToupleArray = exports.objectToStrMap = exports.OBJECT_OVERWRITES = void 0;
+exports.deepAssign = exports.getdObjectValues = exports.getIndexedObjectValues = exports.isSameElementArray = exports.getPlainArrayData = exports.fillCreateArray = exports.applyMixins = exports.isEmpty = exports.removeElasticsearchProperties = exports.cartesianProduct = exports.permute = exports.countArrayValues = exports.isObject = exports.getUniqueResults = exports.aggregateToLimit = exports.mergeOrderedArray = exports.mergeNumberObjects = exports.concatInnerArrays = exports.getValueArr = exports.getKeyArr = exports.sortByKey = exports.sortByValue = exports.mapFromToupleArray = exports.getFirstKey = exports.objectToStrMap = exports.OBJECT_OVERWRITES = void 0;
 // nothing to export here. just include this file to extend some objects
 // for calling parent http://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
 // but we can't overwrite node module functions
@@ -14,12 +52,13 @@ String.prototype.replaceAll = function (search, replace) {
  * @returns {Object}
  */
 Map.prototype.toObject = function () {
-    let obj = Object.create(null);
+    var obj = Object.create(null);
     //for (let [k,v] of this) // ES6 feature not yet in node 6
     //obj[k] = v // We don’t escape the key '__proto__' which can cause problems on older engines
-    let keys = this.keys();
-    for (let k of keys) {
-        let value = this.get(k);
+    var keys = this.keys();
+    for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+        var k = keys_1[_i];
+        var value = this.get(k);
         if (value instanceof Map)
             value = value.toObject();
         obj[k] = value;
@@ -32,10 +71,11 @@ Map.prototype.toObject = function () {
  * @returns {Array}
  */
 Map.prototype.toArray = function () {
-    let array = [];
-    let keys = this.keys();
-    for (let k of keys) {
-        let value = this.get(k);
+    var array = [];
+    var keys = this.keys();
+    for (var _i = 0, keys_2 = keys; _i < keys_2.length; _i++) {
+        var k = keys_2[_i];
+        var value = this.get(k);
         if (value instanceof Map)
             value = value.toArray();
         array.push(value);
@@ -50,11 +90,12 @@ Map.prototype.toArray = function () {
  * @returns {Array}
  */
 Map.prototype.toToupleArray = function () {
-    let array = [];
-    let keys = this.keys();
-    for (let k of keys) {
+    var array = [];
+    var keys = this.keys();
+    for (var _i = 0, keys_3 = keys; _i < keys_3.length; _i++) {
+        var k = keys_3[_i];
         //array.push([k, this.get(k)])
-        let value = this.get(k);
+        var value = this.get(k);
         if (value instanceof Map)
             value = value.toToupleArray();
         array.push([k, value]);
@@ -62,10 +103,12 @@ Map.prototype.toToupleArray = function () {
     return array;
 };
 Set.prototype.toObject = function () {
-    let obj = Object.create(null);
-    let keys = this.keys();
-    for (let k of keys)
-        obj[k] = true; // dummy value
+    var obj = Object.create(null);
+    var keys = this.keys();
+    for (var _i = 0, keys_4 = keys; _i < keys_4.length; _i++) {
+        var k = keys_4[_i];
+        obj[k] = true;
+    } // dummy value
     return obj;
 };
 /**
@@ -73,10 +116,12 @@ Set.prototype.toObject = function () {
  * @returns {Array}
  */
 Set.prototype.toArray = function () {
-    let array = [];
-    let keys = this.keys();
-    for (let k of keys)
+    var array = [];
+    var keys = this.keys();
+    for (var _i = 0, keys_5 = keys; _i < keys_5.length; _i++) {
+        var k = keys_5[_i];
         array.push(k);
+    }
     return array;
 };
 //Object.prototype.cloneProperties = function() { // causes winston logger to print this always, use utils.cloneObject(), same problem with ALL Object overwites
@@ -88,12 +133,26 @@ Set.prototype.toArray = function () {
  * @returns {Map<string, T>}
  */
 function objectToStrMap(object) {
-    let strMap = new Map();
-    for (let k of Object.keys(object))
+    var strMap = new Map();
+    for (var _i = 0, _a = Object.keys(object); _i < _a.length; _i++) {
+        var k = _a[_i];
         strMap.set(k, object[k]);
+    }
     return strMap;
 }
 exports.objectToStrMap = objectToStrMap;
+/**
+ * Return the first key of an object.
+ * @param object
+ */
+function getFirstKey(object) {
+    for (var _i = 0, _a = Object.keys(object); _i < _a.length; _i++) {
+        var k = _a[_i];
+        return k;
+    }
+    return null;
+}
+exports.getFirstKey = getFirstKey;
 /**
  * Restore a map which has been serialized using toToupleArray().
  * For nested maps this function will only restore the root map entries.
@@ -112,13 +171,14 @@ Array.prototype.mathMin = function () {
     return Math.min.apply(null, this);
 };
 Array.prototype.arrayDiff = function (arr) {
-    return this.filter(x => arr.indexOf(x) === -1);
+    return this.filter(function (x) { return arr.indexOf(x) === -1; });
 };
 Array.prototype.shuffle = function () {
-    let a = this;
-    for (let i = a.length; i; i--) {
-        let j = Math.floor(Math.random() * i);
-        [a[i - 1], a[j]] = [a[j], a[i - 1]];
+    var _a;
+    var a = this;
+    for (var i = a.length; i; i--) {
+        var j = Math.floor(Math.random() * i);
+        _a = [a[j], a[i - 1]], a[i - 1] = _a[0], a[j] = _a[1];
     }
 };
 // inspired by Meteors EJSON: https://docs.meteor.com/api/ejson.html
@@ -137,18 +197,19 @@ Date.prototype.toJSON = function() {
  * @returns {Array} An array of array with ("associative array"). Use innerArray[0] for key and innerArray[1] for the object value
  * Note that it is unsafe to convert the result back to object since the order of properties is not guaranteed in JavaScript
  */
-function sortByValue(map, ascending = true) {
-    let sortable = [];
+function sortByValue(map, ascending) {
+    if (ascending === void 0) { ascending = true; }
+    var sortable = [];
     if (Array.isArray(map) === true)
         sortable = map;
     else {
         if (map instanceof Map)
             map = map.toObject();
-        for (let key in map)
+        for (var key in map)
             sortable.push([key, map[key]]); // create an "associative array", just an array with 2 elements
     }
     if (ascending !== null) {
-        sortable.sort((a, b) => {
+        sortable.sort(function (a, b) {
             if (ascending === true)
                 return a[1] - b[1];
             return b[1] - a[1];
@@ -168,7 +229,7 @@ function sortByKey(unordered, compareFn) {
     // but stable for nodeJS
     if (unordered instanceof Map)
         unordered = unordered.toObject();
-    const ordered = {};
+    var ordered = {};
     Object.keys(unordered).sort(compareFn).forEach(function (key) {
         ordered[key] = unordered[key];
     });
@@ -176,33 +237,42 @@ function sortByKey(unordered, compareFn) {
 }
 exports.sortByKey = sortByKey;
 function getKeyArr(sortedArr) {
-    let keyArr = [];
-    for (let key of sortedArr)
+    var keyArr = [];
+    for (var _i = 0, sortedArr_1 = sortedArr; _i < sortedArr_1.length; _i++) {
+        var key = sortedArr_1[_i];
         keyArr.push(key[0]);
+    }
     return keyArr;
 }
 exports.getKeyArr = getKeyArr;
 function getValueArr(sortedArr) {
-    let valArr = [];
-    for (let key of sortedArr)
+    var valArr = [];
+    for (var _i = 0, sortedArr_2 = sortedArr; _i < sortedArr_2.length; _i++) {
+        var key = sortedArr_2[_i];
         valArr.push(key[1]);
+    }
     return valArr;
 }
 exports.getValueArr = getValueArr;
 function concatInnerArrays(outerArray) {
-    let allInner = [];
-    for (let curInner of outerArray) {
+    var allInner = [];
+    for (var _i = 0, outerArray_1 = outerArray; _i < outerArray_1.length; _i++) {
+        var curInner = outerArray_1[_i];
         if (curInner && curInner.length !== 0)
             allInner = allInner.concat(curInner);
     }
     return allInner;
 }
 exports.concatInnerArrays = concatInnerArrays;
-function mergeNumberObjects(...objArgs) {
-    let merged = {};
-    for (let i = 0; i < arguments.length; i++) {
-        let obj = arguments[i];
-        for (let prop in obj) {
+function mergeNumberObjects() {
+    var objArgs = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        objArgs[_i] = arguments[_i];
+    }
+    var merged = {};
+    for (var i = 0; i < arguments.length; i++) {
+        var obj = arguments[i];
+        for (var prop in obj) {
             if (merged[prop] === undefined)
                 merged[prop] = obj[prop];
             else
@@ -218,26 +288,31 @@ exports.mergeNumberObjects = mergeNumberObjects;
  * @param objArgs an object with sorted arrays: {myCounter1: [[key, value], ...], counter2: .... }
  * @returns {object} An object with the ordered arrays as properties (properties just as sortByValue())
  */
-function mergeOrderedArray(ascending = true, ...objArgs) {
-    let merged = {};
-    let indexOfInnerArray = (arr, searchKey) => {
-        for (let i = 0; i < arr.length; i++) {
+function mergeOrderedArray(ascending) {
+    if (ascending === void 0) { ascending = true; }
+    var objArgs = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        objArgs[_i - 1] = arguments[_i];
+    }
+    var merged = {};
+    var indexOfInnerArray = function (arr, searchKey) {
+        for (var i = 0; i < arr.length; i++) {
             if (arr[i] && arr[i][0] === searchKey) // better than arr[i].indexOf()
                 return i;
         }
         return -1;
     };
-    for (let i = 1; i < arguments.length; i++) {
-        let obj = arguments[i];
-        for (let prop in obj) {
+    for (var i = 1; i < arguments.length; i++) {
+        var obj = arguments[i];
+        for (var prop in obj) {
             if (merged[prop] === undefined) {
                 merged[prop] = obj[prop];
                 continue; // new property, nothing to merge
             }
-            for (let u = 0; u < obj[prop].length; u++) {
-                let arrValues = obj[prop][u];
+            for (var u = 0; u < obj[prop].length; u++) {
+                var arrValues = obj[prop][u];
                 //let index = merged[prop].indexOf(arrValues[0]) // check if the key exists in our ordered array
-                let index = indexOfInnerArray(merged[prop], arrValues[0]);
+                var index = indexOfInnerArray(merged[prop], arrValues[0]);
                 if (index === -1)
                     merged[prop].push(arrValues); // [key, value]
                 else
@@ -245,9 +320,9 @@ function mergeOrderedArray(ascending = true, ...objArgs) {
             }
         }
     }
-    for (let prop in merged) {
-        let other = indexOfInnerArray(merged[prop], 'other');
-        let addOther = false;
+    for (var prop in merged) {
+        var other = indexOfInnerArray(merged[prop], 'other');
+        var addOther = false;
         if (other !== -1) { // remove the aggregated "other"
             other = merged[prop].splice(other, 1); // cache [[key, value]]
             addOther = true;
@@ -268,12 +343,13 @@ exports.mergeOrderedArray = mergeOrderedArray;
  */
 function aggregateToLimit(map, limit) {
     //let itemCount = Object.keys(map).length // always sort
-    let sorted = sortByValue(map, false);
-    let count = 0;
-    let aggregate = [];
-    let otherValue = 0;
-    let addOther = false;
-    for (let item of sorted) {
+    var sorted = sortByValue(map, false);
+    var count = 0;
+    var aggregate = [];
+    var otherValue = 0;
+    var addOther = false;
+    for (var _i = 0, sorted_1 = sorted; _i < sorted_1.length; _i++) {
+        var item = sorted_1[_i];
         count++;
         if (count < limit)
             aggregate.push(item);
@@ -288,16 +364,16 @@ function aggregateToLimit(map, limit) {
 }
 exports.aggregateToLimit = aggregateToLimit;
 function getUniqueResults(resultArr, uniqueProp, propFilterFn) {
-    let filter = new Map(); // map guarantess key order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Objects_and_maps_compared
+    var filter = new Map(); // map guarantess key order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Objects_and_maps_compared
     if (typeof propFilterFn !== 'function') {
-        propFilterFn = (prop) => {
+        propFilterFn = function (prop) {
             return prop; // just return it unmodified
         };
     }
-    for (let i = 0; i < resultArr.length; i++) {
+    for (var i = 0; i < resultArr.length; i++) {
         if (filter.has(resultArr[i][uniqueProp]) === true)
             continue;
-        let prop = propFilterFn(resultArr[i][uniqueProp]);
+        var prop = propFilterFn(resultArr[i][uniqueProp]);
         filter.set(prop, resultArr[i]);
     }
     resultArr = Array.from(filter.values());
@@ -309,7 +385,7 @@ function getUniqueResults(resultArr, uniqueProp, propFilterFn) {
 exports.getUniqueResults = getUniqueResults;
 function isObject(x) {
     // https://github.com/sindresorhus/is-obj/blob/master/index.js
-    let type = typeof x;
+    var type = typeof x;
     return x !== null && (type === 'object' || type === 'function');
 }
 exports.isObject = isObject;
@@ -319,9 +395,9 @@ exports.isObject = isObject;
  * @return a map with the array value as key and the number of occurrences as value
  */
 function countArrayValues(arr) {
-    let count = new Map();
-    arr.forEach((el) => {
-        let c = count.get(el);
+    var count = new Map();
+    arr.forEach(function (el) {
+        var c = count.get(el);
         if (!c)
             c = 1;
         else
@@ -339,18 +415,35 @@ exports.countArrayValues = countArrayValues;
  * @param a
  * @param n
  */
-function* permute(a, n = a.length) {
-    if (n <= 1) {
-        yield a.slice(); // copy it
-    }
-    else {
-        // generate (n−1)! permutations of the first n-1 elements
-        for (let i = 0; i < n; i++) {
-            yield* permute(a, n - 1);
-            const j = n % 2 ? 0 : i;
-            [a[n - 1], a[j]] = [a[j], a[n - 1]];
+function permute(a, n) {
+    var i, j;
+    var _a;
+    if (n === void 0) { n = a.length; }
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                if (!(n <= 1)) return [3 /*break*/, 2];
+                return [4 /*yield*/, a.slice()];
+            case 1:
+                _b.sent(); // copy it
+                return [3 /*break*/, 6];
+            case 2:
+                i = 0;
+                _b.label = 3;
+            case 3:
+                if (!(i < n)) return [3 /*break*/, 6];
+                return [5 /*yield**/, __values(permute(a, n - 1))];
+            case 4:
+                _b.sent();
+                j = n % 2 ? 0 : i;
+                _a = [a[j], a[n - 1]], a[n - 1] = _a[0], a[j] = _a[1];
+                _b.label = 5;
+            case 5:
+                i++;
+                return [3 /*break*/, 3];
+            case 6: return [2 /*return*/];
         }
-    }
+    });
 }
 exports.permute = permute;
 /**
@@ -360,12 +453,12 @@ exports.permute = permute;
  * @param arrOfArrays
  */
 function cartesianProduct(arrOfArrays) {
-    return arrOfArrays.reduce((a, b) => {
-        return a.map((x) => {
-            return b.map((y) => {
+    return arrOfArrays.reduce(function (a, b) {
+        return a.map(function (x) {
+            return b.map(function (y) {
                 return x.concat(y);
             });
-        }).reduce((a, b) => { return a.concat(b); }, []);
+        }).reduce(function (a, b) { return a.concat(b); }, []);
     }, [[]]);
 }
 exports.cartesianProduct = cartesianProduct;
@@ -384,8 +477,8 @@ function isEmpty(obj) {
 }
 exports.isEmpty = isEmpty;
 function applyMixins(derivedCtor, baseCtors) {
-    baseCtors.forEach(baseCtor => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+    baseCtors.forEach(function (baseCtor) {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
             if (name === "constructor")
                 return; // we can't override it (only the real class constructor gets called). so don't override the prototype to keep the class name too
             derivedCtor.prototype[name] = baseCtor.prototype[name];
@@ -399,8 +492,8 @@ exports.applyMixins = applyMixins;
  * @param length
  */
 function fillCreateArray(value, length) {
-    let arr = [];
-    for (let i = 0; i < length; i++)
+    var arr = [];
+    for (var i = 0; i < length; i++)
         arr.push(value);
     return arr;
 }
@@ -411,11 +504,12 @@ exports.fillCreateArray = fillCreateArray;
  * @param arr the array to unpack
  * @param keyPrefix
  */
-function getPlainArrayData(arr, keyPrefix = "arr_") {
-    let plain = {};
-    for (let i = 0; i < arr.length; i++) {
-        let cur = arr[i];
-        for (let key in cur)
+function getPlainArrayData(arr, keyPrefix) {
+    if (keyPrefix === void 0) { keyPrefix = "arr_"; }
+    var plain = {};
+    for (var i = 0; i < arr.length; i++) {
+        var cur = arr[i];
+        for (var key in cur)
             plain[keyPrefix + i + "_" + key] = cur[key];
     }
     return plain;
@@ -429,7 +523,7 @@ exports.getPlainArrayData = getPlainArrayData;
 function isSameElementArray(arr1, arr2) {
     if (arr1.length !== arr2.length)
         return false;
-    for (let i = 0; i < arr1.length && i < arr2.length; i++) {
+    for (var i = 0; i < arr1.length && i < arr2.length; i++) {
         if (arr1[i] !== arr2[i])
             return false;
     }
@@ -444,7 +538,7 @@ exports.isSameElementArray = isSameElementArray;
  * @param obj
  */
 function getIndexedObjectValues(obj) {
-    return Object.entries(obj).map(o => o[1]);
+    return Object.entries(obj).map(function (o) { return o[1]; });
 }
 exports.getIndexedObjectValues = getIndexedObjectValues;
 /**
@@ -453,7 +547,7 @@ exports.getIndexedObjectValues = getIndexedObjectValues;
  * @param obj
  */
 function getdObjectValues(obj) {
-    return Object.entries(obj).map(o => o[1]);
+    return Object.entries(obj).map(function (o) { return o[1]; });
 }
 exports.getdObjectValues = getdObjectValues;
 /* // promises will always get executed. only results will be in the order supplied here. only possible with an array of functions (see async library)
@@ -476,6 +570,5 @@ export function promiseAllSequence<T>(promises: Promise<T>[]) {
     })
 }
 */
-const deepAssign_1 = require("./src/deepAssign");
+var deepAssign_1 = require("./src/deepAssign");
 exports.deepAssign = deepAssign_1.default;
-//# sourceMappingURL=objects.js.map

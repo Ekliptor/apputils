@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAvailbleIP = exports.listAvailableIPs = exports.createCookie = void 0;
-const os = require("os");
-const utils = require("./utils");
-function createCookie(key, value, url, expiresMin = 365 * 24 * 60) {
-    let urlObj = utils.parseUrl(url);
-    let cookie = /*new tough.Cookie(*/ {
+var os = require("os");
+var utils = require("./utils");
+function createCookie(key, value, url, expiresMin) {
+    if (expiresMin === void 0) { expiresMin = 365 * 24 * 60; }
+    var urlObj = utils.parseUrl(url);
+    var cookie = /*new tough.Cookie(*/ {
         key: key,
         value: value,
         domain: urlObj.hostname,
@@ -25,11 +26,11 @@ function createCookie(key, value, url, expiresMin = 365 * 24 * 60) {
 }
 exports.createCookie = createCookie;
 function listAvailableIPs() {
-    let ifaces = os.networkInterfaces();
-    let ips = [];
-    for (let name in ifaces) {
-        let dataArr = ifaces[name];
-        dataArr.forEach((data) => {
+    var ifaces = os.networkInterfaces();
+    var ips = [];
+    for (var name_1 in ifaces) {
+        var dataArr = ifaces[name_1];
+        dataArr.forEach(function (data) {
             if (data.address)
                 ips.push(data.address);
         });
@@ -38,8 +39,7 @@ function listAvailableIPs() {
 }
 exports.listAvailableIPs = listAvailableIPs;
 function isAvailbleIP(ip) {
-    let ips = listAvailableIPs();
+    var ips = listAvailableIPs();
     return ips.indexOf(ip) !== -1;
 }
 exports.isAvailbleIP = isAvailbleIP;
-//# sourceMappingURL=http.js.map

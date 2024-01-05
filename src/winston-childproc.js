@@ -139,4 +139,3 @@ ChildProc.prototype.flush = function () {
     var self = this;
 };
 module.exports = exports;
-//# sourceMappingURL=winston-childproc.js.map

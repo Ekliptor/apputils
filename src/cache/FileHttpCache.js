@@ -1,12 +1,28 @@
 "use strict";
 // TODO implement parent class by caching on disk
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileHttpCache = void 0;
-const AbstractHttpCache_1 = require("./AbstractHttpCache");
-class FileHttpCache extends AbstractHttpCache_1.AbstractHttpCache {
-    constructor() {
-        super();
+var AbstractHttpCache_1 = require("./AbstractHttpCache");
+var FileHttpCache = /** @class */ (function (_super) {
+    __extends(FileHttpCache, _super);
+    function FileHttpCache() {
+        return _super.call(this) || this;
     }
-}
+    return FileHttpCache;
+}(AbstractHttpCache_1.AbstractHttpCache));
 exports.FileHttpCache = FileHttpCache;
-//# sourceMappingURL=FileHttpCache.js.map

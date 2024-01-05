@@ -1,9 +1,9 @@
 "use strict";
 // https://github.com/sindresorhus/deep-assign/blob/master/index.js
 Object.defineProperty(exports, "__esModule", { value: true });
-const isObj = require('../objects').isObject;
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const propIsEnumerable = Object.prototype.propertyIsEnumerable;
+var isObj = require('../objects').isObject;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 function toObject(val) {
     if (val === null || val === undefined) {
         throw new TypeError('Cannot convert undefined or null to object');
@@ -60,7 +60,11 @@ function assign(to, from) {
     }
     return to;
 }
-function deepAssign(target, ...from) {
+function deepAssign(target) {
+    var from = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        from[_i - 1] = arguments[_i];
+    }
     target = toObject(target);
     for (var s = 1; s < arguments.length; s++) {
         assign(target, arguments[s]);
@@ -69,4 +73,3 @@ function deepAssign(target, ...from) {
 }
 exports.default = deepAssign;
 ;
-//# sourceMappingURL=deepAssign.js.map
