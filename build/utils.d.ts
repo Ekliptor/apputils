@@ -74,7 +74,7 @@ export declare function getRandom(min: number, max: number): number;
  * @returns {int}
  */
 export declare function getRandomInt(min: number, max: number): number;
-export declare function parseBool(str: any): any;
+export declare function parseBool(str: any): boolean;
 /**
  * Get a new cookie jar
  * @param cookieFilename (optional) Specify a cookies.json file on disk to store & load cookies from.

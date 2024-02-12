@@ -319,7 +319,7 @@ export function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min)) + min
 }
 
-export function parseBool(str: any) {
+export function parseBool(str: any): boolean {
     let type = typeof str
     if (type === 'boolean')
         return str
