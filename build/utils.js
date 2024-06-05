@@ -439,7 +439,7 @@ function getPageCode(address, callback, options = {}) {
         strictSSL: typeof options.skipCertificateCheck !== 'boolean' || options.skipCertificateCheck !== true,
         followRedirect: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
         maxRedirects: typeof options.maxRedirects !== 'number' ? 10 : options.maxRedirects,
-        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
+        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true, // follow non-GET HTTP 3xx responses as redirects
         headers: options.headers,
         jar: options.cookieJar,
         proxy: options.proxy,
@@ -508,7 +508,7 @@ function postData(address, data, callback, options = {}) {
         strictSSL: typeof options.skipCertificateCheck !== 'boolean' || options.skipCertificateCheck !== true,
         followRedirect: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
         maxRedirects: typeof options.maxRedirects !== 'number' ? 10 : options.maxRedirects,
-        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
+        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true, // follow non-GET HTTP 3xx responses as redirects
         headers: options.headers,
         jar: options.cookieJar,
         proxy: options.proxy,

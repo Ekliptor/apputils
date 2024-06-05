@@ -205,7 +205,7 @@ function solveChallenge(response, body, options, callback) {
     try {
         answerResponse = {
             'jschl_vc': jsChlVc,
-            'pass': challenge_pass,
+            'pass': challenge_pass, // same order of keys
             'jschl_answer': (eval(challenge) + response.request.host.length)
         };
     }
