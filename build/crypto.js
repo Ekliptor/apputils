@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decryptAes = exports.encryptAes = void 0;
+exports.encryptAes = encryptAes;
+exports.decryptAes = decryptAes;
 const crypto = require("crypto");
 function encryptAes(data, ivKeyHex, outputEncoding = "base64") {
     //data = this.pkcs5Pad(data, 'aes-128-cbc-blocksize')
@@ -11,7 +12,6 @@ function encryptAes(data, ivKeyHex, outputEncoding = "base64") {
     encData += encipher.final(outputEncoding);
     return encData;
 }
-exports.encryptAes = encryptAes;
 function decryptAes(data, ivKeyHex, outputEncoding = "utf8") {
     let iv = Buffer.from(ivKeyHex, 'hex');
     let key = Buffer.from(ivKeyHex, 'hex');
@@ -21,5 +21,4 @@ function decryptAes(data, ivKeyHex, outputEncoding = "utf8") {
     //decData = this.pkcs5Unpad(decData)
     return decData;
 }
-exports.decryptAes = decryptAes;
 //# sourceMappingURL=crypto.js.map

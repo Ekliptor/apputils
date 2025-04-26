@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAvailbleIP = exports.listAvailableIPs = exports.createCookie = void 0;
+exports.createCookie = createCookie;
+exports.listAvailableIPs = listAvailableIPs;
+exports.isAvailbleIP = isAvailbleIP;
 const os = require("os");
 const utils = require("./utils");
 function createCookie(key, value, url, expiresMin = 365 * 24 * 60) {
@@ -23,7 +25,6 @@ function createCookie(key, value, url, expiresMin = 365 * 24 * 60) {
     };
     return cookie;
 }
-exports.createCookie = createCookie;
 function listAvailableIPs() {
     let ifaces = os.networkInterfaces();
     let ips = [];
@@ -36,10 +37,8 @@ function listAvailableIPs() {
     }
     return ips;
 }
-exports.listAvailableIPs = listAvailableIPs;
 function isAvailbleIP(ip) {
     let ips = listAvailableIPs();
     return ips.indexOf(ip) !== -1;
 }
-exports.isAvailbleIP = isAvailbleIP;
 //# sourceMappingURL=http.js.map

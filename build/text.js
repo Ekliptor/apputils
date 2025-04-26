@@ -1,6 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.substrCount = exports.isPossibleJson = exports.unpackGzip = exports.packGzip = exports.isHtml = exports.addHtmlLineBreaks = exports.ensureMultiPlatformLineBreaks = exports.replaceLineBreaks = exports.splitLines = exports.getMetaContentType = exports.translate = exports.fixUrl = exports.getOrdinal = exports.getLastWordPosBackwards = exports.truncateWords = exports.getHighlightedString = exports.escapeRegex = exports.getDisplaySize = exports.formatBtc = exports.formatCurrency = exports.formatNumber = exports.regexIndexOf = exports.getBetween = void 0;
+exports.getBetween = getBetween;
+exports.regexIndexOf = regexIndexOf;
+exports.formatNumber = formatNumber;
+exports.formatCurrency = formatCurrency;
+exports.formatBtc = formatBtc;
+exports.getDisplaySize = getDisplaySize;
+exports.escapeRegex = escapeRegex;
+exports.getHighlightedString = getHighlightedString;
+exports.truncateWords = truncateWords;
+exports.getLastWordPosBackwards = getLastWordPosBackwards;
+exports.getOrdinal = getOrdinal;
+exports.fixUrl = fixUrl;
+exports.translate = translate;
+exports.getMetaContentType = getMetaContentType;
+exports.splitLines = splitLines;
+exports.replaceLineBreaks = replaceLineBreaks;
+exports.ensureMultiPlatformLineBreaks = ensureMultiPlatformLineBreaks;
+exports.addHtmlLineBreaks = addHtmlLineBreaks;
+exports.isHtml = isHtml;
+exports.packGzip = packGzip;
+exports.unpackGzip = unpackGzip;
+exports.isPossibleJson = isPossibleJson;
+exports.substrCount = substrCount;
 //let logger = require('../../src/utils/Logger')
 const utils = require("./utils.js");
 let winston = utils.logger;
@@ -33,25 +55,20 @@ function getBetween(text, startTxt, endTxt, options = {}) {
         return false;
     return text.substr(options.startPos, endPos - options.startPos);
 }
-exports.getBetween = getBetween;
 function regexIndexOf(str, regex, startpos) {
     let indexOf = str.substring(startpos || 0).search(regex);
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
-exports.regexIndexOf = regexIndexOf;
 function formatNumber(number, commaDigits, decimalSep, thousandSep) {
     var commaDigits = isNaN(commaDigits = Math.abs(commaDigits)) ? 2 : commaDigits, decimalSep = decimalSep == undefined ? "." : decimalSep, thousandSep = thousandSep == undefined ? "," : thousandSep, strOutput = number < 0 ? "-" : "", intNr = parseInt(number = Math.abs(+number || 0).toFixed(commaDigits)) + "", thousands = intNr.length > 3 ? intNr.length % 3 : 0;
     return strOutput + (thousands ? intNr.substr(0, thousands) + thousandSep : "") + intNr.substr(thousands).replace(/(\d{3})(?=\d)/g, "$1" + thousandSep) + (commaDigits ? decimalSep + Math.abs(number - intNr).toFixed(commaDigits).slice(2) : "");
 }
-exports.formatNumber = formatNumber;
 function formatCurrency(amount, tr) {
     return formatNumber(amount, 2, tr("decPoint"), tr("thousandsSep"));
 }
-exports.formatCurrency = formatCurrency;
 function formatBtc(amount, tr) {
     return formatNumber(amount, 8, tr("decPoint"), tr("thousandsSep"));
 }
-exports.formatBtc = formatBtc;
 function getDisplaySize(sizeBytes, tr = null) {
     if (tr === null)
         tr = getTranslateSizeFunction();
@@ -66,7 +83,6 @@ function getDisplaySize(sizeBytes, tr = null) {
     else // if (sizeBytes < 1024*1024*1024*1024*1024)
         return formatCurrency(sizeBytes / (1024 * 1024 * 1024 * 1024), tr) + ' ' + tr('tb');
 }
-exports.getDisplaySize = getDisplaySize;
 function getTranslateSizeFunction() {
     return (key) => {
         switch (key) {
@@ -80,7 +96,6 @@ function getTranslateSizeFunction() {
 function escapeRegex(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 }
-exports.escapeRegex = escapeRegex;
 /**
  * Highlight a string-result of a keyword search to show it in the browser
  * @param str the already html-escaped string
@@ -126,7 +141,6 @@ function getHighlightedString(str, keyword) {
     }
     return stringHighlighted.replaceAll("'", "&#39;");
 }
-exports.getHighlightedString = getHighlightedString;
 function truncateWords(text, length) {
     length = Math.floor(length);
     if (text.length > length) {
@@ -135,7 +149,6 @@ function truncateWords(text, length) {
     }
     return text;
 }
-exports.truncateWords = truncateWords;
 /**
  * Get's the position of the last word separator going backwards from beginIndex.
  * Index can be used as the first or second argument of substr() to cut a text by word separators.
@@ -155,13 +168,11 @@ function getLastWordPosBackwards(text, beginIndex) {
     let resultTxt = wordArr.join(' '); // assume all spaces, separator chars are only 1 char each
     return resultTxt.length + 1;
 }
-exports.getLastWordPosBackwards = getLastWordPosBackwards;
 function getOrdinal(n) {
     // http://en.wikipedia.org/wiki/Ordinal_indicator#English
     let s = ["th", "st", "nd", "rd"], v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
-exports.getOrdinal = getOrdinal;
 function fixUrl(url, hostBase) {
     if (url.match("^https?://") !== null)
         return url;
@@ -202,7 +213,6 @@ function fixUrl(url, hostBase) {
     }
     return urlStr;
 }
-exports.fixUrl = fixUrl;
 /**
  * Populate a html template
  * @param text {String}: The html template (or just normal text with variables)
@@ -264,7 +274,6 @@ function translate(text, tr, variables, safeHtml) {
     text = text.replace(/\\\\\\{/, "{");
     return text;
 }
-exports.translate = translate;
 function getMetaContentType(html, rawValue = false) {
     const quotes = ['"', "'"];
     const tags = ['<meta charset={quote}', '<meta http-equiv={quote}Content-Type{quote} content={quote}']; // HTML5 and HTML4
@@ -290,18 +299,15 @@ function getMetaContentType(html, rawValue = false) {
     }
     return false;
 }
-exports.getMetaContentType = getMetaContentType;
 function splitLines(textStr) {
     return textStr.split("\n").map(line => line.trim());
 }
-exports.splitLines = splitLines;
 function replaceLineBreaks(str) {
     // replace all html line breaks that have other line breaks with them first
     str = str.replace(new RegExp("(\r\n|\n)<br>|<br>(\r\n|\n)", "ig"), "\n");
     str = str.replace(new RegExp("<br>", "ig"), "\n");
     return str;
 }
-exports.replaceLineBreaks = replaceLineBreaks;
 /**
  * Makes sure line breaks in str are displayed correctly on windows and UNIX systems. Useful if you want to
  * send str as a plain text email.
@@ -311,7 +317,6 @@ exports.replaceLineBreaks = replaceLineBreaks;
 function ensureMultiPlatformLineBreaks(str) {
     return str.replace(/\r/g, "").replace(/\n/g, "\r\n");
 }
-exports.ensureMultiPlatformLineBreaks = ensureMultiPlatformLineBreaks;
 /**
  * Adds <br> tags to all line breaks in the string.
  * @param {string} str
@@ -323,7 +328,6 @@ function addHtmlLineBreaks(str, escape = true) {
         str = utils.escapeHtml(str);
     return str.replace(/(\r\n|\n)/g, "$1<br>");
 }
-exports.addHtmlLineBreaks = addHtmlLineBreaks;
 function isHtml(str) {
     if (!str)
         return false;
@@ -333,7 +337,6 @@ function isHtml(str) {
     // TODO more checks
     return false;
 }
-exports.isHtml = isHtml;
 /**
  * Returns a base64 gzipped string of the input
  * @param {Buffer | string} input
@@ -348,7 +351,6 @@ function packGzip(input) {
         });
     });
 }
-exports.packGzip = packGzip;
 /**
  * Returns an utf8 unzipped string of the input
  * @param {Buffer | string} input
@@ -365,7 +367,6 @@ function unpackGzip(input) {
         });
     });
 }
-exports.unpackGzip = unpackGzip;
 /**
  * A fast way to check if we should try to parse a string as json
  * @param {string} str
@@ -377,11 +378,9 @@ function isPossibleJson(str) {
         return false;
     return strTemp[0] === "{" || strTemp[0] === "[";
 }
-exports.isPossibleJson = isPossibleJson;
 function substrCount(str, find) {
     let regex = escapeRegex(find);
     let count = (str.match(new RegExp(regex, 'g')) || []).length;
     return count;
 }
-exports.substrCount = substrCount;
 //# sourceMappingURL=text.js.map

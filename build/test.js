@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.assertUnreachableCode = exports.dumpError = exports.getPassedTime = exports.createObject = exports.readData = void 0;
+exports.readData = readData;
+exports.createObject = createObject;
+exports.getPassedTime = getPassedTime;
+exports.dumpError = dumpError;
+exports.assertUnreachableCode = assertUnreachableCode;
 const fs = require("fs");
 function readData(path, cb) {
     fs.readFile(path, 'utf8', (err, data) => {
@@ -10,11 +14,9 @@ function readData(path, cb) {
         cb(testData);
     });
 }
-exports.readData = readData;
 function createObject(base, extend) {
     return Object.assign(base, extend);
 }
-exports.createObject = createObject;
 function getPassedTime(startMs, endMs = null) {
     if (endMs == null)
         endMs = Date.now();
@@ -32,7 +34,6 @@ function getPassedTime(startMs, endMs = null) {
         timeStr = Math.floor(totalTime / (1000 * 60 * 60)) + ' h';
     return timeStr;
 }
-exports.getPassedTime = getPassedTime;
 function dumpError(err, logger = null) {
     if (logger === null)
         logger = console;
@@ -61,9 +62,7 @@ function dumpError(err, logger = null) {
     output += '\r\n';
     return output;
 }
-exports.dumpError = dumpError;
 function assertUnreachableCode(x) {
     throw new Error("Unexpected object: " + x);
 }
-exports.assertUnreachableCode = assertUnreachableCode;
 //# sourceMappingURL=test.js.map
