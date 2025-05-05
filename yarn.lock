@@ -77,7 +77,7 @@
 
 "@types/strip-bom@^3.0.0":
   version "3.0.0"
-  resolved "http://registry.npmjs.org/@types/strip-bom/-/strip-bom-3.0.0.tgz#14a8ec3956c2e81edb7520790aecf21c290aebd2"
+  resolved "https://registry.npmjs.org/@types/strip-bom/-/strip-bom-3.0.0.tgz#14a8ec3956c2e81edb7520790aecf21c290aebd2"
 
 "@types/tough-cookie@*":
   version "2.3.2"
@@ -404,8 +404,8 @@ hi-base32@^0.2.0:
   resolved "https://registry.yarnpkg.com/hi-base32/-/hi-base32-0.2.0.tgz#ab9eadaef623f0505ab868ff64223c671a675d5e"
 
 hoek@4.x.x:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.0.tgz#72d9d0754f7fe25ca2d01ad8f8f9a9449a89526d"
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
 
 http-signature@~1.2.0:
   version "1.2.0"
