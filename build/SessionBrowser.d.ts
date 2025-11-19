@@ -1,3 +1,4 @@
+/// <reference types="request" />
 export declare class SessionBrowser {
     protected options: any;
     constructor(options?: {});

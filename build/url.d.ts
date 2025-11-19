@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import * as url from "url";
 export declare function parseUrl(linkStr: string): url.UrlWithStringQuery;
 export declare function getRootHostname(urlObj: string | url.UrlWithStringQuery, stripSubdomains?: boolean): string;
