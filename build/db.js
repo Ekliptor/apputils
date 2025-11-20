@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIdArray = getIdArray;
-exports.getAllPropertyProjection = getAllPropertyProjection;
+exports.getAllPropertyProjection = exports.getIdArray = void 0;
 function getIdArray(docs) {
     let ids = [];
     if (!docs)
@@ -10,6 +9,7 @@ function getIdArray(docs) {
         ids.push(docs[i]._id);
     return ids;
 }
+exports.getIdArray = getIdArray;
 function getAllPropertyProjection(doc) {
     doc = Object.assign({}, doc);
     for (let prop in doc) {
@@ -17,4 +17,5 @@ function getAllPropertyProjection(doc) {
     }
     return doc;
 }
+exports.getAllPropertyProjection = getAllPropertyProjection;
 //# sourceMappingURL=db.js.map

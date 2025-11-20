@@ -1,12 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setDecodeHtml = setDecodeHtml;
-exports.setKnownDomains = setKnownDomains;
-exports.setFilteredUrlParts = setFilteredUrlParts;
-exports.extractAllLinks = extractAllLinks;
-exports.extractHosterLinks = extractHosterLinks;
-exports.extractCrypterLinks = extractCrypterLinks;
-exports.exctractCustomLinks = exctractCustomLinks;
+exports.exctractCustomLinks = exports.extractCrypterLinks = exports.extractHosterLinks = exports.extractAllLinks = exports.setFilteredUrlParts = exports.setKnownDomains = exports.setDecodeHtml = void 0;
 const querystring = require("querystring");
 let decodeHtmlLinks = false;
 //const knownDomain = require(global.__legacyModules ? '../_db/_mongodb/models/knownDomain' : '../../models/knownDomain')
@@ -133,6 +127,7 @@ let getExternalLinks = (html, domain) => {
 function setDecodeHtml(decode) {
     decodeHtmlLinks = decode;
 }
+exports.setDecodeHtml = setDecodeHtml;
 function setKnownDomains(knownDomainModule) {
     const requireSet = ["DEREFERER", "DOMAINS", "CRYPTERS", "IGNORE_LIST"];
     const requiredFun = ["isHoster", "isCrypter"];
@@ -146,14 +141,17 @@ function setKnownDomains(knownDomainModule) {
     }
     knownDomain = knownDomainModule;
 }
+exports.setKnownDomains = setKnownDomains;
 function setFilteredUrlParts(filteredArr) {
     filteredParts = filteredArr;
 }
+exports.setFilteredUrlParts = setFilteredUrlParts;
 function extractAllLinks(html, cb = null) {
     let links = getExternalLinks(html, "");
     links = utils.getUniqueUrls(links);
     cb && cb(null, links);
 }
+exports.extractAllLinks = extractAllLinks;
 function extractHosterLinks(html, decrypt = false, cb = null) {
     // TODO if decrypt is set to true:
     // 1. search also for domain names without extension
@@ -172,6 +170,7 @@ function extractHosterLinks(html, decrypt = false, cb = null) {
     links = utils.getUniqueUrls(links);
     cb && cb(null, links);
 }
+exports.extractHosterLinks = extractHosterLinks;
 function extractCrypterLinks(html, decrypt = false, cb = null) {
     if (decrypt === true)
         throw "extractCrypterLinks() with decrypt option is not yet implemented";
@@ -186,6 +185,7 @@ function extractCrypterLinks(html, decrypt = false, cb = null) {
     // TODO decrypt async in here with new function extractor.decryptLinks()
     cb && cb(null, links);
 }
+exports.extractCrypterLinks = extractCrypterLinks;
 function exctractCustomLinks(html, protocol = 'http', domain = '', cb = null) {
     let htmlLower = html.toLocaleLowerCase();
     if (htmlLower.length !== html.length)
@@ -196,4 +196,5 @@ function exctractCustomLinks(html, protocol = 'http', domain = '', cb = null) {
     links = utils.getUniqueUrls(links);
     cb && cb(null, links);
 }
+exports.exctractCustomLinks = exctractCustomLinks;
 //# sourceMappingURL=linkExtractor.js.map

@@ -1,25 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fileExists = fileExists;
-exports.getFolderSize = getFolderSize;
-exports.getFileSize = getFileSize;
-exports.removeFolder = removeFolder;
-exports.listDir = listDir;
-exports.getExistingFiles = getExistingFiles;
-exports.getFileExtension = getFileExtension;
-exports.getNameFromPath = getNameFromPath;
-exports.getDirFromPath = getDirFromPath;
-exports.copy = copy;
-exports.copyFile = copyFile;
-exports.deleteFiles = deleteFiles;
-exports.removeUnallowedChars = removeUnallowedChars;
-exports.touch = touch;
-exports.isSafePath = isSafePath;
-exports.cleanupDir = cleanupDir;
-exports.getInstallDate = getInstallDate;
-exports.readFile = readFile;
-exports.ensureDir = ensureDir;
-exports.ensureDirPath = ensureDirPath;
+exports.ensureDirPath = exports.ensureDir = exports.readFile = exports.getInstallDate = exports.cleanupDir = exports.isSafePath = exports.touch = exports.removeUnallowedChars = exports.deleteFiles = exports.copyFile = exports.copy = exports.getDirFromPath = exports.getNameFromPath = exports.getFileExtension = exports.getExistingFiles = exports.listDir = exports.removeFolder = exports.getFileSize = exports.getFolderSize = exports.fileExists = void 0;
 //let logger = require('../../src/utils/Logger')
 const fs = require("fs");
 const path = require("path");
@@ -36,6 +17,7 @@ function fileExists(location, orDirectory = true) {
     catch (error) { }
     return false;
 }
+exports.fileExists = fileExists;
 function getFolderSize(folderPath, callback) {
     fs.lstat(folderPath, (err, stat) => {
         if (err)
@@ -61,6 +43,7 @@ function getFolderSize(folderPath, callback) {
             callback(err, totalSize);
     });
 }
+exports.getFolderSize = getFolderSize;
 /**
  * Get the size in bytes of a file (symbolic links followed).
  * If the file doesn't exist this function returns 0.
@@ -77,6 +60,7 @@ async function getFileSize(filePath) {
         throw err;
     }
 }
+exports.getFileSize = getFileSize;
 /**
  * Delete a folder (or single file) with all its files recursively.
  * @param folderPath
@@ -111,6 +95,7 @@ function removeFolder(folderPath, callback) {
         }
     });
 }
+exports.removeFolder = removeFolder;
 /**
  * Recursively lists all files in a folder. Only files are returned. Folders do not get a separate entry.
  * Instead they are part of the relative path of the listed files.
@@ -158,6 +143,7 @@ function listDir(folderPath, callback, replacePath) {
         });
     });
 }
+exports.listDir = listDir;
 function getExistingFiles(filesArr, callback) {
     Promise.all(filesArr.map((file) => {
         return new Promise((resolve, reject) => {
@@ -173,6 +159,7 @@ function getExistingFiles(filesArr, callback) {
         }));
     });
 }
+exports.getExistingFiles = getExistingFiles;
 function getFileExtension(name, withDot = true, defaultExt = '') {
     let pos = name.lastIndexOf('.');
     if (pos === -1)
@@ -184,6 +171,7 @@ function getFileExtension(name, withDot = true, defaultExt = '') {
         return defaultExt;
     return extension.toLowerCase();
 }
+exports.getFileExtension = getFileExtension;
 /**
  * Used to get names from URL paths (and UNIX style paths)
  * @param path
@@ -195,12 +183,14 @@ function getNameFromPath(path) {
         return path;
     return path.substr(pos + 1);
 }
+exports.getNameFromPath = getNameFromPath;
 function getDirFromPath(path) {
     let pos = path.lastIndexOf('/');
     if (pos === -1)
         return path;
     return path.substr(0, pos);
 }
+exports.getDirFromPath = getDirFromPath;
 /**
  * Copy a file from source to target.
  * @deprecated use the official fs.copyFile() instead
@@ -224,6 +214,7 @@ function copy(source, target) {
         rd.pipe(wr);
     });
 }
+exports.copy = copy;
 /**
  * Copy a file from source to destination. This function will create the folders to the destination if they don't
  * exist.
@@ -252,6 +243,7 @@ function copyFile(source, dest, overwrite = true) {
         });
     });
 }
+exports.copyFile = copyFile;
 /**
  * Delete an array of files.
  * @param filesArr {Array} the strings of files. Use an inner array to concatenate paths platform specific [['path/to', 'my', 'file']]
@@ -281,11 +273,13 @@ function deleteFiles(filesArr) {
         });
     });
 }
+exports.deleteFiles = deleteFiles;
 function removeUnallowedChars(filename) {
     // http://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names
     // missing: All control codes (<= 31)
     return filename.replace(/[\/\0<>:"\\|\?\*]/g, "");
 }
+exports.removeUnallowedChars = removeUnallowedChars;
 /**
  * Creates a file if it doesn't already exist
  * @param filename
@@ -312,6 +306,7 @@ function touch(filename, contents = "") {
         });
     });
 }
+exports.touch = touch;
 function isSafePath(pathStr, appDir = "") {
     if (!appDir)
         appDir = utils.appDir;
@@ -320,6 +315,7 @@ function isSafePath(pathStr, appDir = "") {
         return false;
     return true;
 }
+exports.isSafePath = isSafePath;
 function cleanupDir(dirPath, maxAgeMin, create = true) {
     return new Promise((resolve, reject) => {
         fs.readdir(dirPath, (err, files) => {
@@ -365,6 +361,7 @@ function cleanupDir(dirPath, maxAgeMin, create = true) {
         });
     });
 }
+exports.cleanupDir = cleanupDir;
 function getInstallDate() {
     return new Promise((resolve, reject) => {
         let checkFiles = ["updater.json", "package.json"]; // package.json is not always modified on update, check it last
@@ -386,6 +383,7 @@ function getInstallDate() {
         checkNextFile(checkFiles.shift());
     });
 }
+exports.getInstallDate = getInstallDate;
 /**
  * Read a faile and return a promise.
  * @param {string} file
@@ -406,6 +404,7 @@ function readFile(file, options) {
         });
     });
 }
+exports.readFile = readFile;
 /**
  * Creates the given directory if it doesn't already exist.
  * @param {string} dirPath
@@ -431,6 +430,7 @@ function ensureDir(dirPath) {
         });
     });
 }
+exports.ensureDir = ensureDir;
 /**
  * Creates a directory and subdirs recursively
  * @param {string} dirPath
@@ -450,4 +450,5 @@ async function ensureDirPath(dirPath, baseDir = "") {
         await ensureDir(curPath);
     }
 }
+exports.ensureDirPath = ensureDirPath;
 //# sourceMappingURL=file.js.map

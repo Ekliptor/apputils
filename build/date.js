@@ -1,24 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dateFromString = dateFromString;
-exports.dateFromJson = dateFromJson;
-exports.dateFromJsonArr = dateFromJsonArr;
-exports.dateFromUtc = dateFromUtc;
-exports.dateAdd = dateAdd;
-exports.createDateAsUTC = createDateAsUTC;
-exports.convertDateToUTC = convertDateToUTC;
-exports.getOtherServerDate = getOtherServerDate;
-exports.getDateInTimezone = getDateInTimezone;
-exports.toDateTimeStr = toDateTimeStr;
-exports.formatDate = formatDate;
-exports.formatTime = formatTime;
-exports.formatDateTime = formatDateTime;
-exports.parseElapsedUnixProcessDate = parseElapsedUnixProcessDate;
-exports.getElapsedUnixProcessTime = getElapsedUnixProcessTime;
-exports.overlaps = overlaps;
-exports.parseAsGmt0 = parseAsGmt0;
-exports.toHourMinuteStr = toHourMinuteStr;
-exports.toDayHourStr = toDayHourStr;
+exports.toDayHourStr = exports.toHourMinuteStr = exports.parseAsGmt0 = exports.overlaps = exports.getElapsedUnixProcessTime = exports.parseElapsedUnixProcessDate = exports.formatDateTime = exports.formatTime = exports.formatDate = exports.toDateTimeStr = exports.getDateInTimezone = exports.getOtherServerDate = exports.convertDateToUTC = exports.createDateAsUTC = exports.dateAdd = exports.dateFromUtc = exports.dateFromJsonArr = exports.dateFromJson = exports.dateFromString = void 0;
 const utils = require("./utils");
 const childProcess = require("child_process");
 const exec = childProcess.exec;
@@ -26,6 +8,7 @@ const os = require("os");
 function dateFromString(date) {
     return new Date(date.replace(" ", "T"));
 }
+exports.dateFromString = dateFromString;
 function dateFromJson(obj, datePros) {
     for (let prop of datePros) {
         if (obj[prop])
@@ -33,12 +16,14 @@ function dateFromJson(obj, datePros) {
     }
     return obj;
 }
+exports.dateFromJson = dateFromJson;
 function dateFromJsonArr(objArr, dateProps) {
     for (let i = 0; i < objArr.length; i++) {
         objArr[i] = dateFromJson(objArr[i], dateProps);
     }
     return objArr;
 }
+exports.dateFromJsonArr = dateFromJsonArr;
 /**
  * Create a new Date just like with the Date() constructor, but with UTC values instead of local values.
  * @returns {Date}
@@ -58,6 +43,7 @@ function dateFromUtc(year, month, date, hours, minutes, seconds, ms) {
         utcDate.setUTCMilliseconds(ms);
     return utcDate;
 }
+exports.dateFromUtc = dateFromUtc;
 // getCurrentTick() in utils
 /**
  * Adds the given units of interval to the date.
@@ -99,22 +85,27 @@ function dateAdd(date, interval, units) {
     }
     return ret;
 }
+exports.dateAdd = dateAdd;
 function createDateAsUTC(date) {
     return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
 }
+exports.createDateAsUTC = createDateAsUTC;
 function convertDateToUTC(date) {
     return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 }
+exports.convertDateToUTC = convertDateToUTC;
 function getOtherServerDate(serverTimezoneOffset, ms = true) {
     // new Date("2016-10-18 21:51:52+00:00 GMT+0200") for germany in DST, otherwise GMT+0100 (hhmm)
     var date = new Date();
     var msDate = date.getTime() + (date.getTimezoneOffset() - serverTimezoneOffset) * 60000;
     return ms === true ? msDate : msDate / 1000;
 }
+exports.getOtherServerDate = getOtherServerDate;
 function getDateInTimezone(date, timezoneOffset) {
     var msDate = date.getTime() + (date.getTimezoneOffset() - timezoneOffset) * 60000;
     return new Date(msDate);
 }
+exports.getDateInTimezone = getDateInTimezone;
 /**
  * Return a readable unix time string, for example: 2018-09-16 07:04:30
  * @param now
@@ -133,16 +124,20 @@ function toDateTimeStr(now, withSeconds = true, utc = true) {
         date += ' ' + utils.padNumber(now.getHours(), 2) + ':' + utils.padNumber(now.getMinutes(), 2) + ':' + utils.padNumber(now.getSeconds(), 2);
     return date;
 }
+exports.toDateTimeStr = toDateTimeStr;
 function formatDate(dateFormat, date) {
     return dateFormat.replace("DD", utils.padNumber(date.getDate(), 2)).replace("MM", utils.padNumber(date.getMonth() + 1, 2)).replace("YYYY", date.getFullYear().toString());
 }
+exports.formatDate = formatDate;
 function formatTime(dateFormat, date) {
     return dateFormat.replace("HH", utils.padNumber(date.getHours(), 2)).replace("ii", utils.padNumber(date.getMinutes(), 2)).replace("ss", utils.padNumber(date.getSeconds(), 2));
 }
+exports.formatTime = formatTime;
 function formatDateTime(dateFormat, date) {
     let result = formatDate(dateFormat, date);
     return formatTime(result, date);
 }
+exports.formatDateTime = formatDateTime;
 /**
  * Parse a process date string from "etime" shell command and return it as a Date object.
  * @param elapsedStr
@@ -164,6 +159,7 @@ function parseElapsedUnixProcessDate(elapsedStr) {
     elapsed = utils.date.dateAdd(elapsed, 'second', -1 * parseInt(timeParts.shift()));
     return elapsed;
 }
+exports.parseElapsedUnixProcessDate = parseElapsedUnixProcessDate;
 /**
  * Get the time when a process was started
  * @param PID
@@ -185,6 +181,7 @@ function getElapsedUnixProcessTime(PID) {
         });
     });
 }
+exports.getElapsedUnixProcessTime = getElapsedUnixProcessTime;
 function overlaps(range1, range2, allowEqual = false) {
     if (!range1 || !range2)
         return false;
@@ -196,11 +193,13 @@ function overlaps(range1, range2, allowEqual = false) {
         return (e1start >= e2start && e1start <= e2end) || (e2start >= e1start && e2start <= e1end);
     return (e1start > e2start && e1start < e2end) || (e2start > e1start && e2start < e1end);
 }
+exports.overlaps = overlaps;
 function parseAsGmt0(dateStr) {
     if (dateStr.indexOf(" GMT+0000") !== -1)
         return new Date(dateStr);
     return new Date(dateStr + " GMT+0000");
 }
+exports.parseAsGmt0 = parseAsGmt0;
 /**
  * Get a HH:mm string
  * @param {number} hours
@@ -214,6 +213,7 @@ function toHourMinuteStr(hours, isMinutes = false) {
     let minutes = Math.floor((hours - fullHours) * 60);
     return utils.padNumber(fullHours, 2) + ":" + utils.padNumber(minutes, 2);
 }
+exports.toHourMinuteStr = toHourMinuteStr;
 /**
  * Get a DD:HH string
  * @param {number} days
@@ -227,5 +227,6 @@ function toDayHourStr(days, isHours = false) {
     let hours = Math.floor((days - fullDays) * 24);
     return utils.padNumber(fullDays, 2) + ":" + utils.padNumber(hours, 2);
 }
+exports.toDayHourStr = toDayHourStr;
 // to check if DST is in effect on LOCAL time: http://stackoverflow.com/questions/11887934/check-if-daylight-saving-time-is-in-effect-and-if-it-is-for-how-many-hours
 //# sourceMappingURL=date.js.map

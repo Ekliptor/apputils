@@ -1,19 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseUrl = parseUrl;
-exports.getRootHostname = getRootHostname;
-exports.getRootHost = getRootHost;
-exports.formatUrl = formatUrl;
-exports.addParamToUrl = addParamToUrl;
-exports.getUrlParameters = getUrlParameters;
-exports.isValidLink = isValidLink;
-exports.isMediaLink = isMediaLink;
-exports.isImageLink = isImageLink;
-exports.isVideoLink = isVideoLink;
-exports.getRawHeaderObject = getRawHeaderObject;
-exports.isValidDomain = isValidDomain;
-exports.getLangReqHeader = getLangReqHeader;
-exports.getFileNameFromUrl = getFileNameFromUrl;
+exports.getFileNameFromUrl = exports.getLangReqHeader = exports.isValidDomain = exports.getRawHeaderObject = exports.isVideoLink = exports.isImageLink = exports.isMediaLink = exports.isValidLink = exports.getUrlParameters = exports.addParamToUrl = exports.formatUrl = exports.getRootHost = exports.getRootHostname = exports.parseUrl = void 0;
 const utils = require("./utils");
 const url = require("url");
 //import {UrlWithStringQuery} from "url";
@@ -22,6 +9,7 @@ function parseUrl(linkStr) {
         linkStr = 'http://' + linkStr;
     return url.parse(linkStr); // returns protocol=hostname if we pass in a host
 }
+exports.parseUrl = parseUrl;
 function getRootHostname(urlObj, stripSubdomains = false) {
     if (typeof urlObj === "string")
         urlObj = parseUrl(urlObj);
@@ -31,6 +19,7 @@ function getRootHostname(urlObj, stripSubdomains = false) {
         return urlObj.hostname.replace(/^(.+\.)+([^\.]+\.[^\.]+)$/, '$2');
     return urlObj.hostname.replace(/^[a-z0-9\-]*\.(.+)\.(.+)$/i, '$1.$2');
 }
+exports.getRootHostname = getRootHostname;
 function getRootHost(urlObj, stripSubdomains = false) {
     if (typeof urlObj === "string")
         urlObj = parseUrl(urlObj);
@@ -40,6 +29,7 @@ function getRootHost(urlObj, stripSubdomains = false) {
         return urlObj.host.replace(/^(.+\.)+([^\.]+\.[^\.]+)$/, '$2');
     return urlObj.host.replace(/^[a-z0-9\-]*\.(.+)\.(.+)$/i, '$1.$2');
 }
+exports.getRootHost = getRootHost;
 function formatUrl(urlObj, removeFragment = true) {
     let urlStr = url.format(urlObj);
     if (removeFragment === true) {
@@ -55,6 +45,7 @@ function formatUrl(urlObj, removeFragment = true) {
     }
     return urlStr;
 }
+exports.formatUrl = formatUrl;
 function addParamToUrl(urlStr, key, value = '1', overwrite = false) {
     let start = urlStr.indexOf('?');
     if (start !== -1 && urlStr.indexOf(key + '=') !== -1) {
@@ -67,6 +58,7 @@ function addParamToUrl(urlStr, key, value = '1', overwrite = false) {
     let queryParam = urlStr.indexOf('?') !== -1 ? '&' : '?';
     return urlStr + queryParam + key + '=' + value;
 }
+exports.addParamToUrl = addParamToUrl;
 /* part of urlUtils.parseUrl() except for # params (which are only present on url.hash as string and not sent on HTTP requests)
 but a parameter map is missing in parseUrl(), see below
 export function getUrlParameters(urlStr, decode = true) {
@@ -135,6 +127,7 @@ function getUrlParameters(url, decode = false) {
     }
     return parameters;
 }
+exports.getUrlParameters = getUrlParameters;
 /**
  * Helper function to filter invalid JS strings when crawling
  * @param {string} urlStr
@@ -145,12 +138,15 @@ function isValidLink(urlStr) {
         return false;
     return urlStr.length > 5 && urlStr.indexOf(".") !== -1; // urlStr != "null" && urlStr != "undefined"
 }
+exports.isValidLink = isValidLink;
 function isMediaLink(urlStr) {
     return urlStr.match(utils.conf.IMAGE_EXT_REGEX) !== null || urlStr.match(utils.conf.VIDEO_EXT_REGEX) !== null;
 }
+exports.isMediaLink = isMediaLink;
 function isImageLink(urlStr) {
     return urlStr.match(utils.conf.IMAGE_EXT_REGEX) !== null;
 }
+exports.isImageLink = isImageLink;
 function isVideoLink(urlStr, allowHtmlEnding = false) {
     if (allowHtmlEnding === true) {
         // http://foo.com/name.mp4.html
@@ -158,6 +154,7 @@ function isVideoLink(urlStr, allowHtmlEnding = false) {
     }
     return urlStr.match(utils.conf.VIDEO_EXT_REGEX) !== null;
 }
+exports.isVideoLink = isVideoLink;
 function getRawHeaderObject(headerArr) {
     // response.rawHeaders:
     // ['Host',
@@ -167,10 +164,12 @@ function getRawHeaderObject(headerArr) {
         headers[headerArr[i]] = headerArr[i + 1];
     return headers;
 }
+exports.getRawHeaderObject = getRawHeaderObject;
 function isValidDomain(domain) {
     let regex = new RegExp('^([a-z0-9\\-]+\\.)*[a-z0-9\\-]{2,}\\.[a-z]{2,6}$', 'i');
     return regex.test(domain);
 }
+exports.isValidDomain = isValidDomain;
 /**
  * Returns a valid "Accept-Language" header. For example: en-US,en;q=0.5
  * @param {string} langOrLocale "en" or "en-GB",....
@@ -182,10 +181,12 @@ function getLangReqHeader(langOrLocale) {
         return langParts[0].toLowerCase() + "-" + langParts[0].toUpperCase() + "," + langParts[0].toLowerCase() + ";q=0.5";
     return langParts[0].toLowerCase() + "-" + langParts[1].toUpperCase() + "," + langParts[0].toLowerCase() + ";q=0.5";
 }
+exports.getLangReqHeader = getLangReqHeader;
 function getFileNameFromUrl(url) {
     let pos = url.lastIndexOf("/");
     if (pos === -1)
         return url;
     return url.substr(pos + 1);
 }
+exports.getFileNameFromUrl = getFileNameFromUrl;
 //# sourceMappingURL=url.js.map

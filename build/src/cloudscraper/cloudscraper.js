@@ -1,9 +1,7 @@
 "use strict";
 // from https://github.com/codemanki/cloudscraper
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.get = get;
-exports.post = post;
-exports.request = request;
+exports.request = exports.post = exports.get = void 0;
 const vm = require("vm");
 const requestModule = require('request');
 const jar = requestModule.jar();
@@ -37,6 +35,7 @@ function get(url, callback, headers) {
         headers: headers
     }, callback);
 }
+exports.get = get;
 ;
 /**
  * Performs post request to url with headers.
@@ -67,6 +66,7 @@ function post(url, body, callback, headers) {
         headers: headers
     }, callback);
 }
+exports.post = post;
 /**
  * Performs get or post request with generic request options
  * @param {Object}   options   Object to be passed to request's options argument
@@ -75,6 +75,7 @@ function post(url, body, callback, headers) {
 function request(options, callback) {
     return performRequest(options, callback);
 }
+exports.request = request;
 function performRequest(options, callback) {
     let method;
     options = options || {};
