@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addChildProcessArgument = void 0;
+exports.addChildProcessArgument = addChildProcessArgument;
 function addChildProcessArgument(args, key, value) {
     let argsCopy = Object.assign([], args);
     let keyLen = key.length;
@@ -16,5 +16,4 @@ function addChildProcessArgument(args, key, value) {
         argsCopy.push(key + "=" + value);
     return argsCopy;
 }
-exports.addChildProcessArgument = addChildProcessArgument;
 //# sourceMappingURL=process.js.map

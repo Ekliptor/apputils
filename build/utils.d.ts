@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import * as nconf from "nconf";
 import * as winstonGlobal from "winston";
 import { sprintf, vsprintf } from "sprintf-js";

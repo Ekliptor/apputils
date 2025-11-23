@@ -1,6 +1,7 @@
 "use strict";
 // https://github.com/sindresorhus/deep-assign/blob/master/index.js
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = deepAssign;
 const isObj = require('../objects').isObject;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const propIsEnumerable = Object.prototype.propertyIsEnumerable;
@@ -67,6 +68,5 @@ function deepAssign(target, ...from) {
     }
     return target;
 }
-exports.default = deepAssign;
 ;
 //# sourceMappingURL=deepAssign.js.map

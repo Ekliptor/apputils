@@ -1,6 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deepAssign = exports.getdObjectValues = exports.getIndexedObjectValues = exports.isSameElementArray = exports.getPlainArrayData = exports.fillCreateArray = exports.applyMixins = exports.isEmpty = exports.removeElasticsearchProperties = exports.cartesianProduct = exports.permute = exports.countArrayValues = exports.isObject = exports.getUniqueResults = exports.aggregateToLimit = exports.mergeOrderedArray = exports.mergeNumberObjects = exports.concatInnerArrays = exports.getValueArr = exports.getKeyArr = exports.sortByKey = exports.sortByValue = exports.mapFromToupleArray = exports.getFirstKey = exports.objectToStrMap = exports.OBJECT_OVERWRITES = void 0;
+exports.deepAssign = exports.OBJECT_OVERWRITES = void 0;
+exports.objectToStrMap = objectToStrMap;
+exports.getFirstKey = getFirstKey;
+exports.mapFromToupleArray = mapFromToupleArray;
+exports.sortByValue = sortByValue;
+exports.sortByKey = sortByKey;
+exports.getKeyArr = getKeyArr;
+exports.getValueArr = getValueArr;
+exports.concatInnerArrays = concatInnerArrays;
+exports.mergeNumberObjects = mergeNumberObjects;
+exports.mergeOrderedArray = mergeOrderedArray;
+exports.aggregateToLimit = aggregateToLimit;
+exports.getUniqueResults = getUniqueResults;
+exports.isObject = isObject;
+exports.countArrayValues = countArrayValues;
+exports.permute = permute;
+exports.cartesianProduct = cartesianProduct;
+exports.removeElasticsearchProperties = removeElasticsearchProperties;
+exports.isEmpty = isEmpty;
+exports.applyMixins = applyMixins;
+exports.fillCreateArray = fillCreateArray;
+exports.getPlainArrayData = getPlainArrayData;
+exports.isSameElementArray = isSameElementArray;
+exports.getIndexedObjectValues = getIndexedObjectValues;
+exports.getdObjectValues = getdObjectValues;
 // nothing to export here. just include this file to extend some objects
 // for calling parent http://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
 // but we can't overwrite node module functions
@@ -93,7 +117,6 @@ function objectToStrMap(object) {
         strMap.set(k, object[k]);
     return strMap;
 }
-exports.objectToStrMap = objectToStrMap;
 /**
  * Return the first key of an object.
  * @param object
@@ -103,7 +126,6 @@ function getFirstKey(object) {
         return k;
     return null;
 }
-exports.getFirstKey = getFirstKey;
 /**
  * Restore a map which has been serialized using toToupleArray().
  * For nested maps this function will only restore the root map entries.
@@ -114,7 +136,6 @@ function mapFromToupleArray(arr) {
     // Might be simpler to just unserialize those maps in their constructor.
     return new Map(arr); // array is a valid iterator
 }
-exports.mapFromToupleArray = mapFromToupleArray;
 Array.prototype.mathMax = function () {
     return Math.max.apply(null, this); // or Math.min.apply(Math, array)
 };
@@ -166,7 +187,6 @@ function sortByValue(map, ascending = true) {
     }
     return sortable;
 }
-exports.sortByValue = sortByValue;
 /**
  * Sort an object by key
  * @param unordered The unordered object
@@ -184,21 +204,18 @@ function sortByKey(unordered, compareFn) {
     });
     return ordered;
 }
-exports.sortByKey = sortByKey;
 function getKeyArr(sortedArr) {
     let keyArr = [];
     for (let key of sortedArr)
         keyArr.push(key[0]);
     return keyArr;
 }
-exports.getKeyArr = getKeyArr;
 function getValueArr(sortedArr) {
     let valArr = [];
     for (let key of sortedArr)
         valArr.push(key[1]);
     return valArr;
 }
-exports.getValueArr = getValueArr;
 function concatInnerArrays(outerArray) {
     let allInner = [];
     for (let curInner of outerArray) {
@@ -207,7 +224,6 @@ function concatInnerArrays(outerArray) {
     }
     return allInner;
 }
-exports.concatInnerArrays = concatInnerArrays;
 function mergeNumberObjects(...objArgs) {
     let merged = {};
     for (let i = 0; i < arguments.length; i++) {
@@ -221,7 +237,6 @@ function mergeNumberObjects(...objArgs) {
     }
     return merged;
 }
-exports.mergeNumberObjects = mergeNumberObjects;
 /**
  * Merge array-properties of objects which have been created using sortByValue()
  * @param ascending {bool} ascending or descending
@@ -269,7 +284,6 @@ function mergeOrderedArray(ascending = true, ...objArgs) {
     }
     return merged;
 }
-exports.mergeOrderedArray = mergeOrderedArray;
 /**
  * Returns an array of limit elements. The last element in the array called 'other' will be the accumulated count of the remaining elements.
  * @param map An Object or Map to sort by value.
@@ -296,7 +310,6 @@ function aggregateToLimit(map, limit) {
         aggregate.push(['other', otherValue]);
     return aggregate;
 }
-exports.aggregateToLimit = aggregateToLimit;
 function getUniqueResults(resultArr, uniqueProp, propFilterFn) {
     let filter = new Map(); // map guarantess key order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Objects_and_maps_compared
     if (typeof propFilterFn !== 'function') {
@@ -316,13 +329,11 @@ function getUniqueResults(resultArr, uniqueProp, propFilterFn) {
     //resultArr.push(result)
     return resultArr;
 }
-exports.getUniqueResults = getUniqueResults;
 function isObject(x) {
     // https://github.com/sindresorhus/is-obj/blob/master/index.js
     let type = typeof x;
     return x !== null && (type === 'object' || type === 'function');
 }
-exports.isObject = isObject;
 /**
  * Counts how often each value is present in the array
  * @param arr
@@ -340,7 +351,6 @@ function countArrayValues(arr) {
     });
     return count;
 }
-exports.countArrayValues = countArrayValues;
 /**
  * Generate all n! permutations of all elements in a[].
  * // https://en.wikipedia.org/wiki/Heap%27s_algorithm
@@ -362,7 +372,6 @@ function* permute(a, n = a.length) {
         }
     }
 }
-exports.permute = permute;
 /**
  * Returns the cartesian product of all elements in the inner arrays.
  * example call: utils.objects.cartesianProduct(["ab".split(""), "xy".split("")]);
@@ -378,7 +387,6 @@ function cartesianProduct(arrOfArrays) {
         }).reduce((a, b) => { return a.concat(b); }, []);
     }, [[]]);
 }
-exports.cartesianProduct = cartesianProduct;
 function removeElasticsearchProperties(doc) {
     delete doc._source;
     delete doc._index;
@@ -386,13 +394,11 @@ function removeElasticsearchProperties(doc) {
     delete doc._score;
     return doc;
 }
-exports.removeElasticsearchProperties = removeElasticsearchProperties;
 function isEmpty(obj) {
     // because Object.keys(new Date()).length === 0;
     // we have to do some additional check
     return Object.keys(obj).length === 0 && obj.constructor === Object;
 }
-exports.isEmpty = isEmpty;
 function applyMixins(derivedCtor, baseCtors) {
     baseCtors.forEach(baseCtor => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
@@ -402,7 +408,6 @@ function applyMixins(derivedCtor, baseCtors) {
         });
     });
 }
-exports.applyMixins = applyMixins;
 /**
  * Creates an array with length elements which all contain value.
  * @param value
@@ -414,7 +419,6 @@ function fillCreateArray(value, length) {
         arr.push(value);
     return arr;
 }
-exports.fillCreateArray = fillCreateArray;
 /**
  * Returns a plain object (not nested object) from an array of objects.
  * Plain object keys will be named: keyPrefix + index in original array + original key
@@ -430,7 +434,6 @@ function getPlainArrayData(arr, keyPrefix = "arr_") {
     }
     return plain;
 }
-exports.getPlainArrayData = getPlainArrayData;
 /**
  * Checks if the arrays contain the same elements in the same order (by reference), so they are identical.
  * @param arr1
@@ -445,7 +448,6 @@ function isSameElementArray(arr1, arr2) {
     }
     return true;
 }
-exports.isSameElementArray = isSameElementArray;
 /**
  * Returns the values of an object as a plain array.
  * Values may be null/undefined.
@@ -456,7 +458,6 @@ exports.isSameElementArray = isSameElementArray;
 function getIndexedObjectValues(obj) {
     return Object.entries(obj).map(o => o[1]);
 }
-exports.getIndexedObjectValues = getIndexedObjectValues;
 /**
  * Returns the values of an object as a plain array.
  * Values may be null/undefined.
@@ -465,7 +466,6 @@ exports.getIndexedObjectValues = getIndexedObjectValues;
 function getdObjectValues(obj) {
     return Object.entries(obj).map(o => o[1]);
 }
-exports.getdObjectValues = getdObjectValues;
 /* // promises will always get executed. only results will be in the order supplied here. only possible with an array of functions (see async library)
 export function promiseAllSequence<T>(promises: Promise<T>[]) {
     return new Promise<T[]> ((resolve, reject) => {
