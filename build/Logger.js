@@ -76,9 +76,9 @@ else if (cluster.isMaster) {
         }
         logTransports.push(new (winston.transports.File)({
             level: nconf.get('debug') === true ? 'debug' : 'info',
-            filename: logfile,
+            filename: logfile, // will be realtive to app root
             json: nconf.get('jsonLog') === true,
-            maxsize: 200 * 1024 * 1024,
+            maxsize: 200 * 1024 * 1024, // 200 MB
             maxFiles: 3,
             timestamp: () => {
                 return (require('./utils.js')).getUnixTimeStr(true);
