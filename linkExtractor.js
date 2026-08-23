@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.exctractCustomLinks = exports.extractCrypterLinks = exports.extractHosterLinks = exports.extractAllLinks = exports.setFilteredUrlParts = exports.setKnownDomains = exports.setDecodeHtml = void 0;
+exports.setDecodeHtml = setDecodeHtml;
+exports.setKnownDomains = setKnownDomains;
+exports.setFilteredUrlParts = setFilteredUrlParts;
+exports.extractAllLinks = extractAllLinks;
+exports.extractHosterLinks = extractHosterLinks;
+exports.extractCrypterLinks = extractCrypterLinks;
+exports.exctractCustomLinks = exctractCustomLinks;
 var querystring = require("querystring");
 var decodeHtmlLinks = false;
 //const knownDomain = require(global.__legacyModules ? '../_db/_mongodb/models/knownDomain' : '../../models/knownDomain')
@@ -130,7 +136,6 @@ var getExternalLinks = function (html, domain) {
 function setDecodeHtml(decode) {
     decodeHtmlLinks = decode;
 }
-exports.setDecodeHtml = setDecodeHtml;
 function setKnownDomains(knownDomainModule) {
     var requireSet = ["DEREFERER", "DOMAINS", "CRYPTERS", "IGNORE_LIST"];
     var requiredFun = ["isHoster", "isCrypter"];
@@ -146,18 +151,15 @@ function setKnownDomains(knownDomainModule) {
     }
     knownDomain = knownDomainModule;
 }
-exports.setKnownDomains = setKnownDomains;
 function setFilteredUrlParts(filteredArr) {
     filteredParts = filteredArr;
 }
-exports.setFilteredUrlParts = setFilteredUrlParts;
 function extractAllLinks(html, cb) {
     if (cb === void 0) { cb = null; }
     var links = getExternalLinks(html, "");
     links = utils.getUniqueUrls(links);
     cb && cb(null, links);
 }
-exports.extractAllLinks = extractAllLinks;
 function extractHosterLinks(html, decrypt, cb) {
     if (decrypt === void 0) { decrypt = false; }
     if (cb === void 0) { cb = null; }
@@ -178,7 +180,6 @@ function extractHosterLinks(html, decrypt, cb) {
     links = utils.getUniqueUrls(links);
     cb && cb(null, links);
 }
-exports.extractHosterLinks = extractHosterLinks;
 function extractCrypterLinks(html, decrypt, cb) {
     if (decrypt === void 0) { decrypt = false; }
     if (cb === void 0) { cb = null; }
@@ -195,7 +196,6 @@ function extractCrypterLinks(html, decrypt, cb) {
     // TODO decrypt async in here with new function extractor.decryptLinks()
     cb && cb(null, links);
 }
-exports.extractCrypterLinks = extractCrypterLinks;
 function exctractCustomLinks(html, protocol, domain, cb) {
     if (protocol === void 0) { protocol = 'http'; }
     if (domain === void 0) { domain = ''; }
@@ -209,4 +209,3 @@ function exctractCustomLinks(html, protocol, domain, cb) {
     links = utils.getUniqueUrls(links);
     cb && cb(null, links);
 }
-exports.exctractCustomLinks = exctractCustomLinks;

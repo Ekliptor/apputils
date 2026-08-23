@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tailPromise = exports.tail = void 0;
+exports.tail = tail;
+exports.tailPromise = tailPromise;
 var fs = require("fs");
 var DEFAULT_LINES = 100;
 var INITIAL_LING_LENGTH = 128;
@@ -61,7 +62,6 @@ function tail(fileName, lineCount, cb) {
         });
     });
 }
-exports.tail = tail;
 /**
  * Read the last lines of the given file.
  * @param fileName
@@ -76,4 +76,3 @@ function tailPromise(fileName, lineCount) {
         });
     });
 }
-exports.tailPromise = tailPromise;

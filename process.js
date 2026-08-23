@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addChildProcessArgument = void 0;
+exports.addChildProcessArgument = addChildProcessArgument;
 function addChildProcessArgument(args, key, value) {
     var argsCopy = Object.assign([], args);
     var keyLen = key.length;
@@ -16,4 +16,3 @@ function addChildProcessArgument(args, key, value) {
         argsCopy.push(key + "=" + value);
     return argsCopy;
 }
-exports.addChildProcessArgument = addChildProcessArgument;

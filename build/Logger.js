@@ -3,7 +3,11 @@ const winston = require("winston");
 const nconf = require("nconf");
 const winstonCluster = require("winston-cluster");
 require("./src/winston-childproc");
-const cluster = require("cluster");
+// @types/node >= 16 only exposes the Cluster instance as the module's default export.
+// Cast the namespace (which IS that instance at runtime) instead of a default import,
+// which would emit cluster_1.default without esModuleInterop.
+const clusterModule = require("cluster");
+const cluster = clusterModule;
 const fs = require("fs");
 const utils_1 = require("./utils");
 // levels: { error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }

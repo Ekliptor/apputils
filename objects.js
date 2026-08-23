@@ -1,7 +1,7 @@
 "use strict";
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -38,7 +38,31 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deepAssign = exports.getdObjectValues = exports.getIndexedObjectValues = exports.isSameElementArray = exports.getPlainArrayData = exports.fillCreateArray = exports.applyMixins = exports.isEmpty = exports.removeElasticsearchProperties = exports.cartesianProduct = exports.permute = exports.countArrayValues = exports.isObject = exports.getUniqueResults = exports.aggregateToLimit = exports.mergeOrderedArray = exports.mergeNumberObjects = exports.concatInnerArrays = exports.getValueArr = exports.getKeyArr = exports.sortByKey = exports.sortByValue = exports.mapFromToupleArray = exports.getFirstKey = exports.objectToStrMap = exports.OBJECT_OVERWRITES = void 0;
+exports.deepAssign = exports.OBJECT_OVERWRITES = void 0;
+exports.objectToStrMap = objectToStrMap;
+exports.getFirstKey = getFirstKey;
+exports.mapFromToupleArray = mapFromToupleArray;
+exports.sortByValue = sortByValue;
+exports.sortByKey = sortByKey;
+exports.getKeyArr = getKeyArr;
+exports.getValueArr = getValueArr;
+exports.concatInnerArrays = concatInnerArrays;
+exports.mergeNumberObjects = mergeNumberObjects;
+exports.mergeOrderedArray = mergeOrderedArray;
+exports.aggregateToLimit = aggregateToLimit;
+exports.getUniqueResults = getUniqueResults;
+exports.isObject = isObject;
+exports.countArrayValues = countArrayValues;
+exports.permute = permute;
+exports.cartesianProduct = cartesianProduct;
+exports.removeElasticsearchProperties = removeElasticsearchProperties;
+exports.isEmpty = isEmpty;
+exports.applyMixins = applyMixins;
+exports.fillCreateArray = fillCreateArray;
+exports.getPlainArrayData = getPlainArrayData;
+exports.isSameElementArray = isSameElementArray;
+exports.getIndexedObjectValues = getIndexedObjectValues;
+exports.getdObjectValues = getdObjectValues;
 // nothing to export here. just include this file to extend some objects
 // for calling parent http://stackoverflow.com/questions/11854958/how-to-call-a-parent-method-from-child-class-in-javascript
 // but we can't overwrite node module functions
@@ -140,7 +164,6 @@ function objectToStrMap(object) {
     }
     return strMap;
 }
-exports.objectToStrMap = objectToStrMap;
 /**
  * Return the first key of an object.
  * @param object
@@ -152,7 +175,6 @@ function getFirstKey(object) {
     }
     return null;
 }
-exports.getFirstKey = getFirstKey;
 /**
  * Restore a map which has been serialized using toToupleArray().
  * For nested maps this function will only restore the root map entries.
@@ -163,7 +185,6 @@ function mapFromToupleArray(arr) {
     // Might be simpler to just unserialize those maps in their constructor.
     return new Map(arr); // array is a valid iterator
 }
-exports.mapFromToupleArray = mapFromToupleArray;
 Array.prototype.mathMax = function () {
     return Math.max.apply(null, this); // or Math.min.apply(Math, array)
 };
@@ -217,7 +238,6 @@ function sortByValue(map, ascending) {
     }
     return sortable;
 }
-exports.sortByValue = sortByValue;
 /**
  * Sort an object by key
  * @param unordered The unordered object
@@ -235,7 +255,6 @@ function sortByKey(unordered, compareFn) {
     });
     return ordered;
 }
-exports.sortByKey = sortByKey;
 function getKeyArr(sortedArr) {
     var keyArr = [];
     for (var _i = 0, sortedArr_1 = sortedArr; _i < sortedArr_1.length; _i++) {
@@ -244,7 +263,6 @@ function getKeyArr(sortedArr) {
     }
     return keyArr;
 }
-exports.getKeyArr = getKeyArr;
 function getValueArr(sortedArr) {
     var valArr = [];
     for (var _i = 0, sortedArr_2 = sortedArr; _i < sortedArr_2.length; _i++) {
@@ -253,7 +271,6 @@ function getValueArr(sortedArr) {
     }
     return valArr;
 }
-exports.getValueArr = getValueArr;
 function concatInnerArrays(outerArray) {
     var allInner = [];
     for (var _i = 0, outerArray_1 = outerArray; _i < outerArray_1.length; _i++) {
@@ -263,7 +280,6 @@ function concatInnerArrays(outerArray) {
     }
     return allInner;
 }
-exports.concatInnerArrays = concatInnerArrays;
 function mergeNumberObjects() {
     var objArgs = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -281,7 +297,6 @@ function mergeNumberObjects() {
     }
     return merged;
 }
-exports.mergeNumberObjects = mergeNumberObjects;
 /**
  * Merge array-properties of objects which have been created using sortByValue()
  * @param ascending {bool} ascending or descending
@@ -334,7 +349,6 @@ function mergeOrderedArray(ascending) {
     }
     return merged;
 }
-exports.mergeOrderedArray = mergeOrderedArray;
 /**
  * Returns an array of limit elements. The last element in the array called 'other' will be the accumulated count of the remaining elements.
  * @param map An Object or Map to sort by value.
@@ -362,7 +376,6 @@ function aggregateToLimit(map, limit) {
         aggregate.push(['other', otherValue]);
     return aggregate;
 }
-exports.aggregateToLimit = aggregateToLimit;
 function getUniqueResults(resultArr, uniqueProp, propFilterFn) {
     var filter = new Map(); // map guarantess key order: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Objects_and_maps_compared
     if (typeof propFilterFn !== 'function') {
@@ -382,13 +395,11 @@ function getUniqueResults(resultArr, uniqueProp, propFilterFn) {
     //resultArr.push(result)
     return resultArr;
 }
-exports.getUniqueResults = getUniqueResults;
 function isObject(x) {
     // https://github.com/sindresorhus/is-obj/blob/master/index.js
     var type = typeof x;
     return x !== null && (type === 'object' || type === 'function');
 }
-exports.isObject = isObject;
 /**
  * Counts how often each value is present in the array
  * @param arr
@@ -406,7 +417,6 @@ function countArrayValues(arr) {
     });
     return count;
 }
-exports.countArrayValues = countArrayValues;
 /**
  * Generate all n! permutations of all elements in a[].
  * // https://en.wikipedia.org/wiki/Heap%27s_algorithm
@@ -445,7 +455,6 @@ function permute(a, n) {
         }
     });
 }
-exports.permute = permute;
 /**
  * Returns the cartesian product of all elements in the inner arrays.
  * example call: utils.objects.cartesianProduct(["ab".split(""), "xy".split("")]);
@@ -461,7 +470,6 @@ function cartesianProduct(arrOfArrays) {
         }).reduce(function (a, b) { return a.concat(b); }, []);
     }, [[]]);
 }
-exports.cartesianProduct = cartesianProduct;
 function removeElasticsearchProperties(doc) {
     delete doc._source;
     delete doc._index;
@@ -469,13 +477,11 @@ function removeElasticsearchProperties(doc) {
     delete doc._score;
     return doc;
 }
-exports.removeElasticsearchProperties = removeElasticsearchProperties;
 function isEmpty(obj) {
     // because Object.keys(new Date()).length === 0;
     // we have to do some additional check
     return Object.keys(obj).length === 0 && obj.constructor === Object;
 }
-exports.isEmpty = isEmpty;
 function applyMixins(derivedCtor, baseCtors) {
     baseCtors.forEach(function (baseCtor) {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
@@ -485,7 +491,6 @@ function applyMixins(derivedCtor, baseCtors) {
         });
     });
 }
-exports.applyMixins = applyMixins;
 /**
  * Creates an array with length elements which all contain value.
  * @param value
@@ -497,7 +502,6 @@ function fillCreateArray(value, length) {
         arr.push(value);
     return arr;
 }
-exports.fillCreateArray = fillCreateArray;
 /**
  * Returns a plain object (not nested object) from an array of objects.
  * Plain object keys will be named: keyPrefix + index in original array + original key
@@ -514,7 +518,6 @@ function getPlainArrayData(arr, keyPrefix) {
     }
     return plain;
 }
-exports.getPlainArrayData = getPlainArrayData;
 /**
  * Checks if the arrays contain the same elements in the same order (by reference), so they are identical.
  * @param arr1
@@ -529,7 +532,6 @@ function isSameElementArray(arr1, arr2) {
     }
     return true;
 }
-exports.isSameElementArray = isSameElementArray;
 /**
  * Returns the values of an object as a plain array.
  * Values may be null/undefined.
@@ -540,7 +542,6 @@ exports.isSameElementArray = isSameElementArray;
 function getIndexedObjectValues(obj) {
     return Object.entries(obj).map(function (o) { return o[1]; });
 }
-exports.getIndexedObjectValues = getIndexedObjectValues;
 /**
  * Returns the values of an object as a plain array.
  * Values may be null/undefined.
@@ -549,7 +550,6 @@ exports.getIndexedObjectValues = getIndexedObjectValues;
 function getdObjectValues(obj) {
     return Object.entries(obj).map(function (o) { return o[1]; });
 }
-exports.getdObjectValues = getdObjectValues;
 /* // promises will always get executed. only results will be in the order supplied here. only possible with an array of functions (see async library)
 export function promiseAllSequence<T>(promises: Promise<T>[]) {
     return new Promise<T[]> ((resolve, reject) => {

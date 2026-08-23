@@ -6,6 +6,7 @@
 // otherwise we need a fork with another name so we can require the right one in every ts/js project
 // IMPORTANT: never use "this" in exported functions, because we might be bound to a different context
 
+// nconf is CommonJS: keep the namespace import (a default import would emit nconf_1.default at runtime)
 import * as nconf from "nconf";
 import * as winstonGlobal from "winston";
 //let appRoot = require('app-root-path')
@@ -14,7 +15,7 @@ import * as fs from "fs";
 import * as base64url from "base64-url";
 import * as base32  from "hi-base32";
 import * as iconv from "iconv-lite";
-import * as escapeHtmlMod from "escape-html";
+import escapeHtmlMod = require("escape-html"); // "export =" module: must use import-require to stay callable
 import * as vm from "vm";
 import * as FileCookieStore from "tough-cookie-filestore";
 import {sprintf, vsprintf} from "sprintf-js";
@@ -216,21 +217,21 @@ export function urlDecode(text: string) {
     return decodeURIComponent(text.replace(/\+/g, '%20'))
 }
 
-export function toBase64(text: string, from = 'utf8') {
+export function toBase64(text: string, from: BufferEncoding = 'utf8') {
     if (from === "base64")
         return base64url.escape(text)
     return base64url.escape(new Buffer(text, from).toString('base64'))
 }
 
-export function fromBase64(text: string, to = 'utf8') {
+export function fromBase64(text: string, to: BufferEncoding = 'utf8') {
     return new Buffer(base64url.unescape(text), 'base64').toString(to)
 }
 
-export function toBase32(text: string, from = 'utf8') {
+export function toBase32(text: string, from: BufferEncoding = 'utf8') {
     return base32.encode(new Buffer(text, from))
 }
 
-export function fromBase32(text: string, to = 'utf8') {
+export function fromBase32(text: string, to: BufferEncoding = 'utf8') {
     return base32.decode(text).toString(to)
 }
 

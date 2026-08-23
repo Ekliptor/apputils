@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 
-export function encryptAes(data: string, ivKeyHex: string, outputEncoding: crypto.HexBase64BinaryEncoding = "base64"): string {
+export function encryptAes(data: string, ivKeyHex: string, outputEncoding: crypto.BinaryToTextEncoding = "base64"): string {
     //data = this.pkcs5Pad(data, 'aes-128-cbc-blocksize')
     let iv = Buffer.from(ivKeyHex, 'hex')
     let key = Buffer.from(ivKeyHex, 'hex')
@@ -10,7 +10,7 @@ export function encryptAes(data: string, ivKeyHex: string, outputEncoding: crypt
     return encData
 }
 
-export function decryptAes(data: string, ivKeyHex: string, outputEncoding: crypto.Utf8AsciiBinaryEncoding = "utf8"): string {
+export function decryptAes(data: string, ivKeyHex: string, outputEncoding: crypto.Encoding = "utf8"): string {
     let iv = Buffer.from(ivKeyHex, 'hex')
     let key = Buffer.from(ivKeyHex, 'hex')
     let decipher = crypto.createDecipheriv('aes-128-ofb', key, iv)

@@ -8,11 +8,22 @@
     "declarationDir": "./build",
     "allowJs": false,
     "sourceMap": true,
+    // TypeScript 6 defaults "strict" to true; this codebase predates strict mode,
+    // so keep it off explicitly to preserve the previous compile semantics.
+    "strict": false,
+    // TypeScript 6 also defaults "esModuleInterop" to true, which makes
+    // "import * as x" emit __importStar() - a copied namespace that drops prototype
+    // methods (nconf.argv) and breaks "new" on module.exports functions
+    // (tough-cookie-filestore). Keep the plain require() emit these modules rely on.
+    "esModuleInterop": false,
+    // TS 7.0 removes esModuleInterop=false. Migrating means converting the CJS value
+    // imports (nconf, request, tough-cookie-filestore, winston) to "import x = require()",
+    // which emits a plain require() regardless of the interop setting.
+    "ignoreDeprecations": "6.0",
     "pretty": true,
     "alwaysStrict": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "watch": true
+    "emitDecoratorMetadata": true
   },
   "compileOnSave": true,
   "exclude": [

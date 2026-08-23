@@ -320,7 +320,7 @@ MongoDB.prototype.streamPoll = function (options, stream) {
         start = null;
     }
     if (start == null) {
-        last = new Date(new Date - 1000);
+        last = new Date(Date.now() - 1000);
     }
     stream.destroy = function () {
         this.destroyed = true;

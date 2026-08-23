@@ -1,7 +1,9 @@
 "use strict";
 // from https://github.com/codemanki/cloudscraper
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.request = exports.post = exports.get = void 0;
+exports.get = get;
+exports.post = post;
+exports.request = request;
 var vm = require("vm");
 var requestModule = require('request');
 var jar = requestModule.jar();
@@ -35,7 +37,6 @@ function get(url, callback, headers) {
         headers: headers
     }, callback);
 }
-exports.get = get;
 ;
 /**
  * Performs post request to url with headers.
@@ -66,7 +67,6 @@ function post(url, body, callback, headers) {
         headers: headers
     }, callback);
 }
-exports.post = post;
 /**
  * Performs get or post request with generic request options
  * @param {Object}   options   Object to be passed to request's options argument
@@ -75,7 +75,6 @@ exports.post = post;
 function request(options, callback) {
     return performRequest(options, callback);
 }
-exports.request = request;
 function performRequest(options, callback) {
     var method;
     options = options || {};
@@ -205,7 +204,7 @@ function solveChallenge(response, body, options, callback) {
     try {
         answerResponse = {
             'jschl_vc': jsChlVc,
-            'pass': challenge_pass,
+            'pass': challenge_pass, // same order of keys
             'jschl_answer': (eval(challenge) + response.request.host.length)
         };
     }

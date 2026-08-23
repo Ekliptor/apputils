@@ -99,7 +99,7 @@ let MongoDB = exports.MongoDB = function(options) {
             {capped: true, size: self.cappedSize, max: self.cappedMax} : {};
         return db.createCollection(self.collection, opts).then(col=>{
             const ttlIndexName = 'timestamp_1';
-            let indexOpts = {name: ttlIndexName, background: true};
+            let indexOpts: {name: string, background: boolean, expireAfterSeconds?: number} = {name: ttlIndexName, background: true};
             if (self.expireAfterSeconds) {
                 indexOpts.expireAfterSeconds = self.expireAfterSeconds;
             }
@@ -177,7 +177,7 @@ MongoDB.prototype.close = function() {
 //Ekliptor> fix
 //MongoDB.prototype.log = function(info, cb) {
 MongoDB.prototype.log = function (level, msg, meta, cb) {
-    let info = {
+    let info: any = {
         //LEVEL: level,
         //MESSAGE: msg,
         meta: meta
@@ -200,7 +200,7 @@ MongoDB.prototype.log = function (level, msg, meta, cb) {
             cb(null, true);
             return; //Ekliptor> fix
         }
-        let entry = {timestamp: new Date(), level: info[LEVEL]};
+        let entry: any = {timestamp: new Date(), level: info[LEVEL]};
         let message = util.format(info[MESSAGE], ...(info.splat || []));
         entry.message = this.decolorize ? message.replace(/\u001b\[[0-9]{1,2}m/g, '') : message;
         entry.meta = helpers.prepareMetaData(info.meta);
@@ -243,7 +243,7 @@ MongoDB.prototype.query = function(opt_options, cb) {
     }
     let options = this.normalizeQuery(opt_options);
     let query = {timestamp: {$gte: options.from, $lte: options.until}};
-    let opt = {
+    let opt: any = {
         skip: options.start,
         limit: options.rows,
         sort: {timestamp: options.order === 'desc' ? -1 : 1}
@@ -339,7 +339,7 @@ MongoDB.prototype.streamPoll = function(options, stream) {
         start = null;
     }
     if (start == null) {
-        last = new Date(new Date - 1000);
+        last = new Date(Date.now() - 1000);
     }
     stream.destroy = function() {
         this.destroyed = true;

@@ -4,7 +4,11 @@ import * as winstonCluster from "winston-cluster";
 import "./src/winston-childproc";
 //import {MongoDB as MongoDbTransport} from "winston-mongodb";
 import {MongoDB as MongoDbTransport} from "./src/winston-mongodb/winston-mongodb";
-import * as cluster from "cluster";
+// @types/node >= 16 only exposes the Cluster instance as the module's default export.
+// Cast the namespace (which IS that instance at runtime) instead of a default import,
+// which would emit cluster_1.default without esModuleInterop.
+import * as clusterModule from "cluster";
+const cluster = clusterModule as unknown as clusterModule.Cluster;
 import * as fs from "fs";
 import {logger} from "./utils";
 

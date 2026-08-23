@@ -252,7 +252,7 @@ export function deleteFiles(filesArr: string[]) {
     return new Promise<void>((resolve, reject) => {
         let deleteOps = []
         filesArr.forEach((file: string | string[]) => {
-            deleteOps.push(new Promise((resolve, reject) => {
+            deleteOps.push(new Promise<void>((resolve, reject) => {
                 if (typeof file !== "string") // type: string[] == object
                     file = path.join(...file)
                 fs.unlink(file, (err) => {
@@ -332,7 +332,7 @@ export function cleanupDir(dirPath, maxAgeMin, create = true) {
             let cleanups = []
             let maxAge = new Date().getTime() - maxAgeMin * 60 * 1000
             files.forEach((file) => {
-                cleanups.push(new Promise((resolve, reject) => {
+                cleanups.push(new Promise<void>((resolve, reject) => {
                     let filePath = path.join(dirPath, file)
                     fs.lstat(filePath, (err, stats) => {
                         if (err) {

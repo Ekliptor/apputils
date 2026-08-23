@@ -60,6 +60,7 @@ exports.str2ab = str2ab;
 // we currently compile this module and always include the compiled code (also in typescript projects)
 // otherwise we need a fork with another name so we can require the right one in every ts/js project
 // IMPORTANT: never use "this" in exported functions, because we might be bound to a different context
+// nconf is CommonJS: keep the namespace import (a default import would emit nconf_1.default at runtime)
 const nconf = require("nconf");
 exports.nconf = nconf;
 const winstonGlobal = require("winston");
@@ -70,7 +71,7 @@ const fs = require("fs");
 const base64url = require("base64-url");
 const base32 = require("hi-base32");
 const iconv = require("iconv-lite");
-const escapeHtmlMod = require("escape-html");
+const escapeHtmlMod = require("escape-html"); // "export =" module: must use import-require to stay callable
 const vm = require("vm");
 const FileCookieStore = require("tough-cookie-filestore");
 const sprintf_js_1 = require("sprintf-js");

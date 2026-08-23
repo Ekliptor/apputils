@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDecimalCount = exports.getNumberPrecision = exports.ensureIncreasing = exports.roundTo = exports.round = void 0;
+exports.round = round;
+exports.roundTo = roundTo;
+exports.ensureIncreasing = ensureIncreasing;
+exports.getNumberPrecision = getNumberPrecision;
+exports.getDecimalCount = getDecimalCount;
 function round(nr, numDecimals) {
     var factor = Math.pow(10, numDecimals);
     return Math.round(nr * factor) / factor;
 }
-exports.round = round;
 function roundTo(value, stepSize) {
     if (stepSize === void 0) { stepSize = 1.0; }
     var inverse = 1.0 / stepSize;
     return Math.round(value * inverse) / inverse;
 }
-exports.roundTo = roundTo;
 // export function roundInteger(int: number, base: number) {
 //     return Math.round(int / base) * base;
 // }
@@ -32,7 +34,6 @@ function ensureIncreasing(nrs) {
     }
     return ascending;
 }
-exports.ensureIncreasing = ensureIncreasing;
 /**
  * Returns the number of decimals of a.
  * For example: 0.01 -> 2
@@ -48,7 +49,6 @@ function getNumberPrecision(a) {
     }
     return p;
 }
-exports.getNumberPrecision = getNumberPrecision;
 /**
  * Returns the number of decimals of nr.
  * @param nr
@@ -58,4 +58,3 @@ function getDecimalCount(nr) {
         return 0;
     return (nr + "").split(".")[1].length || 0;
 }
-exports.getDecimalCount = getDecimalCount;

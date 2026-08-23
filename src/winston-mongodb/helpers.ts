@@ -26,7 +26,7 @@ exports.prepareMetaData = meta=>{
  * @param {Object} node Current object or its leaf
  * @param {Array=} opt_parents Object's parents
  */
-function cloneMeta(node, opt_parents) {
+function cloneMeta(node, opt_parents?) {
   if (!(node instanceof Object) || (node instanceof ObjectID)
       || (node instanceof Buffer)) {
     return node;

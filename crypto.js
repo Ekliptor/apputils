@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decryptAes = exports.encryptAes = void 0;
+exports.encryptAes = encryptAes;
+exports.decryptAes = decryptAes;
 var crypto = require("crypto");
 function encryptAes(data, ivKeyHex, outputEncoding) {
     if (outputEncoding === void 0) { outputEncoding = "base64"; }
@@ -12,7 +13,6 @@ function encryptAes(data, ivKeyHex, outputEncoding) {
     encData += encipher.final(outputEncoding);
     return encData;
 }
-exports.encryptAes = encryptAes;
 function decryptAes(data, ivKeyHex, outputEncoding) {
     if (outputEncoding === void 0) { outputEncoding = "utf8"; }
     var iv = Buffer.from(ivKeyHex, 'hex');
@@ -23,4 +23,3 @@ function decryptAes(data, ivKeyHex, outputEncoding) {
     //decData = this.pkcs5Unpad(decData)
     return decData;
 }
-exports.decryptAes = decryptAes;

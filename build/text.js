@@ -60,8 +60,8 @@ function regexIndexOf(str, regex, startpos) {
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
 function formatNumber(number, commaDigits, decimalSep, thousandSep) {
-    var commaDigits = isNaN(commaDigits = Math.abs(commaDigits)) ? 2 : commaDigits, decimalSep = decimalSep == undefined ? "." : decimalSep, thousandSep = thousandSep == undefined ? "," : thousandSep, strOutput = number < 0 ? "-" : "", intNr = parseInt(number = Math.abs(+number || 0).toFixed(commaDigits)) + "", thousands = intNr.length > 3 ? intNr.length % 3 : 0;
-    return strOutput + (thousands ? intNr.substr(0, thousands) + thousandSep : "") + intNr.substr(thousands).replace(/(\d{3})(?=\d)/g, "$1" + thousandSep) + (commaDigits ? decimalSep + Math.abs(number - intNr).toFixed(commaDigits).slice(2) : "");
+    var commaDigits = isNaN(commaDigits = Math.abs(commaDigits)) ? 2 : commaDigits, decimalSep = decimalSep == undefined ? "." : decimalSep, thousandSep = thousandSep == undefined ? "," : thousandSep, strOutput = +number < 0 ? "-" : "", intNr = parseInt(number = Math.abs(+number || 0).toFixed(commaDigits)) + "", thousands = intNr.length > 3 ? intNr.length % 3 : 0;
+    return strOutput + (thousands ? intNr.substr(0, thousands) + thousandSep : "") + intNr.substr(thousands).replace(/(\d{3})(?=\d)/g, "$1" + thousandSep) + (commaDigits ? decimalSep + Math.abs(+number - +intNr).toFixed(commaDigits).slice(2) : "");
 }
 function formatCurrency(amount, tr) {
     return formatNumber(amount, 2, tr("decPoint"), tr("thousandsSep"));

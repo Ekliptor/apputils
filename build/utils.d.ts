@@ -36,10 +36,10 @@ export declare function restoreJson(obj: any, dateFields?: string[]): any;
 export declare function getJsonPostData(postData: any, key?: string): any;
 export declare function urlEncode(text: string): string;
 export declare function urlDecode(text: string): string;
-export declare function toBase64(text: string, from?: string): any;
-export declare function fromBase64(text: string, to?: string): string;
-export declare function toBase32(text: string, from?: string): any;
-export declare function fromBase32(text: string, to?: string): any;
+export declare function toBase64(text: string, from?: BufferEncoding): any;
+export declare function fromBase64(text: string, to?: BufferEncoding): string;
+export declare function toBase32(text: string, from?: BufferEncoding): any;
+export declare function fromBase32(text: string, to?: BufferEncoding): any;
 /**
  * Adds the supplied padding to the number until it reaches the desired size (length).
  * @param number

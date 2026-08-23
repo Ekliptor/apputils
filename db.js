@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllPropertyProjection = exports.getIdArray = void 0;
+exports.getIdArray = getIdArray;
+exports.getAllPropertyProjection = getAllPropertyProjection;
 function getIdArray(docs) {
     var ids = [];
     if (!docs)
@@ -9,7 +10,6 @@ function getIdArray(docs) {
         ids.push(docs[i]._id);
     return ids;
 }
-exports.getIdArray = getIdArray;
 function getAllPropertyProjection(doc) {
     doc = Object.assign({}, doc);
     for (var prop in doc) {
@@ -17,4 +17,3 @@ function getAllPropertyProjection(doc) {
     }
     return doc;
 }
-exports.getAllPropertyProjection = getAllPropertyProjection;

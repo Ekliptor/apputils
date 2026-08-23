@@ -1,7 +1,60 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uniqueArrayValues = exports.cloneObject = exports.formatUrl = exports.getRootHost = exports.getRootHostname = exports.parseUrl = exports.url = exports.getStringDiff = exports.isWindows = exports.getPostObject = exports.toPlainRequest = exports.getRequest = exports.postDataAsJson = exports.postData = exports.getPageCode = exports.getNewCookieJar = exports.parseBool = exports.getRandomInt = exports.getRandom = exports.substrCount = exports.getRandomString = exports.getCurrentTick = exports.escapeRegex = exports.format = exports.getUnixTimeStr = exports.padNumber = exports.fromBase32 = exports.toBase32 = exports.fromBase64 = exports.toBase64 = exports.urlDecode = exports.urlEncode = exports.getJsonPostData = exports.restoreJson = exports.stringifyBeautiful = exports.parseEJson = exports.parseJson = exports.cloudscraper = exports.objects = exports.nconf = exports.logger = exports.appDir = exports.startDir = exports.EJSON = exports.vsprintf = exports.sprintf = exports.tailPromise = exports.tail = exports.text = exports.conf = void 0;
-exports.stripBom = exports.winstonMongodb = exports.winstonChildProc = exports.winstonGlobal = exports.calc = exports.proc = exports.crypto = exports.linkExtractor = exports.dispatcher = exports.SessionBrowser = exports.http = exports.db = exports.constants = exports.test = exports.date = exports.file = exports.str2ab = exports.restoreLogLines = exports.getConsoleLogger = exports.promiseTimeout = exports.promiseDelay = exports.decodeHtml = exports.escapeHtml = exports.replaceStr = exports.getWordCount = exports.containsWord = exports.isAscendingWordOrder = exports.getWordPositions = exports.matchExcludeWord = exports.matchTag = exports.matchRegex = exports.matchBoolean = exports.matchPhrase = exports.getUniqueUrls = void 0;
+exports.stripBom = exports.winstonMongodb = exports.winstonChildProc = exports.winstonGlobal = exports.calc = exports.proc = exports.crypto = exports.linkExtractor = exports.dispatcher = exports.SessionBrowser = exports.http = exports.db = exports.constants = exports.test = exports.date = exports.file = exports.url = exports.cloudscraper = exports.objects = exports.nconf = exports.logger = exports.appDir = exports.startDir = exports.EJSON = exports.vsprintf = exports.sprintf = exports.tailPromise = exports.tail = exports.text = exports.conf = void 0;
+exports.parseJson = parseJson;
+exports.parseEJson = parseEJson;
+exports.stringifyBeautiful = stringifyBeautiful;
+exports.restoreJson = restoreJson;
+exports.getJsonPostData = getJsonPostData;
+exports.urlEncode = urlEncode;
+exports.urlDecode = urlDecode;
+exports.toBase64 = toBase64;
+exports.fromBase64 = fromBase64;
+exports.toBase32 = toBase32;
+exports.fromBase32 = fromBase32;
+exports.padNumber = padNumber;
+exports.getUnixTimeStr = getUnixTimeStr;
+exports.format = format;
+exports.escapeRegex = escapeRegex;
+exports.getCurrentTick = getCurrentTick;
+exports.getRandomString = getRandomString;
+exports.substrCount = substrCount;
+exports.getRandom = getRandom;
+exports.getRandomInt = getRandomInt;
+exports.parseBool = parseBool;
+exports.getNewCookieJar = getNewCookieJar;
+exports.getPageCode = getPageCode;
+exports.postData = postData;
+exports.postDataAsJson = postDataAsJson;
+exports.getRequest = getRequest;
+exports.toPlainRequest = toPlainRequest;
+exports.getPostObject = getPostObject;
+exports.isWindows = isWindows;
+exports.getStringDiff = getStringDiff;
+exports.parseUrl = parseUrl;
+exports.getRootHostname = getRootHostname;
+exports.getRootHost = getRootHost;
+exports.formatUrl = formatUrl;
+exports.cloneObject = cloneObject;
+exports.uniqueArrayValues = uniqueArrayValues;
+exports.getUniqueUrls = getUniqueUrls;
+exports.matchPhrase = matchPhrase;
+exports.matchBoolean = matchBoolean;
+exports.matchRegex = matchRegex;
+exports.matchTag = matchTag;
+exports.matchExcludeWord = matchExcludeWord;
+exports.getWordPositions = getWordPositions;
+exports.isAscendingWordOrder = isAscendingWordOrder;
+exports.containsWord = containsWord;
+exports.getWordCount = getWordCount;
+exports.replaceStr = replaceStr;
+exports.escapeHtml = escapeHtml;
+exports.decodeHtml = decodeHtml;
+exports.promiseDelay = promiseDelay;
+exports.promiseTimeout = promiseTimeout;
+exports.getConsoleLogger = getConsoleLogger;
+exports.restoreLogLines = restoreLogLines;
+exports.str2ab = str2ab;
 // done by projects which include this one
 //require('source-map-support').install();
 // we currently compile this module and always include the compiled code (also in typescript projects)
@@ -158,7 +211,6 @@ function parseJson(json, tryEvalJs) {
         return null;
     return sandbox.document.json; // return it from our global context
 }
-exports.parseJson = parseJson;
 ;
 function parseEJson(json) {
     try {
@@ -170,7 +222,6 @@ function parseEJson(json) {
         return null;
     }
 }
-exports.parseEJson = parseEJson;
 /*
 // doesn't work, because Date.prototype.toJSON() get's called before and MUST return a string
 export function stringify(obj) {
@@ -184,7 +235,6 @@ export function stringify(obj) {
 function stringifyBeautiful(obj) {
     return JSON.stringify(obj, null, 4);
 }
-exports.stringifyBeautiful = stringifyBeautiful;
 /**
  * Restores json while re-creating date objects. An alternative is to use EJSON.
  * @param obj
@@ -199,7 +249,6 @@ function restoreJson(obj, dateFields) {
     }
     return obj;
 }
-exports.restoreJson = restoreJson;
 function getJsonPostData(postData, key) {
     if (key === void 0) { key = 'data'; }
     if (postData == null)
@@ -212,37 +261,30 @@ function getJsonPostData(postData, key) {
         postData = parseJson(postData);
     return postData;
 }
-exports.getJsonPostData = getJsonPostData;
 function urlEncode(text) {
     return encodeURIComponent(text).replace(/%20/g, '+');
 }
-exports.urlEncode = urlEncode;
 function urlDecode(text) {
     return decodeURIComponent(text.replace(/\+/g, '%20'));
 }
-exports.urlDecode = urlDecode;
 function toBase64(text, from) {
     if (from === void 0) { from = 'utf8'; }
     if (from === "base64")
         return base64url.escape(text);
     return base64url.escape(new Buffer(text, from).toString('base64'));
 }
-exports.toBase64 = toBase64;
 function fromBase64(text, to) {
     if (to === void 0) { to = 'utf8'; }
     return new Buffer(base64url.unescape(text), 'base64').toString(to);
 }
-exports.fromBase64 = fromBase64;
 function toBase32(text, from) {
     if (from === void 0) { from = 'utf8'; }
     return base32.encode(new Buffer(text, from));
 }
-exports.toBase32 = toBase32;
 function fromBase32(text, to) {
     if (to === void 0) { to = 'utf8'; }
     return base32.decode(text).toString(to);
 }
-exports.fromBase32 = fromBase32;
 /**
  * Adds the supplied padding to the number until it reaches the desired size (length).
  * @param number
@@ -260,7 +302,6 @@ function padNumber(number, size, padding) {
         str = padding + str;
     return str;
 }
-exports.padNumber = padNumber;
 /**
  * Return a readable unix time string, for example: 2018-09-16 07:04:30
  * @param withSeconds
@@ -273,7 +314,6 @@ function getUnixTimeStr(withSeconds, now, utc) {
     if (utc === void 0) { utc = false; }
     return date.toDateTimeStr(now, withSeconds, utc);
 }
-exports.getUnixTimeStr = getUnixTimeStr;
 function format(string) {
     var start = 0;
     for (var i = 1; i < arguments.length; i++) {
@@ -286,18 +326,15 @@ function format(string) {
     }
     return string;
 }
-exports.format = format;
 function escapeRegex(str) {
     return text.escapeRegex(str);
 }
-exports.escapeRegex = escapeRegex;
 function getCurrentTick(ms) {
     if (ms === void 0) { ms = true; }
     if (ms === true)
         return Date.now();
     return Math.round(Date.now() / 1000.0);
 }
-exports.getCurrentTick = getCurrentTick;
 function getRandomString(len, hex) {
     if (hex === void 0) { hex = false; }
     var chars = hex ? '1234567890ABCDEF' : '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -306,11 +343,9 @@ function getRandomString(len, hex) {
         random += chars.charAt(Math.floor(Math.random() * chars.length));
     return random;
 }
-exports.getRandomString = getRandomString;
 function substrCount(str, find) {
     return text.substrCount(str, find);
 }
-exports.substrCount = substrCount;
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  * @param min
@@ -320,7 +355,6 @@ exports.substrCount = substrCount;
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
 }
-exports.getRandom = getRandom;
 /**
  * Returns a random integer between min (inclusive) and max (exclusive)
  * @param min
@@ -332,7 +366,6 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
 }
-exports.getRandomInt = getRandomInt;
 function parseBool(str) {
     var type = typeof str;
     if (type === 'boolean')
@@ -344,7 +377,6 @@ function parseBool(str) {
     str = str.toLowerCase();
     return str === '1' || str === 'on' || str === 'true';
 }
-exports.parseBool = parseBool;
 /*
  export function getRequestOptions(address, options) {
     let urlParts = urlModule.parse(address)
@@ -382,7 +414,6 @@ function getNewCookieJar(cookieFilename, deleteOnError) {
         return request.jar();
     }
 }
-exports.getNewCookieJar = getNewCookieJar;
 var prepareRequest = function (address, options) {
     if (typeof options.retry !== 'boolean')
         options.retry = true;
@@ -458,7 +489,7 @@ function getPageCode(address, callback, options) {
         strictSSL: typeof options.skipCertificateCheck !== 'boolean' || options.skipCertificateCheck !== true,
         followRedirect: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
         maxRedirects: typeof options.maxRedirects !== 'number' ? 10 : options.maxRedirects,
-        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
+        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true, // follow non-GET HTTP 3xx responses as redirects
         headers: options.headers,
         jar: options.cookieJar,
         proxy: options.proxy,
@@ -501,7 +532,6 @@ function getPageCode(address, callback, options) {
         }
     });
 }
-exports.getPageCode = getPageCode;
 /**
  * Post data to an address.
  * @param address
@@ -528,7 +558,7 @@ function postData(address, data, callback, options) {
         strictSSL: typeof options.skipCertificateCheck !== 'boolean' || options.skipCertificateCheck !== true,
         followRedirect: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
         maxRedirects: typeof options.maxRedirects !== 'number' ? 10 : options.maxRedirects,
-        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true,
+        followAllRedirects: typeof options.followRedirect !== 'boolean' || options.followRedirect === true, // follow non-GET HTTP 3xx responses as redirects
         headers: options.headers,
         jar: options.cookieJar,
         proxy: options.proxy,
@@ -581,7 +611,6 @@ function postData(address, data, callback, options) {
         }
     });
 }
-exports.postData = postData;
 function postDataAsJson(address, obj, callback, options) {
     if (options === void 0) { options = {}; }
     var json;
@@ -593,7 +622,6 @@ function postDataAsJson(address, obj, callback, options) {
     }
     return postData(address, { data: json }, callback, options);
 }
-exports.postDataAsJson = postDataAsJson;
 /**
  * Returns the request library for convenience (and to avoid hard dependency on it it projects)
  * @returns {request}
@@ -601,7 +629,6 @@ exports.postDataAsJson = postDataAsJson;
 function getRequest() {
     return request;
 }
-exports.getRequest = getRequest;
 function toPlainRequest(reqOptions) {
     reqOptions.strictSSL = typeof reqOptions.skipCertificateCheck !== 'boolean' || reqOptions.skipCertificateCheck !== true;
     delete reqOptions.skipCertificateCheck;
@@ -611,7 +638,6 @@ function toPlainRequest(reqOptions) {
     delete reqOptions.cookieJar;
     return reqOptions;
 }
-exports.toPlainRequest = toPlainRequest;
 function getPostObject(obj, output) {
     if (output === void 0) { output = {}; }
     for (var i in obj) {
@@ -636,11 +662,9 @@ function getPostObject(obj, output) {
     }
     return output;
 }
-exports.getPostObject = getPostObject;
 function isWindows() {
     return process.platform.match("^win") !== null;
 }
-exports.isWindows = isWindows;
 /**
  * Returns the difference between 2 paths strings
  * @param path1
@@ -661,37 +685,30 @@ function getStringDiff(path1, path2) {
     }
     return '';
 }
-exports.getStringDiff = getStringDiff;
 // moved all url functions. keep them here for legacy reasons
 var url = require("./url");
 exports.url = url;
 function parseUrl(linkStr) {
     return url.parseUrl(linkStr);
 }
-exports.parseUrl = parseUrl;
 function getRootHostname(urlObj, stripSubdomains) {
     if (stripSubdomains === void 0) { stripSubdomains = false; }
     return url.getRootHostname(urlObj, stripSubdomains);
 }
-exports.getRootHostname = getRootHostname;
 function getRootHost(urlObj, stripSubdomains) {
     if (stripSubdomains === void 0) { stripSubdomains = false; }
     return url.getRootHost(urlObj, stripSubdomains);
 }
-exports.getRootHost = getRootHost;
 function formatUrl(urlObj, removeFragment) {
     if (removeFragment === void 0) { removeFragment = true; }
     return url.formatUrl(urlObj, removeFragment);
 }
-exports.formatUrl = formatUrl;
 function cloneObject(object) {
     return JSON.parse(JSON.stringify(object));
 }
-exports.cloneObject = cloneObject;
 function uniqueArrayValues(arr) {
     return Array.from(new Set(arr));
 }
-exports.uniqueArrayValues = uniqueArrayValues;
 function getUniqueUrls(arr) {
     var protocolFilter = function (url) {
         return url.replace(/^https?:\/\//i, '');
@@ -700,7 +717,6 @@ function getUniqueUrls(arr) {
     var uniqueArr = objects.getUniqueResults(objArr, 'url', protocolFilter);
     return uniqueArr.map(function (x) { return x.url; });
 }
-exports.getUniqueUrls = getUniqueUrls;
 /**
  * Test if a phrase is present in a string
  * @param result {string/array} the string or array of strings to search in
@@ -723,7 +739,6 @@ function matchPhrase(result, keyword, options) {
     }
     return false;
 }
-exports.matchPhrase = matchPhrase;
 /**
  * Check if all words from keyword are present in the result strings
  * @param result {string/array} the string or array of strings to search in
@@ -770,7 +785,6 @@ function matchBoolean(result, keyword, options, inOrder, ignoreKeywordRegex) {
     }
     return false;
 }
-exports.matchBoolean = matchBoolean;
 /**
  * Check if any of the supplied regex matches any of the result strings
  * @param result
@@ -793,7 +807,6 @@ function matchRegex(result, regexStrings, options) {
     }
     return false;
 }
-exports.matchRegex = matchRegex;
 /**
  * Check if any of the tags are present in any of the result strings
  * @param result
@@ -816,7 +829,6 @@ function matchTag(result, tags) {
     }
     return false;
 }
-exports.matchTag = matchTag;
 function matchExcludeWord(result, excludeWords, options) {
     if (options === void 0) { options = "i"; }
     //let wordArr = excludeWords.split(" "); // or split by separator regex?
@@ -835,7 +847,6 @@ function matchExcludeWord(result, excludeWords, options) {
     }
     return false;
 }
-exports.matchExcludeWord = matchExcludeWord;
 function getWordPositions(text, keywordArr, options) {
     if (options === void 0) { options = ''; }
     var pos = [];
@@ -852,7 +863,6 @@ function getWordPositions(text, keywordArr, options) {
     }
     return pos;
 }
-exports.getWordPositions = getWordPositions;
 function isAscendingWordOrder(text, keywordArr, options) {
     if (options === void 0) { options = ''; }
     var lastPos = -1;
@@ -867,20 +877,17 @@ function isAscendingWordOrder(text, keywordArr, options) {
     }
     return true;
 }
-exports.isAscendingWordOrder = isAscendingWordOrder;
 function containsWord(str, find, options) {
     if (options === void 0) { options = ''; }
     find = escapeRegex(find);
     var searchRegex = new RegExp(conf.WORD_SEPARATOR_BEGIN + find + conf.WORD_SEPARATOR_END, options);
     return searchRegex.test(str) === true;
 }
-exports.containsWord = containsWord;
 function getWordCount(text) {
     text = escapeRegex(text);
     var textParts = text.split(new RegExp(conf.WORD_SEPARATOR_REGEX));
     return textParts.length;
 }
-exports.getWordCount = getWordCount;
 function replaceStr(str, replaceMap) {
     var replaceRegex = new RegExp(Object.keys(replaceMap).join("|"), "gi");
     str = str.replace(replaceRegex, function (matched) {
@@ -888,11 +895,9 @@ function replaceStr(str, replaceMap) {
     });
     return str;
 }
-exports.replaceStr = replaceStr;
 function escapeHtml(str) {
     return escapeHtmlMod(str);
 }
-exports.escapeHtml = escapeHtml;
 /**
  * Replaces HTML chars such as &amp; with their Unicode representation.
  * @param str
@@ -903,7 +908,6 @@ function decodeHtml(str, trim) {
     str = entities.decodeHTML(str);
     return trim === true ? str.trim() : str;
 }
-exports.decodeHtml = decodeHtml;
 /**
  * promiseDelay returns a promise that gets resolved after the specified time
  */
@@ -915,7 +919,6 @@ function promiseDelay(delayMs, value) {
         }, delayMs);
     });
 }
-exports.promiseDelay = promiseDelay;
 /**
  * promiseTimeout implements a timeout that will reject after ms millieseconds
  * if the given promise doesn't resolve before.
@@ -934,7 +937,6 @@ function promiseTimeout(ms, promise) {
         timeout
     ]);
 }
-exports.promiseTimeout = promiseTimeout;
 /**
  * Returns a logger object that can be used instead of console.log().
  * The object will log to our previously configured global app logger
@@ -959,7 +961,6 @@ function getConsoleLogger() {
         }
     };
 }
-exports.getConsoleLogger = getConsoleLogger;
 function restoreLogLines(dbLogDocs) {
     var lines = [];
     dbLogDocs.forEach(function (doc) {
@@ -971,7 +972,6 @@ function restoreLogLines(dbLogDocs) {
     });
     return lines;
 }
-exports.restoreLogLines = restoreLogLines;
 function str2ab(str, togo) {
     if (togo === void 0) { togo = -1; }
     var buf = new ArrayBuffer(str.length); // 2 bytes for each char
@@ -983,7 +983,6 @@ function str2ab(str, togo) {
     }
     return buf;
 }
-exports.str2ab = str2ab;
 var file = require("./file");
 exports.file = file;
 var test = require("./test");
